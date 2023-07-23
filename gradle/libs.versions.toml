@@ -1,0 +1,35 @@
+[versions]
+
+minSdkVersion = "26"
+targetSdkVersion = "34"
+compileSdkVersion = "34"
+
+versionCode = "1"
+versionName = "1"
+
+jvmTargetVersion = "17"
+
+kotlinCompilerExtensionVersion = "1.4.3"
+
+coreKtxVersion = "1.10.1"
+
+kotlinBomVersion = "1.8.0"
+lifecycleVersion = "2.6.1"
+composeBomVersion = "2023.06.01"
+activityComposeVersion = "1.7.2"
+
+
+[libraries]
+
+coreKtx = {module = "androidx.core:core-ktx", version.ref = "coreKtxVersion"}
+kotlinBom = {module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBomVersion"}
+lifecycleRuntimeKtx = {module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion"}
+composeBom = {module = "androidx.compose:compose-bom", version.ref = "composeBomVersion"}
+activityCompose = {module = "androidx.activity:activity-compose", version.ref ="activityComposeVersion"}
+
+composeUi = {module = "androidx.compose.ui:ui"}
+composeUiGraphics = {module = "androidx.compose.ui:ui-graphics"}
+composeUiTooling = {module = "androidx.compose.ui:ui-tooling"}
+composeUiToolingPreview = {module = "androidx.compose.ui:ui-tooling-preview"}
+composeMaterial = {module = "androidx.compose.material3:material3"}
+
