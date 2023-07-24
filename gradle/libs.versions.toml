@@ -13,10 +13,14 @@ kotlinCompilerExtensionVersion = "1.4.3"
 
 coreKtxVersion = "1.10.1"
 
-kotlinBomVersion = "1.8.0"
+kotlinBomVersion = "1.8.10"
 lifecycleVersion = "2.6.1"
 composeBomVersion = "2023.06.01"
+composeConstraintVersion = "1.1.0-alpha07"
 activityComposeVersion = "1.7.2"
+activityVersion = "1.6.1"
+activityKtxVersion = "1.7.2"
+fragemntKtxVersion = "1.6.0"
 
 
 [libraries]
@@ -24,6 +28,14 @@ activityComposeVersion = "1.7.2"
 coreKtx = {module = "androidx.core:core-ktx", version.ref = "coreKtxVersion"}
 kotlinBom = {module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBomVersion"}
 lifecycleRuntimeKtx = {module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion"}
+lifecycleRuntimeCompose = {module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleVersion"}
+lifecycleViewModelKtx = {module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleVersion"}
+lifecycleViewModelCompose = {module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleVersion"}
+activityKtx = {module = "androidx.activity:activity-ktx", version.ref = "activityKtxVersion"}
+appcompat = {module = "androidx.appcompat:appcompat", version.ref = "activityVersion"}
+
+fragmentKtx = {module = "androidx.fragment:fragment-ktx", version.ref = "fragemntKtxVersion"}
+
 composeBom = {module = "androidx.compose:compose-bom", version.ref = "composeBomVersion"}
 activityCompose = {module = "androidx.activity:activity-compose", version.ref ="activityComposeVersion"}
 
@@ -32,4 +44,5 @@ composeUiGraphics = {module = "androidx.compose.ui:ui-graphics"}
 composeUiTooling = {module = "androidx.compose.ui:ui-tooling"}
 composeUiToolingPreview = {module = "androidx.compose.ui:ui-tooling-preview"}
 composeMaterial = {module = "androidx.compose.material3:material3"}
+composeConstraintLayout = {module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "composeConstraintVersion"}
 
