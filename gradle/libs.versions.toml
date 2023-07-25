@@ -17,10 +17,16 @@ kotlinBomVersion = "1.8.10"
 lifecycleVersion = "2.6.1"
 composeBomVersion = "2023.06.01"
 composeConstraintVersion = "1.1.0-alpha07"
+composeFoundationVersion = "1.6.0-alpha01"
 activityComposeVersion = "1.7.2"
 activityVersion = "1.6.1"
 activityKtxVersion = "1.7.2"
 fragemntKtxVersion = "1.6.0"
+matrialVersion = "1.9.0"
+
+gsonVersion = "2.10.1"
+jsoupVersion = "1.16.1"
+
 
 
 [libraries]
@@ -33,12 +39,14 @@ lifecycleViewModelKtx = {module = "androidx.lifecycle:lifecycle-viewmodel-ktx", 
 lifecycleViewModelCompose = {module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleVersion"}
 activityKtx = {module = "androidx.activity:activity-ktx", version.ref = "activityKtxVersion"}
 appcompat = {module = "androidx.appcompat:appcompat", version.ref = "activityVersion"}
+matrial = {module = "com.google.android.material:material", version.ref = "matrialVersion"}
 
 fragmentKtx = {module = "androidx.fragment:fragment-ktx", version.ref = "fragemntKtxVersion"}
 
 composeBom = {module = "androidx.compose:compose-bom", version.ref = "composeBomVersion"}
 activityCompose = {module = "androidx.activity:activity-compose", version.ref ="activityComposeVersion"}
 
+composeFoundation = {module = "androidx.compose.foundation:foundation", version.ref = "composeFoundationVersion"}
 composeUi = {module = "androidx.compose.ui:ui"}
 composeUiGraphics = {module = "androidx.compose.ui:ui-graphics"}
 composeUiTooling = {module = "androidx.compose.ui:ui-tooling"}
@@ -46,3 +54,6 @@ composeUiToolingPreview = {module = "androidx.compose.ui:ui-tooling-preview"}
 composeMaterial = {module = "androidx.compose.material3:material3"}
 composeConstraintLayout = {module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "composeConstraintVersion"}
 
+gson = {module = "com.google.code.gson:gson", version.ref = "gsonVersion"}
+
+jsoup = {module = "org.jsoup:jsoup", version.ref = "jsoupVersion"}
