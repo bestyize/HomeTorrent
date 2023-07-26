@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.torrent.torrent.page.TorrentSearchPage
 import kotlinx.coroutines.launch
 
 
@@ -50,12 +51,13 @@ fun MainPage() {
                     .background(Color(0xFFF2F3F4)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = tabs[it])
+                if (it == 0) {
+                    TorrentSearchPage()
+                }
             }
         }
 
-        TabRow(
-            selectedTabIndex = 0,
+        TabRow(selectedTabIndex = 0,
             indicator = {},
             divider = {},
             modifier = Modifier
@@ -66,22 +68,18 @@ fun MainPage() {
         ) {
             tabs.forEachIndexed { index, title ->
                 val isSelected = pagerState.currentPage == index
-                Text(
-                    text = title,
+                Text(text = title,
                     textAlign = TextAlign.Center,
                     color = if (isSelected) Color.Red else Color.Black,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = if (isSelected) 18.sp else 17.sp,
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            scope.launch {
-                                pagerState.scrollToPage(index)
-                            }
-                        },
+                    modifier = Modifier.clickable(onClick = {
+                        scope.launch {
+                            pagerState.scrollToPage(index)
+                        }
+                    },
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    )
-                )
+                        interactionSource = remember { MutableInteractionSource() }))
             }
         }
 

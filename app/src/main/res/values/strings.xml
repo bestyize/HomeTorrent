@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HomeTorrent</string>
+    <string name="search">Search</string>
+    <string name="search_more_torrent">Search more torrent</string>
 </resources>
