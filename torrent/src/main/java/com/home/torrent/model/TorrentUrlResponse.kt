@@ -2,7 +2,7 @@ package com.home.torrent.model
 
 import com.google.gson.annotations.SerializedName
 
-data class TorrentSearchResponse(
+data class TorrentUrlResponse(
     @SerializedName("code") val code: Int = 0,
-    @SerializedName("list") val list: List<TorrentInfo> = listOf()
+    @SerializedName("result") val result: String? = null
 )
