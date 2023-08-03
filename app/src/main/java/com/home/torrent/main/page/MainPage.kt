@@ -53,6 +53,8 @@ fun MainPage() {
             ) {
                 if (it == 0) {
                     TorrentSearchPage()
+                } else {
+                    Text(text = tabs[it])
                 }
             }
         }

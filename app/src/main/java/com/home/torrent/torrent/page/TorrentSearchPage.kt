@@ -1,8 +1,10 @@
 package com.home.torrent.torrent.page
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +19,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -36,8 +43,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,50 +76,54 @@ fun TorrentSearchPage() {
 fun TorrentSearchBar() {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
     val query = vm.keywordState.collectAsStateWithLifecycle()
-    val active = remember {
-        mutableStateOf(true)
-    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        TextField(
-            value = query.value ?: "",
+        TextField(value = query.value ?: "",
             onValueChange = {
                 vm.updateKeyword(it)
             },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(onSearch = {
+                vm.loadTorrentList(loadMore = false)
+            }),
+            maxLines = 3,
             placeholder = { Text(text = stringResource(id = R.string.search_more_torrent)) },
             leadingIcon = {
-                if (active.value) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "点击搜索更多",
+                if (query.value.isNullOrBlank()) {
+                    Icon(imageVector = Icons.Default.Search,
+                        contentDescription = "搜索",
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
-                                active.value = false
-                            },
-                    )
+                                vm.updateKeyword("")
+                            })
                 } else {
                     Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search),
-                        modifier = Modifier.padding(start = 16.dp),
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "清除",
+                        modifier = Modifier.padding(start = 16.dp)
                     )
                 }
+
             },
             trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(id = R.string.search),
+                Text(text = "搜索",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .padding(end = 16.dp)
-                        .clickable {
-                            vm.loadTorrentList(src = vm.currentSourceState.value, loadMore = true)
-                        }
-                )
+                        .padding(end = 18.dp)
+                        .wrapContentHeight()
+                        .clickable(indication = null, interactionSource = remember {
+                            MutableInteractionSource()
+                        }) {
+                            vm.loadTorrentList(loadMore = false)
+                        })
             },
             colors = TextFieldDefaults.colors(
                 disabledTextColor = Color.Transparent,
@@ -139,8 +154,7 @@ fun TorrentSearchContentArea() {
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(
-            selectedTabIndex = pageState.currentPage,
+        ScrollableTabRow(selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
             indicator = {
@@ -169,11 +183,13 @@ fun TorrentSearchContentArea() {
                         })
             }
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(2.dp)
-            .padding(vertical = 2.dp)
-            .background(Color.LightGray))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .padding(vertical = 2.dp)
+                .background(Color.LightGray)
+        )
         HorizontalPager(state = pageState) { pageIndex ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 TorrentListView(pageIndex)
@@ -185,6 +201,8 @@ fun TorrentSearchContentArea() {
 @Composable
 fun TorrentListView(pageSrc: Int) {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
+    vm.updateCurrentSource(pageSrc)
+    vm.loadTorrentList(page = 1)
     val page = remember { mutableStateOf(1) }
     val listState = vm.currPageTorrentListState.collectAsStateWithLifecycle(mutableListOf())
     Box(modifier = Modifier.fillMaxSize()) {
@@ -221,7 +239,7 @@ fun TorrentListView(pageSrc: Int) {
                 }
 
                 LaunchedEffect(Unit) {
-                    vm.loadTorrentList(src = pageSrc, page = page.value, loadMore = true)
+                    vm.loadTorrentList(page = page.value, loadMore = true)
                     page.value += 1
                 }
             }
@@ -232,12 +250,14 @@ fun TorrentListView(pageSrc: Int) {
 @Composable
 fun TorrentSearchItemView(index: Int, data: TorrentInfo) {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .background(Color.White)
-    ) {
+    CopyAddressDialog()
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .background(Color.White)
+        .clickable {
+            vm.copyTorrentUrl(data)
+        }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -277,7 +297,8 @@ fun TorrentSearchItemView(index: Int, data: TorrentInfo) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(), verticalAlignment = Alignment.CenterVertically
+                        .wrapContentHeight(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     data.date?.let { date ->
                         Text(
@@ -319,6 +340,86 @@ fun TorrentSearchItemView(index: Int, data: TorrentInfo) {
                 .background(Color.LightGray)
                 .align(Alignment.BottomCenter)
         )
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CopyAddressDialog() {
+    val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
+    val copyState = vm.copyTorrentState.collectAsStateWithLifecycle()
+    val copyBtnState = remember {
+        mutableStateOf(false)
+    }
+    if (copyBtnState.value) {
+        copyBtnState.value = false
+        LocalClipboardManager.current.setText(
+            AnnotatedString(
+                copyState.value?.magnetUrl ?: ""
+            )
+        )
+        vm.copyTorrentUrl(null)
+        Toast.makeText(LocalContext.current, "复制成功", Toast.LENGTH_SHORT).show()
+    }
+    if (copyState.value != null) {
+        AlertDialog(onDismissRequest = { vm.copyTorrentUrl(null) }) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(Color.White, RoundedCornerShape(10.dp)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "温馨提示",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.padding(vertical = 15.dp)
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(1.dp)
+                        .padding(vertical = 10.dp)
+                        .background(Color.LightGray)
+                )
+                SelectionContainer {
+                    Text(
+                        text = copyState.value?.magnetUrl ?: "",
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .wrapContentHeight(),
+                        fontSize = 14.sp,
+                        color = Color.Blue
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .height(1.dp)
+                        .padding(vertical = 10.dp)
+                        .background(Color.Gray)
+                )
+                val scope = rememberCoroutineScope()
+                Text(text = "复制",
+                    modifier = Modifier
+                        .padding(vertical = 15.dp)
+                        .fillMaxWidth(0.8f)
+                        .wrapContentHeight()
+                        .clickable(indication = null,
+                            interactionSource = remember { MutableInteractionSource() }) {
+                            copyBtnState.value = true
+                        },
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
+                )
+            }
+        }
     }
 
 }

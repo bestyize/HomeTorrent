@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
+import com.home.torrent.service.suspendRequestMagnetUrl
 import com.home.torrent.service.suspendRequestTorrentSources
 import com.home.torrent.service.suspendSearchTorrentList
 import kotlinx.coroutines.flow.Flow
@@ -24,9 +25,10 @@ class TorrentSearchViewModel : ViewModel() {
 
     val currentSourceState: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    val currPageTorrentListState: Flow<MutableList<TorrentInfo>> = combine(torrentListState, currentSourceState) { list, curr ->
-        return@combine list[curr] ?: mutableListOf()
-    }
+    val currPageTorrentListState: Flow<MutableList<TorrentInfo>> =
+        combine(torrentListState, currentSourceState) { list, curr ->
+            return@combine list[curr] ?: mutableListOf()
+        }
 
     val keywordState: MutableStateFlow<String?> = MutableStateFlow(null)
 
@@ -36,8 +38,9 @@ class TorrentSearchViewModel : ViewModel() {
         }
     }
 
-    fun loadTorrentList(src: Int, page: Int = 1, loadMore: Boolean = true) {
+    fun loadTorrentList(page: Int = 1, loadMore: Boolean = true) {
         viewModelScope.launch {
+            val src = currentSourceState.value
             val newData = suspendSearchTorrentList(src, keywordState.value ?: "", page)
             val old = torrentListState.value[src] ?: mutableListOf()
             val new = if (loadMore) old + newData else newData
@@ -48,8 +51,20 @@ class TorrentSearchViewModel : ViewModel() {
         }
     }
 
-    fun copyTorrentUrl(data: TorrentInfo) {
-        copyTorrentState.value = data
+    fun copyTorrentUrl(data: TorrentInfo?) {
+        if (data == null || !data.torrentUrl.isNullOrBlank() || data.detailUrl.isNullOrBlank()) {
+            copyTorrentState.value = data
+            return
+        }
+        viewModelScope.launch {
+            copyTorrentState.value = data.copy(
+                torrentUrl = suspendRequestMagnetUrl(
+                    currentSourceState.value,
+                    data.detailUrl!!
+                )
+            )
+        }
+
     }
 
     fun updateCurrentSource(src: Int) {
