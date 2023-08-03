@@ -16,23 +16,25 @@ coreKtxVersion = "1.10.1"
 kotlinBomVersion = "1.8.10"
 lifecycleVersion = "2.6.1"
 composeBomVersion = "2023.06.01"
-composeConstraintVersion = "1.1.0-alpha07"
-composeFoundationVersion = "1.6.0-alpha01"
+composeConstraintVersion = "1.1.0-alpha11"
+composeFoundationVersion = "1.6.0-alpha02"
 activityComposeVersion = "1.7.2"
 activityVersion = "1.6.1"
 activityKtxVersion = "1.7.2"
-fragemntKtxVersion = "1.6.0"
+fragemntKtxVersion = "1.6.1"
 matrialVersion = "1.9.0"
 
 gsonVersion = "2.10.1"
 jsoupVersion = "1.16.1"
 
+kotlinxCoroutinesCoreVersion = "1.7.3"
 
 
 [libraries]
 
 coreKtx = {module = "androidx.core:core-ktx", version.ref = "coreKtxVersion"}
 kotlinBom = {module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBomVersion"}
+kotlinxCoroutinesCore = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion"}
 lifecycleRuntimeKtx = {module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion"}
 lifecycleRuntimeCompose = {module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleVersion"}
 lifecycleViewModelKtx = {module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleVersion"}

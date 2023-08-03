@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
-import com.home.torrent.torrent.service.suspendLoadTorrentList
-import com.home.torrent.torrent.service.suspendLoadTorrentSources
+import com.home.torrent.service.suspendRequestTorrentSources
+import com.home.torrent.service.suspendSearchTorrentList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -32,13 +32,13 @@ class TorrentSearchViewModel : ViewModel() {
 
     fun loadTorrentSources() {
         viewModelScope.launch {
-            sourcesState.value = suspendLoadTorrentSources()
+            sourcesState.value = suspendRequestTorrentSources()
         }
     }
 
     fun loadTorrentList(src: Int, page: Int = 1, loadMore: Boolean = true) {
         viewModelScope.launch {
-            val newData = suspendLoadTorrentList(src, keywordState.value ?: "", page)
+            val newData = suspendSearchTorrentList(src, keywordState.value ?: "", page)
             val old = torrentListState.value[src] ?: mutableListOf()
             val new = if (loadMore) old + newData else newData
             torrentListState.value = torrentListState.value.toMutableMap().apply {
