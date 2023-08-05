@@ -36,6 +36,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -75,25 +78,27 @@ fun TorrentSearchPage() {
 @Preview
 fun TorrentSearchBar() {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    val query = vm.keywordState.collectAsStateWithLifecycle()
+    val query = remember {
+        mutableStateOf(vm.keywordState.value)
+    }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        TextField(value = query.value ?: "",
+        TextField(value = query.value,
             onValueChange = {
-                vm.updateKeyword(it)
+                query.value = it
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
-                vm.loadTorrentList(loadMore = false)
+                vm.updateKeyword(query.value)
             }),
             maxLines = 3,
             placeholder = { Text(text = stringResource(id = R.string.search_more_torrent)) },
             leadingIcon = {
-                if (query.value.isNullOrBlank()) {
+                if (query.value.isBlank()) {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = "搜索",
                         modifier = Modifier
@@ -122,7 +127,7 @@ fun TorrentSearchBar() {
                         .clickable(indication = null, interactionSource = remember {
                             MutableInteractionSource()
                         }) {
-                            vm.loadTorrentList(loadMore = false)
+                            vm.updateKeyword(query.value)
                         })
             },
             colors = TextFieldDefaults.colors(
@@ -144,10 +149,20 @@ fun TorrentSearchBar() {
 @Composable
 @Preview
 fun TorrentSearchContentArea() {
+
+    val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
+
+    val keyword = vm.keywordState.collectAsStateWithLifecycle()
+
+    val lastKeyword = remember {
+        mutableStateOf("")
+    }
+
     val tabs = remember {
         requestTorrentSources()
     }
-    val pageState = rememberPagerState(initialPage = 0,
+    val pageState = rememberPagerState(
+        initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
 
@@ -190,40 +205,65 @@ fun TorrentSearchContentArea() {
                 .padding(vertical = 2.dp)
                 .background(Color.LightGray)
         )
+        val dataLists = tabs.indices.toList().map {
+            remember("$it-data") {
+                mutableStateListOf<TorrentInfo>()
+            }
+        }
+        val pageLists = tabs.indices.toList().map {
+            remember("$it-page") {
+                mutableIntStateOf(1)
+            }
+        }
         HorizontalPager(state = pageState) { pageIndex ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                TorrentListView(pageIndex)
+                val fullRefresh = keyword.value != lastKeyword.value
+                if (fullRefresh) {
+                    dataLists[pageIndex].clear()
+                    pageLists[pageIndex].intValue = 1
+                }
+                TorrentListView(
+                    keyword = keyword.value,
+                    src = pageIndex,
+                    page = pageLists[pageIndex],
+                    dataListState = dataLists[pageIndex]
+                )
+                lastKeyword.value = keyword.value
             }
         }
     }
 }
 
+
 @Composable
-fun TorrentListView(pageSrc: Int) {
+fun TorrentListView(
+    keyword: String, src: Int, page: MutableState<Int>, dataListState: MutableList<TorrentInfo>
+) {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    vm.updateCurrentSource(pageSrc)
-    vm.loadTorrentList(page = 1)
-    val page = remember { mutableStateOf(1) }
-    val listState = vm.currPageTorrentListState.collectAsStateWithLifecycle(mutableListOf())
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            items(count = listState.value.size) { pos ->
-                TorrentSearchItemView(pos, listState.value[pos])
+            items(count = dataListState.size) { pos ->
+                TorrentSearchItemView(pos, dataListState[pos])
             }
             item {
+                val noMoreToast = remember {
+                    mutableStateOf(false)
+                }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    if (listState.value.isNotEmpty()) {
+                    if (dataListState.isNotEmpty()) {
                         Text(
-                            text = "正在加载中",
+                            text = if (noMoreToast.value) "已全部加载" else "正在加载中...",
                             fontSize = 16.sp,
+                            color = Color.Red,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
@@ -238,9 +278,22 @@ fun TorrentListView(pageSrc: Int) {
                     )
                 }
 
+                if (noMoreToast.value) {
+                    Toast.makeText(LocalContext.current, "没有更多了哦", Toast.LENGTH_SHORT).show()
+                }
                 LaunchedEffect(Unit) {
-                    vm.loadTorrentList(page = page.value, loadMore = true)
-                    page.value += 1
+                    val newData = vm.loadTorrentList(
+                        src = src, key = keyword, page = page.value
+                    )
+                    if (newData.isEmpty()) {
+                        noMoreToast.value = true
+                        return@LaunchedEffect
+                    }
+                    noMoreToast.value = false
+                    dataListState.addAll(
+                        newData
+                    )
+                    page.value++
                 }
             }
         }
@@ -403,7 +456,6 @@ fun CopyAddressDialog() {
                         .padding(vertical = 10.dp)
                         .background(Color.Gray)
                 )
-                val scope = rememberCoroutineScope()
                 Text(text = "复制",
                     modifier = Modifier
                         .padding(vertical = 15.dp)
