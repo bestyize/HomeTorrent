@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.service.suspendRequestMagnetUrl
 import com.home.torrent.service.suspendSearchTorrentList
+import com.home.torrent.torrent.model.KeywordInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -12,7 +13,7 @@ class TorrentSearchViewModel : ViewModel() {
 
     val copyTorrentState: MutableStateFlow<TorrentInfo?> = MutableStateFlow(null)
 
-    val keywordState: MutableStateFlow<String> = MutableStateFlow("")
+    val keywordState: MutableStateFlow<KeywordInfo> = MutableStateFlow(KeywordInfo())
 
     suspend fun loadTorrentList(src: Int, key: String?, page: Int = 1): List<TorrentInfo> =
         suspendSearchTorrentList(src, key ?: "", page)
@@ -34,8 +35,7 @@ class TorrentSearchViewModel : ViewModel() {
 
     fun updateKeyword(key: String) {
         // 点击搜索时触发一次更新
-        keywordState.value = ""
-        keywordState.value = key
+        keywordState.value = KeywordInfo(key, System.currentTimeMillis())
     }
 
 
