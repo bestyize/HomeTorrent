@@ -236,16 +236,17 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
                 val noMoreToast = remember {
                     mutableStateOf(false)
                 }
-                TorrentListView(
-                    noMore = noMoreToast.value, dataListState = dataList
-                ) {
-                    scope.launch {
+                val update = remember {
+                    mutableStateOf(false)
+                }
+                if (update.value)  {
+                    LaunchedEffect(key1 = "") {
                         val newData = vm.loadTorrentList(
                             src = src, key = key, page = page.intValue
                         )
                         if (newData.isEmpty()) {
                             noMoreToast.value = true
-                            return@launch
+                            return@LaunchedEffect
                         }
                         noMoreToast.value = false
                         dataList.addAll(
@@ -253,6 +254,13 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
                         )
                         page.intValue++
                     }
+                    update.value = false
+                }
+
+                TorrentListView(
+                    noMore = noMoreToast.value, dataListState = dataList
+                ) {
+                    update.value = true
                 }
                 lastKeyword.value = keyword.value
             }
@@ -298,10 +306,6 @@ fun TorrentListView(
                             .fillMaxWidth()
                             .height(80.dp)
                     )
-                }
-
-                if (noMore) {
-                    Toast.makeText(LocalContext.current, "没有更多了哦", Toast.LENGTH_SHORT).show()
                 }
                 onLoad.invoke()
             }
