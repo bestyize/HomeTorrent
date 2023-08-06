@@ -24,7 +24,7 @@ class TorrentSearchViewModel : ViewModel() {
         }
         viewModelScope.launch {
             copyTorrentState.value = data.copy(
-                torrentUrl = suspendRequestMagnetUrl(
+                magnetUrl = suspendRequestMagnetUrl(
                     data.src, data.detailUrl!!
                 )
             )
@@ -33,6 +33,8 @@ class TorrentSearchViewModel : ViewModel() {
     }
 
     fun updateKeyword(key: String) {
+        // 点击搜索时触发一次更新
+        keywordState.value = ""
         keywordState.value = key
     }
 

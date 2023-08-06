@@ -18,6 +18,7 @@
         <activity
             android:name=".main.page.MainActivity"
             android:exported="true"
+            android:configChanges="orientation|screenSize|uiMode"
             android:theme="@style/Theme.HomeTorrent"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

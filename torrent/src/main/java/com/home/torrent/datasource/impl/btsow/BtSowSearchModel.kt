@@ -9,7 +9,6 @@ import com.home.torrent.model.TorrentInfo
 import com.home.torrent.util.get
 import org.jsoup.Jsoup
 
-private const val TAG = "BtShowSearchModel"
 
 // https://btsow.com/search
 private const val BASE_SEARCH_URL =
@@ -34,7 +33,6 @@ internal object BtSowSearchModel : TorrentSearchModel {
 
     override fun getMirrorSite(originUrl: String): String {
         return originUrl
-        //return "${MIRROR_SITE}source=57&url=${originUrl.urlEncode()}"
     }
 
 

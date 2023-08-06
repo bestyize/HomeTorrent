@@ -1,5 +1,6 @@
 package com.home.torrent.torrent.page
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -42,6 +43,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,26 +70,26 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview
 fun TorrentSearchPage() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        TorrentSearchBar()
-        TorrentSearchContentArea()
-    }
-}
-
-@Composable
-@Preview
-fun TorrentSearchBar() {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
     val query = remember {
         mutableStateOf(vm.keywordState.value)
     }
+    Column(modifier = Modifier.fillMaxSize()) {
+        TorrentSearchBar(query, vm)
+        TorrentSearchContentArea(query, vm)
+    }
+}
+
+@Composable
+fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        TextField(value = query.value,
+        TextField(
+            value = query.value,
             onValueChange = {
                 query.value = it
             },
@@ -147,12 +149,8 @@ fun TorrentSearchBar() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-@Preview
-fun TorrentSearchContentArea() {
+fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
-    val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-
-    val keyword = vm.keywordState.collectAsStateWithLifecycle()
 
     val lastKeyword = remember {
         mutableStateOf("")
@@ -161,15 +159,22 @@ fun TorrentSearchContentArea() {
     val tabs = remember {
         requestTorrentSources()
     }
-    val pageState = rememberPagerState(
-        initialPage = 0,
+    val pageState = rememberPagerState(initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
+
+    LaunchedEffect(key1 = "pager-torrent") {
+        snapshotFlow { pageState.currentPage }.collect { page ->
+            Log.i(TAG, "TorrentSearchContentArea, page:$page selected, query = $query")
+            vm.updateKeyword(query.value)
+        }
+    }
 
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(selectedTabIndex = pageState.currentPage,
+        ScrollableTabRow(
+            selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
             indicator = {
@@ -215,6 +220,7 @@ fun TorrentSearchContentArea() {
                 mutableIntStateOf(1)
             }
         }
+        val keyword = vm.keywordState.collectAsStateWithLifecycle()
         HorizontalPager(state = pageState) { pageIndex ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 val fullRefresh = keyword.value != lastKeyword.value
@@ -224,7 +230,7 @@ fun TorrentSearchContentArea() {
                 }
                 TorrentListView(
                     keyword = keyword.value,
-                    src = pageIndex,
+                    src = tabs[pageIndex].src,
                     page = pageLists[pageIndex],
                     dataListState = dataLists[pageIndex]
                 )
@@ -417,63 +423,73 @@ fun CopyAddressDialog() {
     }
     if (copyState.value != null) {
         AlertDialog(onDismissRequest = { vm.copyTorrentUrl(null) }) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(Color.White, RoundedCornerShape(10.dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "温馨提示",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    modifier = Modifier.padding(vertical = 15.dp)
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(1.dp)
-                        .padding(vertical = 10.dp)
-                        .background(Color.LightGray)
-                )
-                SelectionContainer {
+                item {
                     Text(
-                        text = copyState.value?.magnetUrl ?: "",
+                        text = "温馨提示",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(vertical = 15.dp)
+                    )
+                    Spacer(
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
-                            .wrapContentHeight(),
-                        fontSize = 14.sp,
-                        color = Color.Blue
+                            .height(1.dp)
+                            .padding(vertical = 10.dp)
+                            .background(Color.LightGray)
+                    )
+                }
+                item {
+                    SelectionContainer {
+                        Text(
+                            text = copyState.value?.magnetUrl ?: "",
+                            modifier = Modifier
+                                .fillMaxWidth(0.8f)
+                                .wrapContentHeight(),
+                            fontSize = 14.sp,
+                            color = Color.Blue
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(1.dp)
+                            .padding(vertical = 10.dp)
+                            .background(Color.Gray)
+                    )
+                    Text(text = "复制",
+                        modifier = Modifier
+                            .padding(vertical = 15.dp)
+                            .fillMaxWidth(0.8f)
+                            .wrapContentHeight()
+                            .clickable(indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                copyBtnState.value = true
+                            },
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        color = Color.Black
                     )
                 }
 
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .height(1.dp)
-                        .padding(vertical = 10.dp)
-                        .background(Color.Gray)
-                )
-                Text(text = "复制",
-                    modifier = Modifier
-                        .padding(vertical = 15.dp)
-                        .fillMaxWidth(0.8f)
-                        .wrapContentHeight()
-                        .clickable(indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
-                            copyBtnState.value = true
-                        },
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = Color.Black
-                )
             }
         }
     }
 
 }
+
+
+private const val TAG = "[Main]TorrentSearchPage"
 
 
