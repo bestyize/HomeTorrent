@@ -2,7 +2,6 @@ package com.home.torrent.def
 
 const val KEY_REPLACE_WORD = "key_replace_word"
 const val KEY_REPLACE_PAGE = "key_replace_page"
-const val KEY_REPLACE_HOSE = "key_replace_host"
 
 const val KEY_DETAIL_REPLACE_DETAIL = "key_replace_detail"
 
@@ -19,5 +18,6 @@ enum class TorrentSrc {
     ZERO_MAGNET,
     X_1337,
     BT_SOW,
-    TOR_LOCK
+    TOR_LOCK,
+    TORRENT_KITTY
 }

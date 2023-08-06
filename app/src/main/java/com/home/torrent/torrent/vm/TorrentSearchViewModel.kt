@@ -19,7 +19,7 @@ class TorrentSearchViewModel : ViewModel() {
         suspendSearchTorrentList(src, key ?: "", page)
 
     fun copyTorrentUrl(data: TorrentInfo?) {
-        if (data == null || !data.torrentUrl.isNullOrBlank() || data.detailUrl.isNullOrBlank()) {
+        if (data == null || !data.torrentUrl.isNullOrBlank() || !data.magnetUrl.isNullOrBlank() || data.detailUrl.isNullOrBlank()) {
             copyTorrentState.value = data
             return
         }
