@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -63,8 +64,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
+import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestTorrentSources
-import com.home.torrent.torrent.model.KeywordInfo
 import com.home.torrent.torrent.vm.TorrentSearchViewModel
 import kotlinx.coroutines.launch
 
@@ -90,7 +91,8 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        TextField(value = query.value,
+        TextField(
+            value = query.value,
             onValueChange = {
                 query.value = it
             },
@@ -152,30 +154,18 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
 @Composable
 fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
-
-    val lastKeyword = remember {
-        mutableStateOf(KeywordInfo())
-    }
-
     val tabs = remember {
         requestTorrentSources()
     }
-    val pageState = rememberPagerState(
-        initialPage = 0,
+    val pageState = rememberPagerState(initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
-
-    LaunchedEffect(key1 = "pager-torrent") {
-        snapshotFlow { pageState.currentPage }.collect { page ->
-            Log.i(TAG, "TorrentSearchContentArea, page:$page selected, query = $query")
-            vm.updateKeyword(query.value)
-        }
-    }
 
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(selectedTabIndex = pageState.currentPage,
+        ScrollableTabRow(
+            selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
             indicator = {
@@ -211,58 +201,86 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
                 .padding(vertical = 2.dp)
                 .background(Color.LightGray)
         )
-        val dataLists = tabs.indices.toList().map {
-            remember("$it-data") {
-                mutableStateListOf<TorrentInfo>()
-            }
-        }
-        val pageLists = tabs.indices.toList().map {
-            remember("$it-page") {
-                mutableIntStateOf(1)
-            }
-        }
-        val keyword = vm.keywordState.collectAsStateWithLifecycle()
-        HorizontalPager(state = pageState) { pageIndex ->
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                val fullRefresh = keyword.value != lastKeyword.value
-                if (fullRefresh) {
-                    dataLists[pageIndex].clear()
-                    pageLists[pageIndex].intValue = 1
-                }
-                val key = keyword.value.key
-                val src = tabs[pageIndex].src
-                val page = pageLists[pageIndex]
-                val dataList = dataLists[pageIndex]
-                val noMoreToast = remember {
-                    mutableStateOf(false)
-                }
-                val update = remember {
-                    mutableStateOf(false)
-                }
-                if (update.value)  {
-                    LaunchedEffect(key1 = "") {
-                        val newData = vm.loadTorrentList(
-                            src = src, key = key, page = page.intValue
-                        )
-                        if (newData.isEmpty()) {
-                            noMoreToast.value = true
-                            return@LaunchedEffect
-                        }
-                        noMoreToast.value = false
-                        dataList.addAll(
-                            newData
-                        )
-                        page.intValue++
-                    }
-                    update.value = false
-                }
 
-                TorrentListView(
-                    noMore = noMoreToast.value, dataListState = dataList
-                ) {
-                    update.value = true
+        TorrentPagerArea(tabs = tabs, vm = vm, pageState = pageState, query = query)
+
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun TorrentPagerArea(
+    tabs: List<TorrentSource>,
+    vm: TorrentSearchViewModel,
+    pageState: PagerState,
+    query: MutableState<String>
+) {
+    val dataLists = tabs.indices.toList().map {
+        remember("$it-data") {
+            mutableStateListOf<TorrentInfo>()
+        }
+    }
+    val pageLists = tabs.indices.toList().map {
+        remember("$it-page") {
+            mutableIntStateOf(1)
+        }
+    }
+    val keywordLists = tabs.indices.toList().map {
+        remember("$it-keyword") {
+            mutableStateOf("")
+        }
+    }
+    val keyword = vm.keywordState.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = "pager-torrent") {
+        snapshotFlow { pageState.currentPage }.collect { page ->
+            Log.i(TAG, "TorrentSearchContentArea, page:$page selected, query = $query")
+            if (keywordLists[page].value != query.value || keyword.value.key.isEmpty()) {
+                vm.updateKeyword(query.value)
+            }
+
+        }
+    }
+    HorizontalPager(state = pageState) { pageIndex ->
+
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            val fullRefresh = keyword.value.key != keywordLists[pageIndex].value
+            keywordLists[pageIndex].value = keyword.value.key
+            if (fullRefresh) {
+                dataLists[pageIndex].clear()
+                pageLists[pageIndex].intValue = 1
+            }
+            val key = keyword.value.key
+            val src = tabs[pageIndex].src
+            val page = pageLists[pageIndex]
+            val dataList = dataLists[pageIndex]
+            val noMoreToast = remember {
+                mutableStateOf(false)
+            }
+            val update = remember {
+                mutableStateOf(false)
+            }
+            if (update.value) {
+                LaunchedEffect("$src") {
+                    val newData = vm.loadTorrentList(
+                        src = src, key = key, page = page.intValue
+                    )
+                    if (newData.isEmpty()) {
+                        noMoreToast.value = true
+                        return@LaunchedEffect
+                    }
+                    noMoreToast.value = false
+                    dataList.addAll(
+                        newData
+                    )
+                    page.intValue++
                 }
-                lastKeyword.value = keyword.value
+                update.value = false
+            }
+
+            TorrentListView(
+                noMore = noMoreToast.value, dataListState = dataList
+            ) {
+                update.value = true
             }
         }
     }
