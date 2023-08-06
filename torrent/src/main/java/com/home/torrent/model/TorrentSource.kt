@@ -12,6 +12,5 @@ data class TorrentSource(
     @SerializedName("sub_title") val subTitle: String? = null,
     @SerializedName("desc") val desc: String? = null,
     @SerializedName("official_url") var officialUrl: String? = null,
-    @SerializedName("level") val level: Int = 0,
-    var isSelected: Boolean = false
+    @SerializedName("level") val level: Int = 0
 ) : Parcelable
