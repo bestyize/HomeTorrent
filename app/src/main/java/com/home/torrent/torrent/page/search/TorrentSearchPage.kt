@@ -1,4 +1,4 @@
-package com.home.torrent.torrent.page
+package com.home.torrent.torrent.page.search
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -27,8 +27,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -66,7 +67,8 @@ import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestTorrentSources
-import com.home.torrent.torrent.vm.TorrentSearchViewModel
+import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
+import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import kotlinx.coroutines.launch
 
 
@@ -290,7 +292,7 @@ fun TorrentPagerArea(
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun TorrentListView(
-    dataListState: MutableList<TorrentInfo>, noMore: Boolean, onLoad: () -> Unit
+    dataListState: MutableList<TorrentInfo>, noMore: Boolean, pageSrc: Int = 0, onLoad: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -299,7 +301,7 @@ fun TorrentListView(
                 .wrapContentHeight()
         ) {
             items(count = dataListState.size) { pos ->
-                TorrentSearchItemView(pos, dataListState[pos])
+                TorrentSearchItemView(pos, dataListState[pos], pageSrc)
             }
             item {
                 Column(
@@ -307,7 +309,7 @@ fun TorrentListView(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    if (dataListState.isNotEmpty()) {
+                    if (dataListState.isNotEmpty() && pageSrc == 0) {
                         Text(
                             text = if (noMore) "已全部加载" else "正在加载中...",
                             fontSize = 16.sp,
@@ -332,8 +334,9 @@ fun TorrentListView(
 }
 
 @Composable
-fun TorrentSearchItemView(index: Int, data: TorrentInfo) {
+fun TorrentSearchItemView(index: Int, data: TorrentInfo, pageSrc: Int = 0) {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
+    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
     CopyAddressDialog()
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -405,14 +408,14 @@ fun TorrentSearchItemView(index: Int, data: TorrentInfo) {
 
                 }
             }
-            Icon(imageVector = Icons.Default.Send,
-                contentDescription = "下载",
-                tint = Color.LightGray,
+            Icon(imageVector = if (pageSrc == 0) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
+                contentDescription = "收藏",
+                tint = if (pageSrc == 0) Color.LightGray else Color.Red,
                 modifier = Modifier
                     .weight(1f)
                     .align(Alignment.CenterVertically)
                     .clickable {
-                        vm.copyTorrentUrl(data)
+                        if (pageSrc == 0) collectVm.collect(data) else collectVm.unCollect(data)
                     })
 
         }

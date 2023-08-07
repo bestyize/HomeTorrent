@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -71,6 +72,11 @@ dependencies {
     implementation(libs.composeMaterial)
     implementation(libs.composeFoundation)
     implementation(libs.gson)
+    implementation(libs.roomRuntime)
+    implementation(libs.roomKtx)
+    implementation(project(mapOf("path" to ":framework:baseapp")))
+    annotationProcessor(libs.roomCompiler)
+    ksp(libs.roomCompiler)
     implementation(project(mapOf("path" to ":torrent")))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -1,4 +1,4 @@
-package com.home.torrent.torrent.vm
+package com.home.torrent.torrent.page.search.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

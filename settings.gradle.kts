@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "HomeTorrent"
 include(":app")
 include(":torrent")
+include(":framework:baseapp")
