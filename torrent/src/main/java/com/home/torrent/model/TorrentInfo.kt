@@ -8,6 +8,7 @@ data class TorrentInfo(
     @SerializedName("torrent_url") val torrentUrl: String? = null,
     @SerializedName("title") val title: String? = null,
     @SerializedName("date") val date: String? = null,
+    @SerializedName("last_download_date") val lastDownloadDate: String? = null,
     @SerializedName("size") val size: String? = null,
     @SerializedName("src") val src: Int = 0,
     @SerializedName("download_count") val downloadCount: String? = null,

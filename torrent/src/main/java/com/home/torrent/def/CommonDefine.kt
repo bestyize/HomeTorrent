@@ -19,5 +19,6 @@ enum class TorrentSrc {
     X_1337,
     BT_SOW,
     TOR_LOCK,
-    TORRENT_KITTY
+    TORRENT_KITTY,
+    CILIMAO
 }

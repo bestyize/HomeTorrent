@@ -3,6 +3,7 @@ package com.home.torrent.datasource
 import com.home.torrent.datasource.impl.acgrip.AcgRipSearchService
 import com.home.torrent.datasource.impl.base.TorrentSearchService
 import com.home.torrent.datasource.impl.btsow.BtSowSearchService
+import com.home.torrent.datasource.impl.cilimao.CilimaoSearchService
 import com.home.torrent.datasource.impl.piratebay.PirateBaySearchService
 import com.home.torrent.datasource.impl.solidtorrent.SolidTorrentSearchService
 import com.home.torrent.datasource.impl.torlock.TorLockSearchService
@@ -44,6 +45,11 @@ internal fun getSupportTorrentSources(): List<TorrentSource> = listOf(
         officialUrl = "https://www.torlock.com"
     ),
     TorrentSource(
+        src = TorrentSrc.CILIMAO.ordinal,
+        title = "磁力猫",
+        officialUrl = "https://clmclm.com/"
+    ),
+    TorrentSource(
         src = TorrentSrc.ACG_RIP.ordinal, title = "AcgRip", officialUrl = "https://acg.rip"
     ),
     TorrentSource(src = TorrentSrc.PIRATE_BAY.ordinal, title = "海盗湾", officialUrl = ""),
@@ -59,6 +65,7 @@ private val servicesPool by lazy {
         TorrentSrc.YU_HUA_GE.ordinal to YuHuaGeSearchService(),
         TorrentSrc.ACG_RIP.ordinal to AcgRipSearchService(),
         TorrentSrc.SOLID_TORRENT.ordinal to SolidTorrentSearchService(),
-        TorrentSrc.TORRENT_KITTY.ordinal to TorrentKittySearchService()
+        TorrentSrc.TORRENT_KITTY.ordinal to TorrentKittySearchService(),
+        TorrentSrc.CILIMAO.ordinal to CilimaoSearchService()
     )
 }

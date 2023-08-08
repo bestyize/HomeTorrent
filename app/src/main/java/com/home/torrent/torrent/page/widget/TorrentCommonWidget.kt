@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -194,44 +195,20 @@ fun TorrentSearchItemView(
                         .wrapContentHeight(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    data.date?.let { date ->
-                        Text(
-                            text = "日期：",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            lineHeight = 11.sp
-                        )
-                        Text(
-                            text = date,
-                            fontSize = 11.sp,
-                            lineHeight = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left
-                        )
+                    data.date?.let {
+                        TorrentItemTag(title = "日期：", data = it)
                     }
-                    data.size?.let { size ->
+                    data.size?.let {
                         Spacer(modifier = Modifier
                             .width(10.dp)
                             .height(1.dp))
-                        Text(
-                            text = "文件大小：",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            lineHeight = 11.sp
-                        )
-                        Text(
-                            text = size,
-                            fontSize = 11.sp,
-                            lineHeight = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left
-                        )
+                        TorrentItemTag(title = "文件大小：", data = it)
+                    }
+                    data.downloadCount?.let {
+                        Spacer(modifier = Modifier
+                            .width(10.dp)
+                            .height(1.dp))
+                        TorrentItemTag(title = "下载次数：", data = it)
                     }
 
                 }
@@ -258,6 +235,30 @@ fun TorrentSearchItemView(
         )
     }
 
+}
+
+@Composable
+fun TorrentItemTag(title: String, data: String) {
+    Row(modifier = Modifier
+        .wrapContentHeight()
+        .wrapContentWidth()) {
+        Text(
+            text = title,
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.Black,
+            textAlign = TextAlign.Left,
+            lineHeight = 11.sp
+        )
+        Text(
+            text = data,
+            fontSize = 11.sp,
+            lineHeight = 11.sp,
+            fontWeight = FontWeight.Normal,
+            color = Color.DarkGray,
+            textAlign = TextAlign.Left
+        )
+    }
 }
 
 @Composable
