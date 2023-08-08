@@ -6,16 +6,16 @@ import android.content.Context
 
 class HomeApp : Application() {
     override fun onCreate() {
-        super.onCreate()
         _context = this
+        super.onCreate()
     }
 
     companion object {
 
         @SuppressLint("StaticFieldLeak")
-        private var _context: Context = Application()
+        private var _context: Context? = null
 
         val context: Context
-            get() = _context
+            get() = _context!!
     }
 }

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,8 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
-import com.home.torrent.torrent.page.search.TorrentListView
+import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentListView
 
 @Composable
 fun TorrentCollectPage() {
@@ -46,7 +50,8 @@ fun TorrentCollectPage() {
                 modifier = Modifier
                     .padding(vertical = 10.dp)
                     .wrapContentWidth()
-                    .wrapContentHeight().align(Alignment.Center),
+                    .wrapContentHeight()
+                    .align(Alignment.Center),
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
                 color = Color.Black,
@@ -55,7 +60,7 @@ fun TorrentCollectPage() {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
+                    .height(0.5.dp)
                     .background(Color.LightGray)
                     .align(
                         Alignment.BottomCenter
@@ -63,11 +68,23 @@ fun TorrentCollectPage() {
             )
         }
 
-        TorrentListView(
-            dataListState = collectedTorrentState.value.toMutableList(), noMore = true, pageSrc = 1
-        ) {
-
+        val copyTorrent = remember {
+            mutableStateOf<TorrentInfo?>(null)
         }
+
+        copyTorrent.value?.let {
+            CopyAddressDialog(it) {
+                copyTorrent.value = null
+            }
+        }
+
+        TorrentListView(dataListState = collectedTorrentState.value.toMutableList(),
+            onClicked = { info ->
+                copyTorrent.value = info
+            },
+            onCollectClicked = { info, collect ->
+                if (collect) vm.collect(info) else vm.unCollect(info)
+            })
     }
 
 

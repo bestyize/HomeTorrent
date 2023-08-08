@@ -1,15 +1,12 @@
 package com.home.torrent.torrent.page.search
 
-import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,21 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -51,10 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -69,6 +57,8 @@ import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
+import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentListView
 import kotlinx.coroutines.launch
 
 
@@ -79,9 +69,10 @@ fun TorrentSearchPage() {
     val query = remember {
         mutableStateOf(vm.keywordState.value.key)
     }
+    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
     Column(modifier = Modifier.fillMaxSize()) {
         TorrentSearchBar(query, vm)
-        TorrentSearchContentArea(query, vm)
+        TorrentSearchContentArea(query, vm, collectVm)
     }
 }
 
@@ -93,8 +84,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             .fillMaxWidth()
             .background(Color.White)
     ) {
-        TextField(
-            value = query.value,
+        TextField(value = query.value,
             onValueChange = {
                 query.value = it
             },
@@ -154,7 +144,9 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewModel) {
+fun TorrentSearchContentArea(
+    query: MutableState<String>, vm: TorrentSearchViewModel, collectVm: TorrentCollectViewModel
+) {
 
     val tabs = remember {
         requestTorrentSources()
@@ -166,8 +158,7 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(
-            selectedTabIndex = pageState.currentPage,
+        ScrollableTabRow(selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
             indicator = {
@@ -204,7 +195,9 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
                 .background(Color.LightGray)
         )
 
-        TorrentPagerArea(tabs = tabs, vm = vm, pageState = pageState, query = query)
+        TorrentPagerArea(
+            tabs = tabs, vm = vm, pageState = pageState, query = query, collectVm = collectVm
+        )
 
     }
 }
@@ -214,6 +207,7 @@ fun TorrentSearchContentArea(query: MutableState<String>, vm: TorrentSearchViewM
 fun TorrentPagerArea(
     tabs: List<TorrentSource>,
     vm: TorrentSearchViewModel,
+    collectVm: TorrentCollectViewModel,
     pageState: PagerState,
     query: MutableState<String>
 ) {
@@ -242,6 +236,15 @@ fun TorrentPagerArea(
 
         }
     }
+
+    val copyTorrent = vm.copyTorrentState.collectAsStateWithLifecycle()
+
+    copyTorrent.value?.let {
+        CopyAddressDialog(it) {
+            vm.copyTorrentUrl(null)
+        }
+    }
+
     HorizontalPager(state = pageState) { pageIndex ->
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -279,242 +282,19 @@ fun TorrentPagerArea(
                 update.value = false
             }
 
-            TorrentListView(
-                noMore = noMoreToast.value, dataListState = dataList
-            ) {
-                update.value = true
-            }
+            TorrentListView(dataListState = dataList,
+                bottomText = if (noMoreToast.value) "已全部加载" else "正在为您加载中...",
+                onLoad = {
+                    update.value = true
+                },
+                onClicked = { info ->
+                    vm.copyTorrentUrl(info)
+                },
+                onCollectClicked = { info, collect ->
+                    if (collect) collectVm.collect(info) else collectVm.unCollect(info)
+                })
         }
     }
-}
-
-
-@SuppressLint("CoroutineCreationDuringComposition")
-@Composable
-fun TorrentListView(
-    dataListState: MutableList<TorrentInfo>, noMore: Boolean, pageSrc: Int = 0, onLoad: () -> Unit
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            items(count = dataListState.size) { pos ->
-                TorrentSearchItemView(pos, dataListState[pos], pageSrc)
-            }
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    if (dataListState.isNotEmpty() && pageSrc == 0) {
-                        Text(
-                            text = if (noMore) "已全部加载" else "正在加载中...",
-                            fontSize = 16.sp,
-                            color = Color.Red,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(vertical = 40.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(80.dp)
-                    )
-                }
-                onLoad.invoke()
-            }
-        }
-    }
-}
-
-@Composable
-fun TorrentSearchItemView(index: Int, data: TorrentInfo, pageSrc: Int = 0) {
-    val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
-    CopyAddressDialog()
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
-        .background(Color.White)
-        .clickable {
-            vm.copyTorrentUrl(data)
-        }) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .align(Alignment.Center)
-        ) {
-            Text(
-                text = "$index",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(10.dp)
-                    .weight(1f),
-                textAlign = TextAlign.Center,
-            )
-
-            Column(
-                modifier = Modifier
-                    .weight(5f)
-                    .wrapContentHeight()
-                    .padding(vertical = 10.dp)
-            ) {
-                Text(
-                    text = data.title ?: "",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Black,
-                    textAlign = TextAlign.Left,
-                )
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(10.dp)
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    data.date?.let { date ->
-                        Text(
-                            text = "日期：",
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left,
-                            lineHeight = 11.sp
-                        )
-                        Text(
-                            text = date,
-                            fontSize = 11.sp,
-                            lineHeight = 11.sp,
-                            fontWeight = FontWeight.Normal,
-                            color = Color.DarkGray,
-                            textAlign = TextAlign.Left
-                        )
-                    }
-
-                }
-            }
-            Icon(imageVector = if (pageSrc == 0) Icons.Default.FavoriteBorder else Icons.Default.Favorite,
-                contentDescription = "收藏",
-                tint = if (pageSrc == 0) Color.LightGray else Color.Red,
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        if (pageSrc == 0) collectVm.collect(data) else collectVm.unCollect(data)
-                    })
-
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .padding(start = 20.dp, end = 20.dp)
-                .background(Color.LightGray)
-                .align(Alignment.BottomCenter)
-        )
-    }
-
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CopyAddressDialog() {
-    val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    val copyState = vm.copyTorrentState.collectAsStateWithLifecycle()
-    val copyBtnState = remember {
-        mutableStateOf(false)
-    }
-    if (copyBtnState.value) {
-        copyBtnState.value = false
-        LocalClipboardManager.current.setText(
-            AnnotatedString(
-                copyState.value?.magnetUrl ?: ""
-            )
-        )
-        vm.copyTorrentUrl(null)
-        Toast.makeText(LocalContext.current, "复制成功", Toast.LENGTH_SHORT).show()
-    }
-    if (copyState.value != null) {
-        AlertDialog(onDismissRequest = { vm.copyTorrentUrl(null) }) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .background(Color.White, RoundedCornerShape(10.dp)),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Text(
-                        text = "温馨提示",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        modifier = Modifier.padding(vertical = 15.dp)
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(1.dp)
-                            .padding(vertical = 10.dp)
-                            .background(Color.LightGray)
-                    )
-                }
-                item {
-                    SelectionContainer {
-                        Text(
-                            text = copyState.value?.magnetUrl ?: "",
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .wrapContentHeight(),
-                            fontSize = 14.sp,
-                            color = Color.Blue
-                        )
-                    }
-                }
-
-                item {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(1.dp)
-                            .padding(vertical = 10.dp)
-                            .background(Color.Gray)
-                    )
-                    Text(text = "复制",
-                        modifier = Modifier
-                            .padding(vertical = 15.dp)
-                            .fillMaxWidth(0.8f)
-                            .wrapContentHeight()
-                            .clickable(indication = null,
-                                interactionSource = remember { MutableInteractionSource() }) {
-                                copyBtnState.value = true
-                            },
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                        color = Color.Black
-                    )
-                }
-
-            }
-        }
-    }
-
 }
 
 
