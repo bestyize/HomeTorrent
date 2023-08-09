@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -126,6 +128,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, onCopy: () -> Unit) {
 }
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TorrentSearchItemView(
     index: Int,
@@ -189,26 +192,29 @@ fun TorrentSearchItemView(
                         .fillMaxWidth()
                         .height(10.dp)
                 )
-                Row(
+                FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalAlignment = Alignment.CenterVertically
+                        .wrapContentHeight()
                 ) {
                     data.date?.let {
                         TorrentItemTag(title = "日期：", data = it)
                     }
                     data.size?.let {
-                        Spacer(modifier = Modifier
-                            .width(10.dp)
-                            .height(1.dp))
-                        TorrentItemTag(title = "文件大小：", data = it)
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp)
+                        )
+                        TorrentItemTag(title = "大小：", data = it)
                     }
                     data.downloadCount?.let {
-                        Spacer(modifier = Modifier
-                            .width(10.dp)
-                            .height(1.dp))
-                        TorrentItemTag(title = "下载次数：", data = it)
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp)
+                        )
+                        TorrentItemTag(title = "下载：", data = it)
                     }
 
                 }
@@ -239,9 +245,11 @@ fun TorrentSearchItemView(
 
 @Composable
 fun TorrentItemTag(title: String, data: String) {
-    Row(modifier = Modifier
-        .wrapContentHeight()
-        .wrapContentWidth()) {
+    Row(
+        modifier = Modifier
+            .wrapContentHeight()
+            .wrapContentWidth()
+    ) {
         Text(
             text = title,
             fontSize = 11.sp,

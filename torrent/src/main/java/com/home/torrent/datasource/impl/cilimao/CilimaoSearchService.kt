@@ -23,7 +23,7 @@ class CilimaoSearchService : TorrentSearchService {
         runCatching {
             val respContent = get(requestUrl)
             val items = Jsoup.parse(respContent).body().getElementsByClass("ssbox")
-            items.forEachIndexed { index, element ->
+            items.forEachIndexed { _, element ->
                 runCatching {
                     val title = element.getElementsByClass("title")[0].getElementsByTag("h3")[0].text()
                     val bar = element.getElementsByClass("sbar")[0]

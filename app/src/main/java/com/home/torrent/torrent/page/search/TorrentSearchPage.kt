@@ -70,6 +70,7 @@ fun TorrentSearchPage() {
         mutableStateOf(vm.keywordState.value.key)
     }
     val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
+    collectVm.loadAll()
     Column(modifier = Modifier.fillMaxSize()) {
         TorrentSearchBar(query, vm)
         TorrentSearchContentArea(query, vm, collectVm)

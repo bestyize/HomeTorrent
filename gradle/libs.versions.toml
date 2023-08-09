@@ -24,6 +24,8 @@ activityKtxVersion = "1.7.2"
 fragemntKtxVersion = "1.6.1"
 matrialVersion = "1.9.0"
 
+hiltVersion = "2.44"
+
 gsonVersion = "2.10.1"
 jsoupVersion = "1.16.1"
 
@@ -53,6 +55,8 @@ roomRuntime = {module = "androidx.room:room-runtime", version.ref = "roomVersion
 roomCompiler = {module = "androidx.room:room-compiler", version.ref = "roomVersion"}
 roomKtx = {module = "androidx.room:room-ktx", version.ref = "roomVersion"}
 matrial = {module = "com.google.android.material:material", version.ref = "matrialVersion"}
+hilt = {module = "com.google.dagger:hilt-android", version.ref = "hiltVersion"}
+hiltCompiler = {module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltVersion"}
 
 fragmentKtx = {module = "androidx.fragment:fragment-ktx", version.ref = "fragemntKtxVersion"}
 

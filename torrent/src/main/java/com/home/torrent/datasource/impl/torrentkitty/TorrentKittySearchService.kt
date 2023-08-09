@@ -27,7 +27,7 @@ class TorrentKittySearchService : TorrentSearchService {
             val items =
                 Jsoup.parse(resp).body().getElementById("archiveResult")?.getElementsByTag("tr")
                     ?.takeIf { it.size > 1 } ?: return emptyList()
-            items.forEachIndexed { index, element ->
+            items.forEachIndexed { _, element ->
                 runCatching {
                     val title = element.getElementsByClass("name")[0].text()
                     val size = element.getElementsByClass("size")[0].text()
