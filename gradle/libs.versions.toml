@@ -33,6 +33,7 @@ kotlinxCoroutinesCoreVersion = "1.7.3"
 
 roomVersion = "2.5.2"
 agp = "8.1.0"
+kspVersion = "1.8.10-1.0.9"
 org-jetbrains-kotlin-android = "1.8.10"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
@@ -79,4 +80,8 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 [plugins]
 com-android-library = { id = "com.android.library", version.ref = "agp" }
+com-android-application = {id = "com.android.application", version.ref = "agp"}
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
+com-google-devtools-ksp = {id = "com.google.devtools.ksp", version.ref = "kspVersion"}
+
+kotlin-parcelize = {id = "kotlin-parcelize"}

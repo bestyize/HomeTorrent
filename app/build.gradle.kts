@@ -1,8 +1,8 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.com.google.devtools.ksp)
     id("kotlin-parcelize")
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -33,8 +33,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
     }
 
     kotlinOptions {
@@ -78,10 +78,10 @@ dependencies {
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)
     implementation(project(mapOf("path" to ":torrent")))
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.06.01"))
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.composeBom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation(libs.composeUiTooling)
     debugImplementation("androidx.compose.ui:ui-test-manifest")

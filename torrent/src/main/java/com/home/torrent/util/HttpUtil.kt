@@ -89,7 +89,6 @@ internal fun getHeader(link: String?): Map<String, List<String>> {
     if (link == null || !link.startsWith("http")) {
         return headerMap
     }
-    val sb = StringBuilder()
     try {
         val url = URL(link)
         val conn = url.openConnection() as HttpURLConnection
