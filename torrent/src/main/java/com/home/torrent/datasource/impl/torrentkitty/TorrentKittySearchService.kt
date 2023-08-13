@@ -5,6 +5,8 @@ import com.home.torrent.def.KEY_MAGNET_PREFIX
 import com.home.torrent.def.KEY_REPLACE_PAGE
 import com.home.torrent.def.KEY_REPLACE_WORD
 import com.home.torrent.def.TorrentSrc
+import com.home.torrent.def.magnetUrlToHash
+import com.home.torrent.def.magnetUrlToTorrentUrl
 import com.home.torrent.def.urlEncode
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.util.get
@@ -39,9 +41,11 @@ class TorrentKittySearchService : TorrentSearchService {
 
                     list.add(
                         TorrentInfo(
+                            hash = magnetUrl.magnetUrlToHash,
                             title = title,
                             detailUrl = OFFICIAL_URL + link,
                             magnetUrl = magnetUrl,
+                            torrentUrl = magnetUrl.magnetUrlToTorrentUrl,
                             size = size,
                             date = date,
                             src = TorrentSrc.TORRENT_KITTY.ordinal

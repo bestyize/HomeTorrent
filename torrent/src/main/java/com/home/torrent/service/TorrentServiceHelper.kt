@@ -26,3 +26,10 @@ fun requestMagnetUrl(src: Int, detailUrl: String) = newTorrentService(src).findM
 suspend fun suspendRequestMagnetUrl(src: Int, detailUrl: String) = withContext(Dispatchers.IO) {
     newTorrentService(src).findMagnetUrl(detailUrl)
 }
+
+fun requestTorrentUrl(src: Int, detailUrl: String) =
+    newTorrentService(src).findTorrentUrl(detailUrl)
+
+suspend fun suspendRequestTorrentUrl(src: Int, detailUrl: String) = withContext(Dispatchers.IO) {
+    newTorrentService(src).findTorrentUrl(detailUrl)
+}

@@ -7,7 +7,9 @@ const val KEY_DETAIL_REPLACE_DETAIL = "key_replace_detail"
 
 const val KEY_MAGNET_PREFIX = "magnet:?xt=urn:btih:"
 
-const val MIRROR_SITE = "http://178.62.14.173/t_api/dm/engine/crp/basic_mirror.php?"
+const val KEY_REPLACE_HASH = "key_replace_hash"
+
+internal val COMMON_TORREND_FILE_URL = "http://itorrents.org/torrent/$KEY_REPLACE_HASH.torrent "
 
 
 enum class TorrentSrc {

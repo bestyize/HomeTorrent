@@ -3,6 +3,7 @@ package com.home.torrent.model
 import com.google.gson.annotations.SerializedName
 
 data class TorrentInfo(
+    @SerializedName("hash") val hash: String? = null,
     @SerializedName("detail_url") val detailUrl: String? = null,
     @SerializedName("magnet_url") val magnetUrl: String? = null,
     @SerializedName("torrent_url") val torrentUrl: String? = null,
