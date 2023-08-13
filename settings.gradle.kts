@@ -16,3 +16,4 @@ rootProject.name = "HomeTorrent"
 include(":app")
 include(":torrent")
 include(":framework:baseapp")
+include(":framework:downloader")

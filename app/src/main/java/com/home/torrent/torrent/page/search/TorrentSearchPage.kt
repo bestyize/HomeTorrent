@@ -269,6 +269,10 @@ fun TorrentPagerArea(
                     optionMagnet.value = false
                     vm.copyTorrentUrl(optionShowState[1] as? TorrentInfo)
                 }
+
+                2 -> {
+                    vm.downloadTorrent(optionShowState[1] as? TorrentInfo)
+                }
             }
             optionShowState[1] = null
             optionShowState[0] = false

@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.roomRuntime)
     implementation(libs.roomKtx)
     implementation(project(mapOf("path" to ":framework:baseapp")))
+    implementation(project(mapOf("path" to ":framework:downloader")))
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)
     implementation(project(mapOf("path" to ":torrent")))
