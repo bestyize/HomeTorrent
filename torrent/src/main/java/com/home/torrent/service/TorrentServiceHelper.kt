@@ -2,6 +2,7 @@ package com.home.torrent.service
 
 import com.home.torrent.datasource.getSupportTorrentSources
 import com.home.torrent.datasource.newTorrentService
+import com.home.torrent.def.magnetUrlToTorrentUrl
 import com.home.torrent.model.TorrentSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,4 +33,10 @@ fun requestTorrentUrl(src: Int, detailUrl: String) =
 
 suspend fun suspendRequestTorrentUrl(src: Int, detailUrl: String) = withContext(Dispatchers.IO) {
     newTorrentService(src).findTorrentUrl(detailUrl)
+}
+
+fun transferMagnetUrlToTorrentUrl(magnetUrl: String): String {
+    if (magnetUrl.isEmpty()) return ""
+    if (magnetUrl.endsWith(".torrent")) return magnetUrl
+    return magnetUrl.magnetUrlToTorrentUrl
 }

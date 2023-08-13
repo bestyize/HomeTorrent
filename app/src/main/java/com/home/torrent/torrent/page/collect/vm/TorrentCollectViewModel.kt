@@ -23,7 +23,7 @@ class TorrentCollectViewModel : ViewModel() {
     fun collect(data: TorrentInfo) {
         viewModelScope.launch {
             val dat = if (data.magnetUrl.isNullOrBlank()) {
-                data.copy(detailUrl = suspendRequestMagnetUrl(data.src, data.detailUrl!!))
+                data.copy(magnetUrl = suspendRequestMagnetUrl(data.src, data.detailUrl!!))
             } else data
             if (dat.magnetUrl.isNullOrBlank()) {
                 toast("收藏失败")

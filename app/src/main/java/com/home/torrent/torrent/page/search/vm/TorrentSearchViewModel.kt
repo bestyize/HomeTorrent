@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.service.suspendRequestMagnetUrl
+import com.home.torrent.service.suspendRequestTorrentUrl
 import com.home.torrent.service.suspendSearchTorrentList
+import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.model.KeywordInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -25,9 +27,16 @@ class TorrentSearchViewModel : ViewModel() {
         }
         viewModelScope.launch {
             copyTorrentState.value = data.copy(
-                magnetUrl = suspendRequestMagnetUrl(
-                    data.src, data.detailUrl!!
-                )
+                magnetUrl = when {
+                    !data.magnetUrl.isNullOrBlank() -> data.magnetUrl
+                    else -> suspendRequestMagnetUrl(
+                        data.src, data.detailUrl!!
+                    )
+                }, torrentUrl = when {
+                    !data.torrentUrl.isNullOrBlank() -> data.torrentUrl
+                    !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
+                    else -> suspendRequestTorrentUrl(data.src, data.detailUrl!!)
+                }
             )
         }
 
