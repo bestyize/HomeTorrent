@@ -29,7 +29,9 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TorrentClickOptionDialog(options: List<String>, onClicked: (Int) -> Unit) {
+fun TorrentClickOptionDialog(onClicked: (Int) -> Unit) {
+    val options = listOf("获取磁力链接", "获取种子地址", "取消")
+
     ModalBottomSheet(onDismissRequest = {
         onClicked.invoke(options.indexOf("取消"))
     }, content = {

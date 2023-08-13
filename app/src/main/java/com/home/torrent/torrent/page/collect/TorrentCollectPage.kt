@@ -85,16 +85,12 @@ fun TorrentCollectPage() {
             }
         }
 
-        val options = remember {
-            listOf("获取磁力链接", "获取种子地址", "取消")
-        }
-
         val optionShowState = remember {
             mutableStateListOf<Any?>(false, null)
         }
 
         if (optionShowState[0] as? Boolean == true) {
-            TorrentClickOptionDialog(options = options) {
+            TorrentClickOptionDialog {
                 when (it) {
                     0 -> {
                         optionMagnet.value = true
