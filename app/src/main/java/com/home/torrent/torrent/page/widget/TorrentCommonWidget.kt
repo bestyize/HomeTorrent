@@ -47,15 +47,16 @@ import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CopyAddressDialog(copyTorrent: TorrentInfo, onCopy: () -> Unit) {
+fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCopy: () -> Unit) {
     val copyBtnState = remember {
         mutableStateOf(false)
     }
+    val address = (if (magnetType) copyTorrent.magnetUrl else copyTorrent.torrentUrl) ?: ""
     if (copyBtnState.value) {
         copyBtnState.value = false
         LocalClipboardManager.current.setText(
             AnnotatedString(
-                copyTorrent.magnetUrl ?: ""
+                address
             )
         )
         toast("复制成功")
@@ -88,7 +89,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, onCopy: () -> Unit) {
             item {
                 SelectionContainer {
                     Text(
-                        text = copyTorrent.magnetUrl ?: "",
+                        text = address,
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .wrapContentHeight(),

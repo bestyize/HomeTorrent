@@ -58,6 +58,7 @@ import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
 import kotlinx.coroutines.launch
 
@@ -152,7 +153,8 @@ fun TorrentSearchContentArea(
     val tabs = remember {
         requestTorrentSources()
     }
-    val pageState = rememberPagerState(initialPage = 0,
+    val pageState = rememberPagerState(
+        initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
 
@@ -240,11 +242,43 @@ fun TorrentPagerArea(
 
     val copyTorrent = vm.copyTorrentState.collectAsStateWithLifecycle()
 
+    val optionMagnet = remember {
+        mutableStateOf(true)
+    }
+
     copyTorrent.value?.let {
-        CopyAddressDialog(it) {
+        CopyAddressDialog(it, optionMagnet.value) {
             vm.copyTorrentUrl(null)
+            optionMagnet.value = true
         }
     }
+
+    val options = remember {
+        listOf("获取磁力链接", "获取种子地址", "取消")
+    }
+
+    val optionShowState = remember {
+        mutableStateListOf<Any?>(false, null)
+    }
+
+    if (optionShowState[0] as? Boolean == true) {
+        TorrentClickOptionDialog(options = options) {
+            when (it) {
+                0 -> {
+                    optionMagnet.value = true
+                    vm.copyTorrentUrl(optionShowState[1] as? TorrentInfo)
+                }
+
+                1 -> {
+                    optionMagnet.value = false
+                    vm.copyTorrentUrl(optionShowState[1] as? TorrentInfo)
+                }
+            }
+            optionShowState[1] = null
+            optionShowState[0] = false
+        }
+    }
+
 
     HorizontalPager(state = pageState) { pageIndex ->
 
@@ -289,7 +323,9 @@ fun TorrentPagerArea(
                     update.value = true
                 },
                 onClicked = { info ->
-                    vm.copyTorrentUrl(info)
+//                    vm.copyTorrentUrl(info)
+                    optionShowState[1] = info
+                    optionShowState[0] = true
                 },
                 onCollectClicked = { info, collect ->
                     if (collect) collectVm.collect(info) else collectVm.unCollect(info)

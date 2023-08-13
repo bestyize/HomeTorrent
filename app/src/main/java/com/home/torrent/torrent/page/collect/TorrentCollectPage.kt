@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
 
 @Composable
@@ -72,15 +74,47 @@ fun TorrentCollectPage() {
             mutableStateOf<TorrentInfo?>(null)
         }
 
+        val optionMagnet = remember {
+            mutableStateOf(true)
+        }
+
         copyTorrent.value?.let {
-            CopyAddressDialog(it) {
+            CopyAddressDialog(it, optionMagnet.value) {
                 copyTorrent.value = null
+                optionMagnet.value = true
+            }
+        }
+
+        val options = remember {
+            listOf("获取磁力链接", "获取种子地址", "取消")
+        }
+
+        val optionShowState = remember {
+            mutableStateListOf<Any?>(false, null)
+        }
+
+        if (optionShowState[0] as? Boolean == true) {
+            TorrentClickOptionDialog(options = options) {
+                when (it) {
+                    0 -> {
+                        optionMagnet.value = true
+                        copyTorrent.value = optionShowState[1] as? TorrentInfo
+                    }
+
+                    1 -> {
+                        optionMagnet.value = false
+                        copyTorrent.value = optionShowState[1] as? TorrentInfo
+                    }
+                }
+                optionShowState[1] = null
+                optionShowState[0] = false
             }
         }
 
         TorrentListView(dataListState = collectedTorrentState.value.toMutableList(),
             onClicked = { info ->
-                copyTorrent.value = info
+                optionShowState[1] = info
+                optionShowState[0] = true
             },
             onCollectClicked = { info, collect ->
                 if (collect) vm.collect(info) else vm.unCollect(info)
