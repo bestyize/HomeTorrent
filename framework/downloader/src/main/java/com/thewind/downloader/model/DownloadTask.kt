@@ -1,6 +1,6 @@
 package com.thewind.downloader.model
 
-import com.thewind.downloader.config.baseDir
+import com.thewind.downloader.config.systemDownloadDir
 import java.io.File
 
 /**
@@ -19,4 +19,4 @@ class DownloadTask(
 
 
 val DownloadTask.fileFullPath: String
-    get() = baseDir + File.separator + key
+    get() = systemDownloadDir + File.separator + key + ".torrent"

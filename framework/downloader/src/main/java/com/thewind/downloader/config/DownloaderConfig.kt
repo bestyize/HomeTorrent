@@ -16,4 +16,4 @@ internal val baseDir by lazy { HomeApp.context.filesDir.absolutePath + File.sepa
 
 internal val cacheDir by lazy { HomeApp.context.filesDir.absolutePath + File.separator + "file_cache"}
 
-internal val systemDownloadDir by lazy { Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).absolutePath  + HomeApp.context.packageName}
+internal val systemDownloadDir by lazy { Environment.getExternalStoragePublicDirectory(DIRECTORY_DOWNLOADS).absolutePath + File.separator + HomeApp.context.packageName}

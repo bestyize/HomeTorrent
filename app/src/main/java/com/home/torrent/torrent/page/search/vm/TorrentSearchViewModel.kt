@@ -10,8 +10,8 @@ import com.home.torrent.service.suspendSearchTorrentList
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.model.KeywordInfo
 import com.thewind.downloader.model.DownloadTask
+import com.thewind.downloader.task.DownloadManager.suspendSyncDownload
 import com.thewind.downloader.task.DownloadState
-import com.thewind.downloader.task.suspendSyncDownload
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -58,7 +58,7 @@ class TorrentSearchViewModel : ViewModel() {
             return
         }
         viewModelScope.launch {
-
+            toast("开始下载")
             val state = suspendSyncDownload(
                 DownloadTask(
                     url = when {
@@ -66,7 +66,7 @@ class TorrentSearchViewModel : ViewModel() {
                         !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
                         else -> suspendRequestTorrentUrl(data.src, data.detailUrl!!)
                     },
-                    key = transferMagnetUrlToTorrentUrl(data.magnetUrl?:"")
+                    key = data.hash.takeIf { !it.isNullOrBlank() } ?: transferMagnetUrlToTorrentUrl(data.magnetUrl?:"")
                 )
             )
             when(state) {

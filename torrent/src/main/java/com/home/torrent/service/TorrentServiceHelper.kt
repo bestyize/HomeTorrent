@@ -2,6 +2,7 @@ package com.home.torrent.service
 
 import com.home.torrent.datasource.getSupportTorrentSources
 import com.home.torrent.datasource.newTorrentService
+import com.home.torrent.def.magnetUrlToHash
 import com.home.torrent.def.magnetUrlToTorrentUrl
 import com.home.torrent.model.TorrentSource
 import kotlinx.coroutines.Dispatchers
@@ -40,3 +41,5 @@ fun transferMagnetUrlToTorrentUrl(magnetUrl: String): String {
     if (magnetUrl.endsWith(".torrent")) return magnetUrl
     return magnetUrl.magnetUrlToTorrentUrl
 }
+
+fun transferMagnetUrlToHash(magnetUrl: String) = magnetUrl.magnetUrlToHash
