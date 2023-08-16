@@ -217,6 +217,30 @@ fun TorrentSearchItemView(
                         )
                         TorrentItemTag(title = "下载：", data = it)
                     }
+                    data.lastDownloadDate?.let {
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp)
+                        )
+                        TorrentItemTag(title = "最近：", data = it)
+                    }
+                    data.leacherCount?.let {
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp)
+                        )
+                        TorrentItemTag(title = "下行：", data = it)
+                    }
+                    data.senderCount?.let {
+                        Spacer(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(1.dp)
+                        )
+                        TorrentItemTag(title = "上行：", data = it)
+                    }
 
                 }
             }
