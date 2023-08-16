@@ -79,6 +79,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:downloader")))
+    implementation(libs.matrial)
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)
     implementation(project(mapOf("path" to ":torrent")))
