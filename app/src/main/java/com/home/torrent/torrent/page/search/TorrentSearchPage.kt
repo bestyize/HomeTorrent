@@ -59,7 +59,6 @@ import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
-import com.home.torrentcenter.services.suspendRequestTorrentSource
 import kotlinx.coroutines.launch
 
 
@@ -67,11 +66,16 @@ import kotlinx.coroutines.launch
 @Preview
 fun TorrentSearchPage() {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
+    vm.loadSources()
+    val sourcesState = vm.torrentSourceState.collectAsStateWithLifecycle()
     val query = remember {
         mutableStateOf(vm.keywordState.value.key)
     }
     val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
     collectVm.loadAll()
+
+    if (sourcesState.value.isEmpty()) return
+
     Column(modifier = Modifier.fillMaxSize()) {
         TorrentSearchBar(query, vm)
         TorrentSearchContentArea(query, vm, collectVm)
@@ -151,16 +155,12 @@ fun TorrentSearchContentArea(
 ) {
 
     val tabs = remember {
-        mutableStateOf(listOf<TorrentSource>())
+        vm.torrentSourceState.value
     }
-    LaunchedEffect(key1 = "torrent_source") {
-        tabs.value = suspendRequestTorrentSource()
-    }
-    if (tabs.value.isEmpty()) return
     val pageState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f,
-        pageCount = { tabs.value.size })
+        pageCount = { tabs.size })
 
     val scope = rememberCoroutineScope()
 
@@ -178,7 +178,7 @@ fun TorrentSearchContentArea(
             },
             modifier = Modifier.wrapContentWidth()
         ) {
-            tabs.value.forEachIndexed { index, source ->
+            tabs.forEachIndexed { index, source ->
                 val isSelected = index == pageState.currentPage
                 Text(text = source.title,
                     color = if (isSelected) Color.Red else Color.Black,
@@ -203,7 +203,7 @@ fun TorrentSearchContentArea(
         )
 
         TorrentPagerArea(
-            tabs = tabs.value, vm = vm, pageState = pageState, query = query, collectVm = collectVm
+            tabs = tabs, vm = vm, pageState = pageState, query = query, collectVm = collectVm
         )
 
     }

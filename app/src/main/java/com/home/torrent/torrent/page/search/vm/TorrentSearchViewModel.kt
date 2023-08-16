@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.model.TorrentInfo
+import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.model.KeywordInfo
+import com.home.torrentcenter.services.suspendRequestTorrentSource
 import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrent
 import com.home.torrentcenter.services.suspendSearchTorrentUrl
@@ -20,6 +22,14 @@ class TorrentSearchViewModel : ViewModel() {
     val copyTorrentState: MutableStateFlow<TorrentInfo?> = MutableStateFlow(null)
 
     val keywordState: MutableStateFlow<KeywordInfo> = MutableStateFlow(KeywordInfo())
+
+    val torrentSourceState: MutableStateFlow<List<TorrentSource>> = MutableStateFlow(emptyList())
+
+    fun loadSources() {
+        viewModelScope.launch {
+            torrentSourceState.value = suspendRequestTorrentSource()
+        }
+    }
 
     suspend fun loadTorrentList(src: Int, key: String?, page: Int = 1): List<TorrentInfo> =
         suspendSearchTorrent(src, key ?: "", page)
