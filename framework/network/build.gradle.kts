@@ -1,11 +1,11 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.home.torrent"
+    namespace = "com.thewind.network"
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -35,12 +35,10 @@ android {
 
 dependencies {
 
-    implementation(libs.gson)
-    implementation(libs.jsoup)
-    implementation(libs.kotlinxCoroutinesCore)
-    implementation(libs.mmkv)
-    implementation(libs.torrent)
-    implementation(project(mapOf("path" to ":framework:network")))
+    implementation(libs.coreKtx)
+    implementation(libs.appcompat)
+    implementation(libs.matrial)
+    implementation(project(mapOf("path" to ":framework:baseapp")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

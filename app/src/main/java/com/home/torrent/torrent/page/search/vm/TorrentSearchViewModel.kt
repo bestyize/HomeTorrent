@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.model.TorrentInfo
-import com.home.torrent.service.suspendRequestMagnetUrl
-import com.home.torrent.service.suspendRequestTorrentUrl
-import com.home.torrent.service.suspendSearchTorrentList
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.model.KeywordInfo
+import com.home.torrentcenter.services.suspendSearchMagnetUrl
+import com.home.torrentcenter.services.suspendSearchTorrent
+import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import com.thewind.downloader.model.DownloadTask
 import com.thewind.downloader.task.DownloadManager.suspendSyncDownload
 import com.thewind.downloader.task.DownloadState
@@ -22,7 +22,7 @@ class TorrentSearchViewModel : ViewModel() {
     val keywordState: MutableStateFlow<KeywordInfo> = MutableStateFlow(KeywordInfo())
 
     suspend fun loadTorrentList(src: Int, key: String?, page: Int = 1): List<TorrentInfo> =
-        suspendSearchTorrentList(src, key ?: "", page)
+        suspendSearchTorrent(src, key ?: "", page)
 
     fun copyTorrentUrl(data: TorrentInfo?) {
         if (data == null || data.detailUrl.isNullOrBlank()) {
@@ -33,13 +33,13 @@ class TorrentSearchViewModel : ViewModel() {
             copyTorrentState.value = data.copy(
                 magnetUrl = when {
                     !data.magnetUrl.isNullOrBlank() -> data.magnetUrl
-                    else -> suspendRequestMagnetUrl(
+                    else -> suspendSearchMagnetUrl(
                         data.src, data.detailUrl!!
                     )
                 }, torrentUrl = when {
                     !data.torrentUrl.isNullOrBlank() -> data.torrentUrl
                     !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
-                    else -> suspendRequestTorrentUrl(data.src, data.detailUrl!!)
+                    else -> suspendSearchTorrentUrl(data.src, data.detailUrl!!)
                 }
             )
         }
@@ -64,7 +64,7 @@ class TorrentSearchViewModel : ViewModel() {
                     url = when {
                         !data.torrentUrl.isNullOrBlank() -> data.torrentUrl
                         !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
-                        else -> suspendRequestTorrentUrl(data.src, data.detailUrl!!)
+                        else -> suspendSearchTorrentUrl(data.src, data.detailUrl!!)
                     },
                     key = data.hash.takeIf { !it.isNullOrBlank() } ?: transferMagnetUrlToTorrentUrl(data.magnetUrl?:"")
                 )

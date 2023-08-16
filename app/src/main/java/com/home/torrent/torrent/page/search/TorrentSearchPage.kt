@@ -54,12 +54,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
-import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
+import com.home.torrentcenter.services.suspendRequestTorrentSource
 import kotlinx.coroutines.launch
 
 
@@ -151,12 +151,16 @@ fun TorrentSearchContentArea(
 ) {
 
     val tabs = remember {
-        requestTorrentSources()
+        mutableStateOf(listOf<TorrentSource>())
     }
+    LaunchedEffect(key1 = "torrent_source") {
+        tabs.value = suspendRequestTorrentSource()
+    }
+    if (tabs.value.isEmpty()) return
     val pageState = rememberPagerState(
         initialPage = 0,
         initialPageOffsetFraction = 0f,
-        pageCount = { tabs.size })
+        pageCount = { tabs.value.size })
 
     val scope = rememberCoroutineScope()
 
@@ -174,7 +178,7 @@ fun TorrentSearchContentArea(
             },
             modifier = Modifier.wrapContentWidth()
         ) {
-            tabs.forEachIndexed { index, source ->
+            tabs.value.forEachIndexed { index, source ->
                 val isSelected = index == pageState.currentPage
                 Text(text = source.title,
                     color = if (isSelected) Color.Red else Color.Black,
@@ -199,7 +203,7 @@ fun TorrentSearchContentArea(
         )
 
         TorrentPagerArea(
-            tabs = tabs, vm = vm, pageState = pageState, query = query, collectVm = collectVm
+            tabs = tabs.value, vm = vm, pageState = pageState, query = query, collectVm = collectVm
         )
 
     }

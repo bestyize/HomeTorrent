@@ -3,6 +3,7 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        mavenLocal()
     }
 }
 dependencyResolutionManagement {
@@ -10,6 +11,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 rootProject.name = "HomeTorrent"
@@ -17,3 +19,4 @@ include(":app")
 include(":torrent")
 include(":framework:baseapp")
 include(":framework:downloader")
+include(":framework:network")
