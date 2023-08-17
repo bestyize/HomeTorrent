@@ -4,9 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -18,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.user.login.page.LoginPage
 import com.tencent.mmkv.MMKV
 
 /**
@@ -32,6 +36,24 @@ import com.tencent.mmkv.MMKV
 @Composable
 @Preview
 fun MainSettingPage() {
+
+    val isLogin = remember {
+        mutableStateOf(false)
+    }
+
+    if (!isLogin.value) {
+        AlertDialog(
+            onDismissRequest = { isLogin.value = true },
+            modifier = Modifier.fillMaxSize(),
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = true
+            )
+        ) {
+            LoginPage()
+        }
+    }
+
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
             Text(
@@ -52,9 +74,11 @@ fun MainSettingPage() {
                 .fillMaxHeight()
         ) {
             item {
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp))
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp)
+                )
                 val onlineState = remember {
                     mutableStateOf(!MMKV.defaultMMKV().decodeBool("torrent_api_use_local"))
                 }
