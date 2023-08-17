@@ -7,6 +7,8 @@ import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.model.KeywordInfo
+import com.home.torrent.torrent.service.loadTorrentSourcesLocal
+import com.home.torrent.torrent.service.saveTorrentSourcesToLocal
 import com.home.torrentcenter.services.suspendRequestTorrentSource
 import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrent
@@ -15,6 +17,7 @@ import com.thewind.downloader.model.DownloadTask
 import com.thewind.downloader.task.DownloadManager.suspendSyncDownload
 import com.thewind.downloader.task.DownloadState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class TorrentSearchViewModel : ViewModel() {
@@ -23,11 +26,13 @@ class TorrentSearchViewModel : ViewModel() {
 
     val keywordState: MutableStateFlow<KeywordInfo> = MutableStateFlow(KeywordInfo())
 
-    val torrentSourceState: MutableStateFlow<List<TorrentSource>> = MutableStateFlow(emptyList())
+    val torrentSourceState: StateFlow<List<TorrentSource>> = MutableStateFlow(
+        loadTorrentSourcesLocal()
+    )
 
-    fun loadSources() {
+    fun refreshTorrentSources() {
         viewModelScope.launch {
-            torrentSourceState.value = suspendRequestTorrentSource()
+            saveTorrentSourcesToLocal(suspendRequestTorrentSource())
         }
     }
 

@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 @Preview
 fun TorrentSearchPage() {
     val vm = viewModel(modelClass = TorrentSearchViewModel::class.java)
-    vm.loadSources()
+    vm.refreshTorrentSources()
     val sourcesState = vm.torrentSourceState.collectAsStateWithLifecycle()
     val query = remember {
         mutableStateOf(vm.keywordState.value.key)
