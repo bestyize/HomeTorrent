@@ -33,10 +33,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.home.baseapp.app.toast.toast
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.ui.theme.BrandPink
 import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.user.vm.UserViewModel
+import com.home.torrent.util.toIntOrDefault
 
 /**
  * @author: read
@@ -46,6 +48,8 @@ import com.home.torrent.ui.theme.LightGrayBackground
 @Composable
 @Preview
 fun LoginPage() {
+
+    val loginVm = viewModel(modelClass = UserViewModel::class.java)
 
     val isLogin = remember {
         mutableStateOf(false)
@@ -110,7 +114,8 @@ fun LoginPage() {
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(2.dp))
-            OutlinedTextField(value = userName.value,
+            OutlinedTextField(
+                value = userName.value,
                 onValueChange = {
                     userName.value = it
                 },
@@ -123,7 +128,8 @@ fun LoginPage() {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(20.dp))
-            OutlinedTextField(value = password.value,
+            OutlinedTextField(
+                value = password.value,
                 onValueChange = {
                     password.value = it
                 },
@@ -159,7 +165,7 @@ fun LoginPage() {
                     )
                 }, trailingIcon = {
                     Text(text = "发送", modifier = Modifier.clickable {
-                        toast("已发送")
+                        loginVm.sendVerifyCode(email.value)
                     })
                 }, colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = BrandPink,
@@ -173,7 +179,25 @@ fun LoginPage() {
             Button(
                 onClick = { /* Do something! */ },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        if (isLogin.value) {
+                            loginVm.login(
+                                userName = userName.value,
+                                email = email.value,
+                                password = password.value
+                            )
+                        } else {
+                            loginVm.register(
+                                userName = userName.value,
+                                email = email.value,
+                                password = password.value,
+                                verifyCode = verifyCode.value.toIntOrDefault(0)
+                            )
+                        }
+
+                    },
                 colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
             ) {
                 Text(if (isLogin.value) "登录" else "注册")

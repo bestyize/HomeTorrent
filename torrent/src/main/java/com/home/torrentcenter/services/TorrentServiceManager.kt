@@ -12,16 +12,12 @@ import com.tencent.mmkv.MMKV
 import com.thewind.network.HttpUtil.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.home.baseapp.app.config.appHost
 
 
 private val useLocal by lazy {
     MMKV.defaultMMKV().decodeBool("torrent_api_use_local")
 }
-
-private val host: String
-    get() {
-        return MMKV.defaultMMKV().decodeString("api_host") ?: "https://thewind.xyz"
-    }
 
 fun requestTorrentSource(): List<TorrentSource> {
 
@@ -29,7 +25,7 @@ fun requestTorrentSource(): List<TorrentSource> {
         if (useLocal) {
             return requestTorrentSources()
         }
-        val resp = get("$host/torrent/api/sources")
+        val resp = get("$appHost/torrent/api/sources")
         val list: List<TorrentSource>? =
             Gson().fromJson(resp, object : TypeToken<List<TorrentSource>>() {}.type)
         return list ?: emptyList()
@@ -47,7 +43,7 @@ fun searchTorrent(src: Int, key: String, page: Int = 1): List<TorrentInfo> {
         if (useLocal) {
             return searchTorrentList(src, key, page)
         }
-        val resp = get("$host/torrent/api/search?src=$src&key=${key.urlEncode}&page=$page")
+        val resp = get("$appHost/torrent/api/search?src=$src&key=${key.urlEncode}&page=$page")
         val list: List<TorrentInfo>? =
             Gson().fromJson(resp, object : TypeToken<List<TorrentInfo>>() {}.type)
         return list ?: emptyList()
@@ -69,7 +65,7 @@ fun searchMagnetUrl(src: Int, detailUrl: String): String {
         if (useLocal) {
             return requestMagnetUrl(src, detailUrl)
         }
-        return get("$host/torrent/api/magnet/url?src=$src&detailUrl=${detailUrl.urlEncode}")
+        return get("$appHost/torrent/api/magnet/url?src=$src&detailUrl=${detailUrl.urlEncode}")
     }
     return ""
 }
@@ -83,7 +79,7 @@ fun searchTorrentUrl(src: Int, detailUrl: String): String {
         if (useLocal) {
             return requestMagnetUrl(src, detailUrl)
         }
-        return get("$host/torrent/api/torrent/url?src=$src&detailUrl=${detailUrl.urlEncode}")
+        return get("$appHost/torrent/api/torrent/url?src=$src&detailUrl=${detailUrl.urlEncode}")
     }
     return ""
 }

@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.mmkv)
     implementation(libs.torrent)
     implementation(project(mapOf("path" to ":framework:network")))
+    implementation(project(mapOf("path" to ":framework:baseapp")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -23,9 +23,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.home.torrent.ui.theme.LightGrayBackground
 import com.home.torrent.user.login.page.LoginPage
+import com.home.torrent.user.vm.UserViewModel
 import com.tencent.mmkv.MMKV
 
 /**
@@ -39,13 +42,15 @@ import com.tencent.mmkv.MMKV
 @Preview
 fun MainSettingPage() {
 
-    val isLogin = remember {
+    val userVm = viewModel(modelClass = UserViewModel::class.java)
+    val loginUserState = userVm.loginState.collectAsStateWithLifecycle()
+    val openLoginPage = remember {
         mutableStateOf(false)
     }
 
-    if (!isLogin.value) {
+    if (!openLoginPage.value && loginUserState.value == null) {
         AlertDialog(
-            onDismissRequest = { isLogin.value = true },
+            onDismissRequest = { openLoginPage.value = true },
             modifier = Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets(0.dp)),
