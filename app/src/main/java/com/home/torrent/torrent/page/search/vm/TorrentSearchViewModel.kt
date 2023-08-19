@@ -22,6 +22,8 @@ import kotlinx.coroutines.launch
 
 class TorrentSearchViewModel : ViewModel() {
 
+    private var refreshed: Boolean = false
+
     val copyTorrentState: MutableStateFlow<TorrentInfo?> = MutableStateFlow(null)
 
     val keywordState: MutableStateFlow<KeywordInfo> = MutableStateFlow(KeywordInfo())
@@ -31,6 +33,8 @@ class TorrentSearchViewModel : ViewModel() {
     )
 
     fun refreshTorrentSources() {
+        if (!refreshed) return
+        refreshed = true
         viewModelScope.launch {
             saveTorrentSourcesToLocal(suspendRequestTorrentSource())
         }
