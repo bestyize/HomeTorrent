@@ -21,6 +21,7 @@ object LoginService {
     internal suspend fun sendVerifyCode(email: String) = withContext(Dispatchers.IO) {
         runCatching {
             val resp = get("$appHost/user/api/send/verify/code?email=$email")
+            if (resp.isBlank()) return@withContext SendEmailResponse(-1, "网络错误")
             val response: SendEmailResponse? = Gson().fromJson(resp, SendEmailResponse::class.java)
             response?.let {
                 return@withContext it
@@ -50,7 +51,7 @@ object LoginService {
         withContext(Dispatchers.IO) {
             runCatching {
                 val resp =
-                    get("$appHost/user/api/login?userName=${userName ?: ""}&email=${email ?: ""}&password=&password=$password")
+                    get("$appHost/user/api/login?userName=${userName ?: ""}&email=${email ?: ""}&password=$password")
                 val response: LoginResponse? = Gson().fromJson(resp, LoginResponse::class.java)
                 response?.let {
                     AccountManager.saveUser(it.user)

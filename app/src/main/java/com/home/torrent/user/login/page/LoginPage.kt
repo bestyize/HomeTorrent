@@ -1,5 +1,6 @@
 package com.home.torrent.user.login.page
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,6 +73,12 @@ fun LoginPage() {
         mutableStateOf("")
     }
 
+    val maxWidthScale = when(LocalConfiguration.current.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> 0.5f
+        Configuration.ORIENTATION_PORTRAIT -> 0.9f
+        else -> 0.8f
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +102,7 @@ fun LoginPage() {
 
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.6f)
+                .fillMaxWidth(maxWidthScale)
                 .align(Alignment.Center)
                 .wrapContentHeight()
                 .verticalScroll(rememberScrollState())
@@ -110,12 +118,11 @@ fun LoginPage() {
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .fillMaxWidth(0.6f)
+                    .fillMaxWidth(maxWidthScale / 2)
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(2.dp))
-            OutlinedTextField(
-                value = userName.value,
+            OutlinedTextField(value = userName.value,
                 onValueChange = {
                     userName.value = it
                 },
@@ -128,8 +135,7 @@ fun LoginPage() {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(20.dp))
-            OutlinedTextField(
-                value = password.value,
+            OutlinedTextField(value = password.value,
                 onValueChange = {
                     password.value = it
                 },
@@ -177,27 +183,24 @@ fun LoginPage() {
 
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = { /* Do something! */ },
+                onClick = {
+                    if (isLogin.value) {
+                        loginVm.login(
+                            userName = userName.value,
+                            email = email.value,
+                            password = password.value
+                        )
+                    } else {
+                        loginVm.register(
+                            userName = userName.value,
+                            email = email.value,
+                            password = password.value,
+                            verifyCode = verifyCode.value.toIntOrDefault(0)
+                        )
+                    }
+                },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        if (isLogin.value) {
-                            loginVm.login(
-                                userName = userName.value,
-                                email = email.value,
-                                password = password.value
-                            )
-                        } else {
-                            loginVm.register(
-                                userName = userName.value,
-                                email = email.value,
-                                password = password.value,
-                                verifyCode = verifyCode.value.toIntOrDefault(0)
-                            )
-                        }
-
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
             ) {
                 Text(if (isLogin.value) "登录" else "注册")
