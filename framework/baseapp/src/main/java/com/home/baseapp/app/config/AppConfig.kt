@@ -10,5 +10,5 @@ import com.tencent.mmkv.MMKV
 
 
 val appHost by lazy {
-    MMKV.defaultMMKV().decodeString("api_host") ?: "https://thewind.xyz"
+    MMKV.defaultMMKV().decodeString("api_host") ?: "http://192.168.0.111:8443"
 }

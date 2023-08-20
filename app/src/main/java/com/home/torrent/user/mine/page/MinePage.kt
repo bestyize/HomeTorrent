@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.home.torrent.R
 import com.home.torrent.setting.page.SettingActivity
+import com.home.torrent.setting.widget.CommonAlertDialog
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.ui.theme.LightGrayBackground
 import com.home.torrent.user.account.AccountManager
@@ -101,6 +103,25 @@ fun MinePage() {
         SettingItemView(title = "设置", icon = Icons.Default.Settings) {
             activity.startActivity(Intent(activity, SettingActivity::class.java))
         }
+
+        if (userState.value != null) {
+            val logoutWaringDialogOpenState = remember {
+                mutableStateOf(false)
+            }
+            if (logoutWaringDialogOpenState.value) {
+                CommonAlertDialog(content = "您真的要退出登录吗？", onCancel = {
+                    logoutWaringDialogOpenState.value = false
+                }, onOk = {
+                    logoutWaringDialogOpenState.value = false
+                    userVm.logout()
+                })
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            SettingItemView(title = "退出登录", icon = Icons.Default.ExitToApp) {
+                logoutWaringDialogOpenState.value = true
+            }
+        }
+
 
     }
 }
