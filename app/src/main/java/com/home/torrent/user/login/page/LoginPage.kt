@@ -49,7 +49,7 @@ import com.home.torrent.util.toIntOrDefault
  */
 @Composable
 @Preview
-fun LoginPage() {
+fun LoginPage(onClose:() -> Unit = {}) {
 
     val loginVm = viewModel(modelClass = UserViewModel::class.java)
 
@@ -75,7 +75,7 @@ fun LoginPage() {
 
     val maxWidthScale = when(LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> 0.5f
-        Configuration.ORIENTATION_PORTRAIT -> 0.9f
+        Configuration.ORIENTATION_PORTRAIT -> 0.8f
         else -> 0.8f
     }
 
@@ -94,9 +94,11 @@ fun LoginPage() {
                 contentDescription = "Close",
                 modifier = Modifier
                     .align(
-                        Alignment.TopStart
+                        Alignment.CenterEnd
                     )
-                    .padding(20.dp)
+                    .padding(20.dp).clickable {
+                        onClose.invoke()
+                    }
             )
         }
 
@@ -129,18 +131,20 @@ fun LoginPage() {
                 label = { Text(text = "用户名", color = BrandPink, fontWeight = FontWeight.Bold) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = BrandPink,
+                    unfocusedBorderColor = Color.Transparent,
                     focusedContainerColor = LightGrayBackground,
                     unfocusedContainerColor = LightGrayBackground
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             OutlinedTextField(value = password.value,
                 onValueChange = {
                     password.value = it
                 },
                 label = { Text(text = "密码", color = BrandPink, fontWeight = FontWeight.Bold) },
                 colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = BrandPink,
                     focusedContainerColor = LightGrayBackground,
                     unfocusedContainerColor = LightGrayBackground
@@ -149,7 +153,7 @@ fun LoginPage() {
             )
 
             if (!isLogin.value) {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 OutlinedTextField(value = email.value, onValueChange = {
                     email.value = it
                 }, label = {
@@ -157,12 +161,13 @@ fun LoginPage() {
                         text = "邮箱", color = BrandPink, fontWeight = FontWeight.Bold
                     )
                 }, colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = BrandPink,
                     focusedContainerColor = LightGrayBackground,
                     unfocusedContainerColor = LightGrayBackground
                 ), modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(15.dp))
                 OutlinedTextField(value = verifyCode.value, onValueChange = {
                     verifyCode.value = it
                 }, label = {
@@ -170,10 +175,11 @@ fun LoginPage() {
                         text = "验证码", color = BrandPink, fontWeight = FontWeight.Bold
                     )
                 }, trailingIcon = {
-                    Text(text = "发送", modifier = Modifier.clickable {
+                    Text(text = "发送", fontSize = 16.sp, fontWeight = FontWeight.Bold,modifier = Modifier.padding(end = 20.dp).clickable {
                         loginVm.sendVerifyCode(email.value)
                     })
                 }, colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = BrandPink,
                     focusedContainerColor = LightGrayBackground,
                     unfocusedContainerColor = LightGrayBackground
@@ -200,7 +206,7 @@ fun LoginPage() {
                     }
                 },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
             ) {
                 Text(if (isLogin.value) "登录" else "注册")

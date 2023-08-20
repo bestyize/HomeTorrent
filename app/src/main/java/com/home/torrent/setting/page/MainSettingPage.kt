@@ -27,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.user.account.AccountManager
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
 import com.tencent.mmkv.MMKV
@@ -45,12 +46,12 @@ fun MainSettingPage() {
     val userVm = viewModel(modelClass = UserViewModel::class.java)
     val loginUserState = userVm.loginState.collectAsStateWithLifecycle()
     val openLoginPage = remember {
-        mutableStateOf(false)
+        mutableStateOf(!AccountManager.isLogin())
     }
 
-    if (!openLoginPage.value && loginUserState.value == null) {
+    if (openLoginPage.value && loginUserState.value == null) {
         AlertDialog(
-            onDismissRequest = { openLoginPage.value = true },
+            onDismissRequest = { openLoginPage.value = false },
             modifier = Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets(0.dp)),
@@ -59,7 +60,9 @@ fun MainSettingPage() {
                 decorFitsSystemWindows = true
             )
         ) {
-            LoginPage()
+            LoginPage {
+                openLoginPage.value = false
+            }
         }
     }
 
