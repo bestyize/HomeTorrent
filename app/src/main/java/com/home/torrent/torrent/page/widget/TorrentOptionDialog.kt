@@ -29,8 +29,10 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun TorrentClickOptionDialog(onClicked: (TorrentClickOption) -> Unit) {
-    val options = TorrentClickOption.values()
+internal fun TorrentClickOptionDialog(
+    onClicked: (TorrentClickOption) -> Unit,
+    options: Array<TorrentClickOption> = TorrentClickOption.values()
+) {
 
     ModalBottomSheet(onDismissRequest = {
         onClicked.invoke(TorrentClickOption.CANCEL)
@@ -43,7 +45,7 @@ internal fun TorrentClickOptionDialog(onClicked: (TorrentClickOption) -> Unit) {
                 .height(0.5.dp)
                 .background(Color.LightGray)
         )
-        options.forEach {option ->
+        options.forEach { option ->
             Text(text = option.value,
                 color = Color.Black,
                 fontSize = 17.sp,
@@ -75,8 +77,7 @@ internal fun TorrentClickOptionDialog(onClicked: (TorrentClickOption) -> Unit) {
 }
 
 internal enum class TorrentClickOption(val value: String) {
-    GET_MAGNET_URL("获取磁力链接"),
-    GET_TORRENT_URL("获取种子地址"),
-    COLLECT_CLOUD("收藏到云端"),
-    CANCEL("取消")
+    GET_MAGNET_URL("获取磁力链接"), GET_TORRENT_URL("获取种子地址"), COLLECT_CLOUD("收藏到云端"), CANCEL(
+        "取消"
+    )
 }

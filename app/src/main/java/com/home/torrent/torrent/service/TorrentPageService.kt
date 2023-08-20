@@ -8,11 +8,12 @@ import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.torrent.model.TorrentCollectResponse
 import com.home.torrent.torrent.model.TorrentUnCollectResponse
+import com.home.torrent.torrent.page.cloud.bean.TorrentCollectListResponse
 import com.home.torrent.util.toJson
 import com.home.torrent.util.toObject
 import com.home.torrent.util.urlEncode
 import com.tencent.mmkv.MMKV
-import com.thewind.network.HttpUtil
+import com.thewind.network.HttpUtil.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,8 +25,8 @@ object TorrentPageService {
 
     internal suspend fun collectToCloud(data: TorrentInfo) = withContext(Dispatchers.IO) {
         runCatching {
-            val resp = HttpUtil.get("$appHost/torrent/api/collect?data=${data.toJson().urlEncode}")
-            resp.takeIf { it.isNotBlank() }?.toObject(TorrentCollectResponse::class.java)?.let {
+            get("$appHost/torrent/api/collect?data=${data.toJson().urlEncode}").takeIf { it.isNotBlank() }
+                ?.toObject(TorrentCollectResponse::class.java)?.let {
                 return@withContext it
             }
 
@@ -36,12 +37,23 @@ object TorrentPageService {
 
     internal suspend fun unCollectFromCloud(hash: String) = withContext(Dispatchers.IO) {
         runCatching {
-            HttpUtil.get("$appHost/torrent/api/collect/delete?hash=$hash").takeIf { it.isNotBlank() }
+            get("$appHost/torrent/api/collect/delete?hash=$hash").takeIf { it.isNotBlank() }
                 ?.toObject(TorrentUnCollectResponse::class.java)?.let {
-                return@withContext it
-            }
+                    return@withContext it
+                }
         }
         return@withContext TorrentUnCollectResponse(-1, "网络异常，取消收藏失败")
+    }
+
+    internal suspend fun requestTorrentListFromServer(page: Int) = withContext(Dispatchers.IO) {
+        runCatching {
+            get("$appHost/torrent/api/collect/list/page?page=$page").takeIf { it.isNotBlank() }
+                .toObject(TorrentCollectListResponse::class.java)?.let {
+                    return@withContext it
+                }
+        }
+
+        return@withContext TorrentCollectListResponse(code = -1, message = "网络错误，加载失败")
     }
 
 }

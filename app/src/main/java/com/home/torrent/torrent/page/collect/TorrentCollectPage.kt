@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.model.TorrentInfo
+import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOption
@@ -91,7 +92,8 @@ fun TorrentCollectPage() {
         }
 
         if (optionShowState[0] as? Boolean == true) {
-            TorrentClickOptionDialog {
+            val cloudVm = viewModel(modelClass = CloudViewModel::class.java)
+            TorrentClickOptionDialog(onClicked = {
                 when (it) {
                     TorrentClickOption.GET_MAGNET_URL -> {
                         optionMagnet.value = true
@@ -105,6 +107,7 @@ fun TorrentCollectPage() {
 
                     TorrentClickOption.COLLECT_CLOUD -> {
                         vm.collectToCloud(optionShowState[1] as? TorrentInfo)
+                        cloudVm.loadCloudCollectList(true)
                     }
 
                     else -> {
@@ -113,7 +116,7 @@ fun TorrentCollectPage() {
                 }
                 optionShowState[1] = null
                 optionShowState[0] = false
-            }
+            })
         }
 
         TorrentListView(dataListState = collectedTorrentState.value.toMutableList(),

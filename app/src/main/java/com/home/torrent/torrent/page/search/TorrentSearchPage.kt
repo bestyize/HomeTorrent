@@ -54,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
+import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
@@ -87,9 +88,7 @@ fun TorrentSearchPage() {
 fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
+        modifier = Modifier.fillMaxWidth().background(Color.White)
     ) {
         TextField(value = query.value,
             onValueChange = {
@@ -105,9 +104,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 if (query.value.isBlank()) {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = "搜索",
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .clickable {
+                        modifier = Modifier.padding(start = 16.dp).clickable {
                                 vm.updateKeyword("")
                             })
                 } else {
@@ -125,9 +122,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(end = 18.dp)
-                        .wrapContentHeight()
+                    modifier = Modifier.padding(end = 18.dp).wrapContentHeight()
                         .clickable(indication = null, interactionSource = remember {
                             MutableInteractionSource()
                         }) {
@@ -140,10 +135,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(horizontal = 20.dp)
+            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 20.dp)
                 .clip(RoundedCornerShape(100.dp))
         )
     }
@@ -158,7 +150,8 @@ fun TorrentSearchContentArea(
     val tabs = remember {
         vm.torrentSourceState.value
     }
-    val pageState = rememberPagerState(initialPage = 0,
+    val pageState = rememberPagerState(
+        initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
 
@@ -170,9 +163,7 @@ fun TorrentSearchContentArea(
             divider = {},
             indicator = {
                 Spacer(
-                    modifier = Modifier
-                        .tabIndicatorOffset(it[pageState.currentPage])
-                        .height(3.dp)
+                    modifier = Modifier.tabIndicatorOffset(it[pageState.currentPage]).height(3.dp)
                         .background(Color.Red, RoundedCornerShape(3.dp))
                 )
             },
@@ -185,9 +176,7 @@ fun TorrentSearchContentArea(
                     fontSize = if (isSelected) 16.sp else 15.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(vertical = 12.dp)
-                        .clickable {
+                    modifier = Modifier.padding(vertical = 12.dp).clickable {
                             scope.launch {
                                 pageState.scrollToPage(index)
                             }
@@ -195,10 +184,7 @@ fun TorrentSearchContentArea(
             }
         }
         Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(2.dp)
-                .padding(vertical = 2.dp)
+            modifier = Modifier.fillMaxWidth().height(2.dp).padding(vertical = 2.dp)
                 .background(Color.LightGray)
         )
 
@@ -262,7 +248,8 @@ fun TorrentPagerArea(
     }
 
     if (optionShowState[0] as? Boolean == true) {
-        TorrentClickOptionDialog {
+        val cloudVm = viewModel(modelClass = CloudViewModel::class.java)
+        TorrentClickOptionDialog(onClicked = {
             when (it) {
                 TorrentClickOption.GET_MAGNET_URL -> {
                     optionMagnet.value = true
@@ -276,6 +263,8 @@ fun TorrentPagerArea(
 
                 TorrentClickOption.COLLECT_CLOUD -> {
                     collectVm.collectToCloud(optionShowState[1] as? TorrentInfo)
+                    cloudVm.loadCloudCollectList(true)
+
                 }
 
                 else -> {
@@ -284,7 +273,7 @@ fun TorrentPagerArea(
             }
             optionShowState[1] = null
             optionShowState[0] = false
-        }
+        })
     }
 
 

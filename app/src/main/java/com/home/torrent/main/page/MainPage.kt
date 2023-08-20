@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.torrent.torrent.page.cloud.page.CloudPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
 import com.home.torrent.ui.theme.LightGrayBackground
@@ -36,7 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview
 fun MainPage() {
-    val tabs = listOf("首页", "收藏", "我的")
+    val tabs = listOf("首页", "收藏", "云端", "我的")
     val pagerState = rememberPagerState(initialPage = 0) {
         tabs.size
     }
@@ -57,6 +58,7 @@ fun MainPage() {
                 when (it) {
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
+                    2 -> CloudPage()
                     else -> MinePage()
                 }
             }
