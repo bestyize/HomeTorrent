@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.coli)
     implementation(libs.roomRuntime)
     implementation(libs.roomKtx)
+    implementation(project(mapOf("path" to ":framework:account")))
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:downloader")))

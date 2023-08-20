@@ -1,4 +1,4 @@
-package com.home.torrent.user.bean
+package com.thewind.account.bean
 
 import androidx.annotation.Keep
 

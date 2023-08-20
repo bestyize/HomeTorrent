@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
 
@@ -92,14 +93,22 @@ fun TorrentCollectPage() {
         if (optionShowState[0] as? Boolean == true) {
             TorrentClickOptionDialog {
                 when (it) {
-                    0 -> {
+                    TorrentClickOption.GET_MAGNET_URL -> {
                         optionMagnet.value = true
                         copyTorrent.value = optionShowState[1] as? TorrentInfo
                     }
 
-                    1 -> {
+                    TorrentClickOption.GET_TORRENT_URL -> {
                         optionMagnet.value = false
                         copyTorrent.value = optionShowState[1] as? TorrentInfo
+                    }
+
+                    TorrentClickOption.COLLECT_CLOUD -> {
+                        vm.collectToCloud(optionShowState[1] as? TorrentInfo)
+                    }
+
+                    else -> {
+
                     }
                 }
                 optionShowState[1] = null

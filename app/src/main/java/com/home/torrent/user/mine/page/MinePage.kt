@@ -50,11 +50,11 @@ import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.CommonAlertDialog
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.ui.theme.LightGrayBackground
-import com.home.torrent.user.account.AccountManager
-import com.home.torrent.user.bean.User
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
 import com.home.torrent.util.toDate
+import com.thewind.account.AccountManager
+import com.thewind.account.bean.User
 
 /**
  * @author: read

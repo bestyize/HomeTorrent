@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.thewind.network"
+    namespace = "com.thewind.account"
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -28,6 +28,7 @@ android {
         sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
         targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
     }
+
     kotlinOptions {
         jvmTarget = libs.versions.jvmTargetVersion.get()
     }
@@ -38,7 +39,8 @@ dependencies {
     implementation(libs.coreKtx)
     implementation(libs.appcompat)
     implementation(libs.matrial)
-    implementation(project(mapOf("path" to ":framework:account")))
+    implementation(libs.gson)
+    implementation(libs.mmkv)
     implementation(project(mapOf("path" to ":framework:baseapp")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

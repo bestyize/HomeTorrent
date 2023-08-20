@@ -29,24 +29,22 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TorrentClickOptionDialog(onClicked: (Int) -> Unit) {
-    val options = listOf("获取磁力链接", "获取种子地址", "下载种子", "取消")
+internal fun TorrentClickOptionDialog(onClicked: (TorrentClickOption) -> Unit) {
+    val options = TorrentClickOption.values()
 
     ModalBottomSheet(onDismissRequest = {
-        onClicked.invoke(options.indexOf("取消"))
+        onClicked.invoke(TorrentClickOption.CANCEL)
     }, content = {
-        options.forEachIndexed { index, title ->
-            if (index == 0) {
-                Spacer(
-                    modifier = Modifier
-                        .padding(vertical = 10.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(0.8f)
-                        .height(0.5.dp)
-                        .background(Color.LightGray)
-                )
-            }
-            Text(text = title,
+        Spacer(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(0.8f)
+                .height(0.5.dp)
+                .background(Color.LightGray)
+        )
+        options.forEach {option ->
+            Text(text = option.value,
                 color = Color.Black,
                 fontSize = 17.sp,
                 textAlign = TextAlign.Center,
@@ -58,7 +56,7 @@ fun TorrentClickOptionDialog(onClicked: (Int) -> Unit) {
                     .clickable(indication = null, interactionSource = remember {
                         MutableInteractionSource()
                     }) {
-                        onClicked.invoke(index)
+                        onClicked.invoke(option)
                     })
             Spacer(
                 modifier = Modifier
@@ -66,7 +64,7 @@ fun TorrentClickOptionDialog(onClicked: (Int) -> Unit) {
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.8f)
                     .height(0.5.dp)
-                    .background(if (index != options.size - 1) Color.LightGray else Color.Transparent)
+                    .background(if (option != TorrentClickOption.CANCEL) Color.LightGray else Color.Transparent)
             )
 
         }
@@ -74,4 +72,11 @@ fun TorrentClickOptionDialog(onClicked: (Int) -> Unit) {
         .fillMaxWidth()
         .wrapContentHeight()
     )
+}
+
+internal enum class TorrentClickOption(val value: String) {
+    GET_MAGNET_URL("获取磁力链接"),
+    GET_TORRENT_URL("获取种子地址"),
+    COLLECT_CLOUD("收藏到云端"),
+    CANCEL("取消")
 }

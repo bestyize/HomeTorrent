@@ -1,9 +1,10 @@
-package com.home.torrent.user.account
+package com.thewind.account
 
-import com.home.torrent.user.bean.User
-import com.home.torrent.util.toJson
-import com.home.torrent.util.toObject
 import com.tencent.mmkv.MMKV
+import com.thewind.account.bean.User
+import com.thewind.account.util.toJson
+import com.thewind.account.util.toObject
+
 
 /**
  * @author: read
@@ -22,7 +23,8 @@ object AccountManager {
     fun getUser(): User? {
         if (_user == null) {
             runCatching {
-                _user = MMKV.defaultMMKV().decodeString(KEY_USER_INFO).toObject(User::class.java)
+                _user = MMKV.defaultMMKV()
+                    .decodeString(KEY_USER_INFO).toObject(User::class.java)
             }
         }
         return _user
@@ -37,6 +39,5 @@ object AccountManager {
         return getUser() != null
     }
 }
-
 
 private const val KEY_USER_INFO = "key_user_info"

@@ -2,6 +2,7 @@ package com.thewind.network
 
 import android.util.Log
 import com.home.baseapp.app.HomeApp
+import com.thewind.account.AccountManager
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.PrintWriter
@@ -31,6 +32,7 @@ object HttpUtil {
             conn.readTimeout = 5000
             conn.connectTimeout = 5000
             headerMap.putAll(commonHeaders)
+            headerMap.putAll(getAccountHeader())
             for (key in headerMap.keys) {
                 conn.addRequestProperty(key, headerMap[key])
             }
@@ -56,9 +58,7 @@ object HttpUtil {
      * @return 请求结果
      */
     fun post(
-        link: String?,
-        params: String?,
-        headerMap: MutableMap<String, String> = mutableMapOf()
+        link: String?, params: String?, headerMap: MutableMap<String, String> = mutableMapOf()
     ): String? {
         if (link == null || !link.startsWith("http")) {
             return ""
@@ -73,6 +73,7 @@ object HttpUtil {
             conn.connectTimeout = 10000
             conn.readTimeout = 10000
             headerMap.putAll(commonHeaders)
+            headerMap.putAll(getAccountHeader())
             for (key in headerMap.keys) {
                 conn.setRequestProperty(key, headerMap[key])
             }
@@ -127,6 +128,7 @@ object HttpUtil {
             conn.readTimeout = 3000
             conn.connectTimeout = 3000
             headerMap.putAll(commonHeaders)
+            headerMap.putAll(getAccountHeader())
             for (key in headerMap.keys) {
                 conn.addRequestProperty(key, headerMap[key])
             }
@@ -174,5 +176,14 @@ private val commonHeaders by lazy {
         "version" to HomeApp.versionCode.toString(),
         "debug" to HomeApp.isDebug.toString()
     )
+}
+
+private fun getAccountHeader(): Map<String, String> {
+    AccountManager.getUser()?.let {
+        return mapOf(
+            "uid" to it.uid.toString(), "password" to it.password
+        )
+    }
+    return mapOf()
 }
 

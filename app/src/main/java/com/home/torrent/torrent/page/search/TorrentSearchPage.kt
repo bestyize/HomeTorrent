@@ -57,6 +57,7 @@ import com.home.torrent.model.TorrentSource
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
+import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
 import kotlinx.coroutines.launch
@@ -157,8 +158,7 @@ fun TorrentSearchContentArea(
     val tabs = remember {
         vm.torrentSourceState.value
     }
-    val pageState = rememberPagerState(
-        initialPage = 0,
+    val pageState = rememberPagerState(initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.size })
 
@@ -264,18 +264,22 @@ fun TorrentPagerArea(
     if (optionShowState[0] as? Boolean == true) {
         TorrentClickOptionDialog {
             when (it) {
-                0 -> {
+                TorrentClickOption.GET_MAGNET_URL -> {
                     optionMagnet.value = true
                     vm.copyTorrentUrl(optionShowState[1] as? TorrentInfo)
                 }
 
-                1 -> {
+                TorrentClickOption.GET_TORRENT_URL -> {
                     optionMagnet.value = false
                     vm.copyTorrentUrl(optionShowState[1] as? TorrentInfo)
                 }
 
-                2 -> {
-                    vm.downloadTorrent(optionShowState[1] as? TorrentInfo)
+                TorrentClickOption.COLLECT_CLOUD -> {
+                    collectVm.collectToCloud(optionShowState[1] as? TorrentInfo)
+                }
+
+                else -> {
+
                 }
             }
             optionShowState[1] = null
@@ -327,7 +331,6 @@ fun TorrentPagerArea(
                     update.value = true
                 },
                 onClicked = { info ->
-//                    vm.copyTorrentUrl(info)
                     optionShowState[1] = info
                     optionShowState[0] = true
                 },

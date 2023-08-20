@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.service.suspendRequestMagnetUrl
+import com.home.torrent.service.transferMagnetUrlToHash
+import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrent.torrent.page.collect.database.bean.CollectTorrentInfo
 import com.home.torrent.torrent.page.collect.database.bean.toCollectTorrentInfo
 import com.home.torrent.torrent.page.collect.database.bean.toTorrentInfo
 import com.home.torrent.torrent.page.collect.database.torrentDb
+import com.home.torrent.torrent.service.TorrentPageService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -58,6 +61,28 @@ class TorrentCollectViewModel : ViewModel() {
     fun loadAll() {
         viewModelScope.launch {
             collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
+        }
+    }
+
+    fun collectToCloud(data: TorrentInfo?) {
+        data ?: return
+        viewModelScope.launch {
+            val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
+                data.src,
+                data.detailUrl!!
+            ) else data.magnetUrl
+            if (magnetUrl == null) {
+                toast("收藏到云端失败！")
+                return@launch
+            }
+            val dat = data.copy(
+                magnetUrl = magnetUrl,
+                hash = if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash,
+                torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
+                    magnetUrl
+                ) else data.torrentUrl
+            )
+            toast(TorrentPageService.collectToCloud(dat).message)
         }
     }
 

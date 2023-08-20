@@ -3,14 +3,14 @@ package com.home.torrent.user.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
-import com.home.torrent.user.account.AccountManager
-import com.home.torrent.user.bean.User
-import com.home.torrent.user.login.service.LoginService
 import com.home.torrent.util.isValidEmail
 import com.home.torrent.util.isValidPassword
 import com.home.torrent.util.isValidUsername
 import com.home.torrent.util.validPasswordWithReason
 import com.home.torrent.util.validUsernameWithReason
+import com.thewind.account.AccountManager
+import com.thewind.account.bean.User
+import com.thewind.account.service.LoginService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 

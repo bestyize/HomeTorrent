@@ -1,4 +1,4 @@
-package com.home.torrent.util
+package com.thewind.account.util
 
 import com.google.gson.GsonBuilder
 import java.lang.reflect.Type
@@ -37,6 +37,6 @@ internal fun <T> String?.toArray(type: Type): T? {
 }
 
 
-val String.urlEncode: String
+internal val String.urlEncode: String
     get() = URLEncoder.encode(this, "UTF-8")
 

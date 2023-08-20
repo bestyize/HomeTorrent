@@ -1,12 +1,12 @@
-package com.home.torrent.user.login.service
+package com.thewind.account.service
 
 import com.google.gson.Gson
 import com.home.baseapp.app.config.appHost
-import com.home.torrent.user.account.AccountManager
-import com.home.torrent.user.bean.LoginResponse
-import com.home.torrent.user.bean.RegisterResponse
-import com.home.torrent.user.bean.SendEmailResponse
-import com.thewind.network.HttpUtil.get
+import com.thewind.account.AccountManager
+import com.thewind.account.bean.LoginResponse
+import com.thewind.account.bean.RegisterResponse
+import com.thewind.account.bean.SendEmailResponse
+import com.thewind.account.util.HttpUtil.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 
 
 object LoginService {
-    internal suspend fun sendVerifyCode(email: String) = withContext(Dispatchers.IO) {
+    suspend fun sendVerifyCode(email: String) = withContext(Dispatchers.IO) {
         runCatching {
             val resp = get("$appHost/user/api/send/verify/code?email=$email")
             if (resp.isBlank()) return@withContext SendEmailResponse(-1, "网络错误")
@@ -31,7 +31,7 @@ object LoginService {
         return@withContext SendEmailResponse(-1, "网络错误")
     }
 
-    internal suspend fun register(userName: String, email: String, password: String, verifyCode: Int) =
+    suspend fun register(userName: String, email: String, password: String, verifyCode: Int) =
         withContext(Dispatchers.IO) {
             runCatching {
                 val resp =
@@ -47,7 +47,7 @@ object LoginService {
         }
 
 
-    internal suspend fun login(userName: String?, password: String, email: String?) =
+    suspend fun login(userName: String?, password: String, email: String?) =
         withContext(Dispatchers.IO) {
             runCatching {
                 val resp =
@@ -61,7 +61,7 @@ object LoginService {
             return@withContext LoginResponse(-1, "网络错误")
         }
 
-    internal suspend fun modifyPassword(verifyCode: Int, email: String, newPassword: String) = withContext(Dispatchers.IO) {
+    suspend fun modifyPassword(verifyCode: Int, email: String, newPassword: String) = withContext(Dispatchers.IO) {
         runCatching {
             val resp = get("$appHost/user/api/modify/password?email=$email&verifyCode=$verifyCode&newPassword=$newPassword")
             val response: LoginResponse? = Gson().fromJson(resp, LoginResponse::class.java)
