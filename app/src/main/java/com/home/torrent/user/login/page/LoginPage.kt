@@ -47,14 +47,15 @@ import com.home.torrent.util.toIntOrDefault
  * @date: 2023/8/18 上午12:40
  * @description:
  */
+
 @Composable
 @Preview
-fun LoginPage(onClose:() -> Unit = {}) {
+fun LoginPage(onClose: () -> Unit = {}) {
 
     val loginVm = viewModel(modelClass = UserViewModel::class.java)
 
-    val isLogin = remember {
-        mutableStateOf(false)
+    val pageState = remember {
+        mutableStateOf(LoginPageAction.REGISTER)
     }
 
     val userName = remember {
@@ -73,7 +74,7 @@ fun LoginPage(onClose:() -> Unit = {}) {
         mutableStateOf("")
     }
 
-    val maxWidthScale = when(LocalConfiguration.current.orientation) {
+    val maxWidthScale = when (LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> 0.5f
         Configuration.ORIENTATION_PORTRAIT -> 0.8f
         else -> 0.8f
@@ -89,17 +90,16 @@ fun LoginPage(onClose:() -> Unit = {}) {
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            Icon(
-                imageVector = Icons.Default.Close,
+            Icon(imageVector = Icons.Default.Close,
                 contentDescription = "Close",
                 modifier = Modifier
                     .align(
                         Alignment.CenterEnd
                     )
-                    .padding(20.dp).clickable {
+                    .padding(20.dp)
+                    .clickable {
                         onClose.invoke()
-                    }
-            )
+                    })
         }
 
         Column(
@@ -124,35 +124,40 @@ fun LoginPage(onClose:() -> Unit = {}) {
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(2.dp))
-            OutlinedTextField(value = userName.value,
-                onValueChange = {
+            if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
+                OutlinedTextField(value = userName.value, onValueChange = {
                     userName.value = it
-                },
-                label = { Text(text = "用户名", color = BrandPink, fontWeight = FontWeight.Bold) },
-                colors = OutlinedTextFieldDefaults.colors(
+                }, label = {
+                    Text(
+                        text = "用户名", color = BrandPink, fontWeight = FontWeight.Bold
+                    )
+                }, colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = BrandPink,
                     unfocusedBorderColor = Color.Transparent,
                     focusedContainerColor = LightGrayBackground,
                     unfocusedContainerColor = LightGrayBackground
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+                ), modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Spacer(modifier = Modifier.height(15.dp))
-            OutlinedTextField(value = password.value,
-                onValueChange = {
-                    password.value = it
-                },
-                label = { Text(text = "密码", color = BrandPink, fontWeight = FontWeight.Bold) },
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = BrandPink,
-                    focusedContainerColor = LightGrayBackground,
-                    unfocusedContainerColor = LightGrayBackground
-                ),
-                modifier = Modifier.fillMaxWidth()
+            OutlinedTextField(value = password.value, onValueChange = {
+                password.value = it
+            }, label = {
+                Text(
+                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) "新密码" else "密码",
+                    color = BrandPink,
+                    fontWeight = FontWeight.Bold
+                )
+            }, colors = OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = BrandPink,
+                focusedContainerColor = LightGrayBackground,
+                unfocusedContainerColor = LightGrayBackground
+            ), modifier = Modifier.fillMaxWidth()
             )
 
-            if (!isLogin.value) {
+            if (pageState.value == LoginPageAction.REGISTER || pageState.value == LoginPageAction.MODIFY_PASSWORD) {
                 Spacer(modifier = Modifier.height(15.dp))
                 OutlinedTextField(value = email.value, onValueChange = {
                     email.value = it
@@ -175,9 +180,14 @@ fun LoginPage(onClose:() -> Unit = {}) {
                         text = "验证码", color = BrandPink, fontWeight = FontWeight.Bold
                     )
                 }, trailingIcon = {
-                    Text(text = "发送", fontSize = 16.sp, fontWeight = FontWeight.Bold,modifier = Modifier.padding(end = 20.dp).clickable {
-                        loginVm.sendVerifyCode(email.value)
-                    })
+                    Text(text = "发送",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                            .clickable {
+                                loginVm.sendVerifyCode(email.value)
+                            })
                 }, colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = BrandPink,
@@ -190,36 +200,77 @@ fun LoginPage(onClose:() -> Unit = {}) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    if (isLogin.value) {
-                        loginVm.login(
-                            userName = userName.value,
-                            email = email.value,
-                            password = password.value
-                        )
-                    } else {
-                        loginVm.register(
-                            userName = userName.value,
-                            email = email.value,
-                            password = password.value,
-                            verifyCode = verifyCode.value.toIntOrDefault(0)
-                        )
+                    when (pageState.value) {
+                        LoginPageAction.LOGIN -> {
+                            loginVm.login(
+                                userName = userName.value,
+                                email = email.value,
+                                password = password.value
+                            )
+                        }
+
+                        LoginPageAction.REGISTER -> {
+                            loginVm.register(
+                                userName = userName.value,
+                                email = email.value,
+                                password = password.value,
+                                verifyCode = verifyCode.value.toIntOrDefault(0)
+                            )
+                        }
+
+                        LoginPageAction.MODIFY_PASSWORD -> {
+                            loginVm.modifyPassword(
+                                email = email.value,
+                                verifyCode = verifyCode.value.toIntOrDefault(0),
+                                newPassword = password.value
+                            )
+                        }
                     }
                 },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
             ) {
-                Text(if (isLogin.value) "登录" else "注册")
+                val txt = when (pageState.value) {
+                    LoginPageAction.REGISTER -> "注册"
+                    LoginPageAction.LOGIN -> "登录"
+                    LoginPageAction.MODIFY_PASSWORD -> "修改/找回密码"
+                }
+                Text(text = txt)
             }
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(if (isLogin.value) "切换注册" else "切换登陆",
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .align(Alignment.End)
-                    .clickable {
-                        isLogin.value = !isLogin.value
-                    })
 
+            Spacer(modifier = Modifier.height(20.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
+                    Text(if (pageState.value == LoginPageAction.REGISTER) "切换注册" else "切换登陆",
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .align(Alignment.CenterEnd)
+                            .clickable {
+                                if (pageState.value == LoginPageAction.REGISTER) {
+                                    pageState.value = LoginPageAction.LOGIN
+                                } else {
+                                    pageState.value = LoginPageAction.REGISTER
+                                }
+                            })
+                }
+
+                Text(text = "找回/修改密码",
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            pageState.value = LoginPageAction.MODIFY_PASSWORD
+                        })
+
+
+            }
         }
 
         Text(
@@ -230,4 +281,9 @@ fun LoginPage(onClose:() -> Unit = {}) {
                 .align(Alignment.BottomCenter)
         )
     }
+}
+
+
+private enum class LoginPageAction(val value: Int) {
+    LOGIN(0), REGISTER(1), MODIFY_PASSWORD(2)
 }

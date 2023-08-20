@@ -70,6 +70,32 @@ class UserViewModel : ViewModel() {
         }
     }
 
+    fun modifyPassword(email: String?, verifyCode: Int, newPassword: String?) {
+        if (email == null || !email.isValidEmail) {
+            toast("邮箱格式不正确")
+            return
+        }
+        if (verifyCode == 0) {
+            toast("请填写验证码")
+            return
+        }
+        if (newPassword == null || !newPassword.isValidPassword) {
+            toast(newPassword.validPasswordWithReason)
+            return
+        }
+        viewModelScope.launch {
+            LoginService.modifyPassword(
+                verifyCode = verifyCode,
+                email = email,
+                newPassword = newPassword
+            ).let {
+                toast(it.message)
+                loginState.value = AccountManager.getUser()
+            }
+
+        }
+    }
+
     fun sendVerifyCode(email: String?) {
         viewModelScope.launch {
             if (email == null || !email.isValidEmail) {
