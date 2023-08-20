@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.mmkv)
     implementation(libs.torrent)
+    implementation(libs.coli)
     implementation(libs.roomRuntime)
     implementation(libs.roomKtx)
     implementation(project(mapOf("path" to ":framework:baseapp")))

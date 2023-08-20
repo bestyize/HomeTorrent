@@ -3,14 +3,11 @@ package com.home.torrent.setting.page
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -22,14 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.home.torrent.ui.theme.LightGrayBackground
-import com.home.torrent.user.account.AccountManager
-import com.home.torrent.user.login.page.LoginPage
-import com.home.torrent.user.vm.UserViewModel
 import com.tencent.mmkv.MMKV
 
 /**
@@ -43,39 +35,16 @@ import com.tencent.mmkv.MMKV
 @Preview
 fun MainSettingPage() {
 
-    val userVm = viewModel(modelClass = UserViewModel::class.java)
-    val loginUserState = userVm.loginState.collectAsStateWithLifecycle()
-    val openLoginPage = remember {
-        mutableStateOf(!AccountManager.isLogin())
-    }
-
-    if (openLoginPage.value && loginUserState.value == null) {
-        AlertDialog(
-            onDismissRequest = { openLoginPage.value = false },
-            modifier = Modifier
-                .fillMaxSize()
-                .windowInsetsPadding(WindowInsets(0.dp)),
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false,
-                decorFitsSystemWindows = true
-            )
-        ) {
-            LoginPage {
-                openLoginPage.value = false
-            }
-        }
-    }
-
     Scaffold(topBar = {
         CenterAlignedTopAppBar(title = {
             Text(
-                "设置", maxLines = 1, overflow = TextOverflow.Ellipsis
+                "设置", maxLines = 1, fontSize = 18.sp,overflow = TextOverflow.Ellipsis
             )
         }, navigationIcon = {
 
         }, actions = {
 
-        })
+        }, modifier = Modifier.wrapContentHeight())
     }, content = { innerPadding ->
         LazyColumn(
             contentPadding = innerPadding,

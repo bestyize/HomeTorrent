@@ -248,7 +248,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .wrapContentHeight()
             ) {
                 if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
-                    Text(if (pageState.value == LoginPageAction.REGISTER) "切换注册" else "切换登陆",
+                    Text(if (pageState.value == LoginPageAction.REGISTER) "切换登录" else "切换注册",
                         modifier = Modifier
                             .wrapContentWidth()
                             .align(Alignment.CenterEnd)

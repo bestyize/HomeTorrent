@@ -25,10 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.home.torrent.setting.page.MainSettingPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
 import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.user.mine.page.MinePage
 import kotlinx.coroutines.launch
 
 
@@ -57,7 +57,7 @@ fun MainPage() {
                 when (it) {
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
-                    else -> MainSettingPage()
+                    else -> MinePage()
                 }
             }
         }
