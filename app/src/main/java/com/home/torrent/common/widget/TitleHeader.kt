@@ -35,7 +35,7 @@ internal fun TitleHeader(title: String = "标题") {
             text = title,
             fontWeight = FontWeight.Bold,
             color = Color.Black,
-            fontSize = 16.sp,
+            fontSize = 18.sp,
             modifier = Modifier
                 .padding(15.dp)
                 .wrapContentSize()

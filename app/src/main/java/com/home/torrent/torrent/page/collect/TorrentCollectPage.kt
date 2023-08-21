@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
@@ -49,18 +50,7 @@ fun TorrentCollectPage() {
                 .wrapContentHeight()
                 .background(Color.White)
         ) {
-            Text(
-                text = "收藏",
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .wrapContentWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.Center),
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+            TitleHeader(title = "本地收藏")
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
