@@ -24,17 +24,21 @@ import androidx.compose.ui.unit.sp
  */
 @Composable
 @Preview
-internal fun TitleHeader(title: String = "标题") {
+internal fun TitleHeader(
+    title: String = "标题",
+    color: Color = Color.Black,
+    backgroundColor: Color = Color.White
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = Color.White, shape = RoundedCornerShape(2.dp))
+            .background(color = backgroundColor, shape = RoundedCornerShape(2.dp))
     ) {
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = color,
             fontSize = 18.sp,
             modifier = Modifier
                 .padding(15.dp)
