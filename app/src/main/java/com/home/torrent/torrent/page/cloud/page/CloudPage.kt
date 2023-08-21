@@ -129,9 +129,7 @@ internal fun CloudPage() {
             item(key = "title") {
                 TitleHeader(title = "云收藏")
             }
-            items(count = dataList.value.size, key = {
-                dataList.value[it].hash ?: ""
-            }) { index ->
+            items(count = dataList.value.size) { index ->
                 Spacer(
                     modifier = Modifier
                         .height(if (index == 0) 5.dp else 1.dp)
