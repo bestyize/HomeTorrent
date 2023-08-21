@@ -1,6 +1,5 @@
 package com.home.torrent.torrent.page.cloud.page
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -81,15 +80,17 @@ internal fun CloudPage() {
         mutableStateOf<TorrentInfoBean?>(null)
     }
 
-
-    CloudTorrentListView(dataList = dataList.value, onLoad = {
-        vm.loadCloudCollectList()
-    }, onUnCollect = { index, hash ->
-        vm.unCollectFromCloud(index, hash)
-    }, onItemClick = {
-        selectedTorrent.value = it
-        showOptionDialog.value = true
-    })
+    Column(modifier = Modifier.fillMaxSize()) {
+        TitleHeader(title = "云收藏")
+        CloudTorrentListView(dataList = dataList.value, onLoad = {
+            vm.loadCloudCollectList()
+        }, onUnCollect = { index, hash ->
+            vm.unCollectFromCloud(index, hash)
+        }, onItemClick = {
+            selectedTorrent.value = it
+            showOptionDialog.value = true
+        })
+    }
 
     val clickOptionType = remember {
         mutableStateOf(TorrentClickOption.GET_MAGNET_URL)
@@ -125,7 +126,6 @@ internal fun CloudPage() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CloudTorrentListView(
     dataList: List<TorrentInfoBean> = emptyList(),
@@ -140,11 +140,9 @@ private fun CloudTorrentListView(
             .background(LightGrayBackground)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            stickyHeader {
-                TitleHeader(title = "云收藏")
-            }
-
-            items(count = dataList.size) { index ->
+            items(count = dataList.size, key = {
+                "$it-${dataList[it].hash}"
+            }) { index ->
                 Spacer(
                     modifier = Modifier
                         .height(if (index == 0) 5.dp else 1.dp)

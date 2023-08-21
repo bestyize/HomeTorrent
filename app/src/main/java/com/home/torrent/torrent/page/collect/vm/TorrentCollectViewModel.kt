@@ -75,9 +75,10 @@ class TorrentCollectViewModel : ViewModel() {
                 toast("收藏到云端失败！")
                 return@launch
             }
+            val hash = if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
             val dat = data.copy(
                 magnetUrl = magnetUrl,
-                hash = if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash,
+                hash = if (hash.isNullOrBlank()) magnetUrl else hash,
                 torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
                     magnetUrl
                 ) else data.torrentUrl

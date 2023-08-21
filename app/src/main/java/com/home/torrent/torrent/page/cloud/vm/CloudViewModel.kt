@@ -24,6 +24,9 @@ class CloudViewModel : ViewModel() {
 
     val cloudCollectListState = _cloudCollectListState.asStateFlow()
 
+
+    private var loadFinish = false
+
     fun unCollectFromCloud(index: Int, hash: String?) {
         hash ?: return
         viewModelScope.launch {
@@ -35,6 +38,10 @@ class CloudViewModel : ViewModel() {
     }
 
     fun loadCloudCollectList(reset: Boolean = false) {
+        if (reset) {
+            loadFinish = false
+        }
+        if (loadFinish) return
         viewModelScope.launch {
             if (reset) {
                 _pageState.value = 0
@@ -42,7 +49,10 @@ class CloudViewModel : ViewModel() {
             }
             TorrentPageService.requestTorrentListFromServer(pageState.value).let {
                 if (it.data.isNullOrEmpty()) {
-                    toast(it.message)
+                    if (it.code == -1) toast(it.message)
+                    it.data?.let {
+                        loadFinish = true
+                    }
                 } else {
                     _cloudCollectListState.value = _cloudCollectListState.value.toMutableList().apply {
                         addAll(it.data)
