@@ -1,5 +1,6 @@
 package com.home.torrent.torrent.page.cloud.page
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,7 +27,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,68 +57,82 @@ import com.home.torrent.util.toDate
  * @description:
  */
 
+private val clickOptions = arrayOf(
+    TorrentClickOption.GET_MAGNET_URL, TorrentClickOption.GET_TORRENT_URL, TorrentClickOption.CANCEL
+)
+
 @Composable
 @Preview
 internal fun CloudPage() {
+
     val vm = viewModel(modelClass = CloudViewModel::class.java)
     val dataList = vm.cloudCollectListState.collectAsStateWithLifecycle()
-    val openClickDialog = remember {
+
+
+    val showOptionDialog = remember {
         mutableStateOf(false)
     }
 
-    val clickOptions = remember {
-        arrayOf(
-            TorrentClickOption.GET_MAGNET_URL,
-            TorrentClickOption.GET_TORRENT_URL,
-            TorrentClickOption.CANCEL
-        )
+    val showCopyDialog = remember {
+        mutableStateOf(false)
     }
 
-    val copyTorrent = remember {
+    val selectedTorrent = remember {
         mutableStateOf<TorrentInfoBean?>(null)
     }
 
-    val optionMagnet = remember {
-        mutableStateOf(true)
+
+    CloudTorrentListView(dataList = dataList.value, onLoad = {
+        vm.loadCloudCollectList()
+    }, onUnCollect = { index, hash ->
+        vm.unCollectFromCloud(index, hash)
+    }, onItemClick = {
+        selectedTorrent.value = it
+        showOptionDialog.value = true
+    })
+
+    val clickOptionType = remember {
+        mutableStateOf(TorrentClickOption.GET_MAGNET_URL)
     }
 
-    copyTorrent.value?.let {
-        CopyAddressDialog(it, optionMagnet.value) {
-            copyTorrent.value = null
-            optionMagnet.value = true
-        }
-    }
-
-    val optionShowState = remember {
-        mutableStateListOf<Any?>(false, null)
-    }
-
-
-    if (openClickDialog.value) {
+    if (showOptionDialog.value) {
         TorrentClickOptionDialog(options = clickOptions, onClicked = {
+            clickOptionType.value = it
             when (it) {
                 TorrentClickOption.GET_MAGNET_URL -> {
-                    optionMagnet.value = true
-                    copyTorrent.value = optionShowState[1] as? TorrentInfoBean
+                    showCopyDialog.value = true
                 }
 
                 TorrentClickOption.GET_TORRENT_URL -> {
-                    optionMagnet.value = false
-                    copyTorrent.value = optionShowState[1] as? TorrentInfoBean
+                    showCopyDialog.value = true
                 }
 
                 TorrentClickOption.CANCEL -> {}
 
                 else -> {}
             }
-
-            optionShowState[1] = null
-            optionShowState[0] = false
-            openClickDialog.value = false
-
+            showOptionDialog.value = false
         })
     }
 
+    val address =
+        if (clickOptionType.value == TorrentClickOption.GET_MAGNET_URL) selectedTorrent.value?.magnetUrl else selectedTorrent.value?.torrentUrl
+    if (showCopyDialog.value) {
+
+        CopyAddressDialog(address = address ?: "", onClose = {
+            showCopyDialog.value = false
+        })
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun CloudTorrentListView(
+    dataList: List<TorrentInfoBean> = emptyList(),
+    onLoad: () -> Unit = {},
+    onUnCollect: (Int, String?) -> Unit = { _, _ -> },
+    onItemClick: (TorrentInfoBean) -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -126,25 +140,27 @@ internal fun CloudPage() {
             .background(LightGrayBackground)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            item(key = "title") {
+            stickyHeader {
                 TitleHeader(title = "云收藏")
             }
-            items(count = dataList.value.size) { index ->
+
+            items(count = dataList.size) { index ->
                 Spacer(
                     modifier = Modifier
                         .height(if (index == 0) 5.dp else 1.dp)
                         .fillMaxWidth(0.8f)
                 )
-                CloudTorrentItemView(data = dataList.value[index], index = index, onClick = {
-                    optionShowState[1] = it
-                    optionShowState[0] = true
-                    openClickDialog.value = true
+                CloudTorrentItemView(data = dataList[index], index = index, onClick = {
+                    onItemClick.invoke(it)
                 }, onDelete = {
-                    vm.unCollectFromCloud(index, it)
+                    onUnCollect.invoke(index, it)
                 })
+                if (index == dataList.size - 1) {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
             item {
-                vm.loadCloudCollectList()
+                onLoad.invoke()
             }
         }
     }
@@ -254,12 +270,11 @@ private fun CloudTorrentItemView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CopyAddressDialog(
-    copyTorrent: TorrentInfoBean, magnetType: Boolean = true, onCopy: () -> Unit
+    address: String = "", onClose: () -> Unit
 ) {
     val copyBtnState = remember {
         mutableStateOf(false)
     }
-    val address = (if (magnetType) copyTorrent.magnetUrl else copyTorrent.torrentUrl) ?: ""
     if (copyBtnState.value) {
         copyBtnState.value = false
         LocalClipboardManager.current.setText(
@@ -268,9 +283,9 @@ private fun CopyAddressDialog(
             )
         )
         toast("复制成功")
-        onCopy.invoke()
+        onClose.invoke()
     }
-    AlertDialog(onDismissRequest = { onCopy.invoke() }) {
+    AlertDialog(onDismissRequest = { onClose.invoke() }) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
