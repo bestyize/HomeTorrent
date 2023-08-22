@@ -35,7 +35,7 @@ coliVersion = "2.4.0"
 kotlinxCoroutinesCoreVersion = "1.7.3"
 
 roomVersion = "2.5.2"
-agp = "8.1.0"
+agp = "8.1.1"
 kspVersion = "1.8.10-1.0.9"
 org-jetbrains-kotlin-android = "1.8.10"
 junit = "4.13.2"
