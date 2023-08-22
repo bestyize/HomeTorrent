@@ -63,10 +63,6 @@
 -keepnames class * implements java.io.Serializable { <fields>;}
 
 -keep interface * extends android.os.IInterface {public <methods>;}
--keepclassmembers public class com.bilibili.bililive.api.entities.**{
-    public <init>();
-    public <fields>;
-}
 
 -keepnames public class tv.danmaku.android.annotations.**{*;}
 # native methods
@@ -136,7 +132,6 @@
 -dontnote retrofit2.Platform
 -dontwarn retrofit2.Platform$Java8
 -keepnames class retrofit2.http.**
--keepnames class com.bilibili.okretro.anno.**
 -keepclasseswithmembernames interface * {
     @retrofit2.http.GET <methods>;
     @retrofit2.http.POST <methods>;
@@ -155,10 +150,6 @@
 -dontwarn com.googlecode.mp4parser.authoring.tracks.mjpeg.**
 -dontwarn com.googlecode.mp4parser.authoring.tracks.ttml.**
 
--keepclassmembers public class com.bilibili.bilibililive.api.entities.**{
-    public <init>();
-    public <fields>;
-}
 
 # Keep native methods
 -keepclassmembers class * {
@@ -189,12 +180,8 @@
 -keepclassmembernames class androidx.appcompat.widget.PopupMenu { private androidx.appcompat.view.menu.MenuPopupHelper mPopup; }
 -keepclassmembernames class androidx.appcompat.view.menu.MenuPopupHelper { public void setForceShowIcon(boolean); }
 
-# netty (partial)
--dontwarn com.bilibili.bplus.socket.core.**
--keep class com.bilibili.bplus.socket.core.**{*;}
 # wire
 -keepnames class com.squareup.wire.** { *; }
--keep class com.bilibili.bplus.im.protobuf.** { *; }
 
 
 -keepclassmembernames class androidx.customview.widget.ViewDragHelper { private int mEdgeSize; }
@@ -216,17 +203,9 @@
 
 # The rules introduced by dependencies exposed too many
 # notes that we can do nothing in this file. Let them go!
--dontnote com.bilibili.bililive.**
--dontnote com.bilibili.bilibililive.**
--dontnote com.bilibili.music.**
--dontnote com.bilibili.upper.**
 -dontnote com.mall.**
 -dontnote com.sobot.chat.**
--dontnote tv.danmaku.videoclipplayer.**
--dontnote tv.danmaku.frontia.**
--dontnote tv.danmaku.biliplayer.**
 -dontnote com.alipay.**
--dontnote tv.danmaku.bili.utils.**
 -dontnote kotlin.**
 # okhttp
 -dontnote okhttp3.**
@@ -264,20 +243,6 @@
 -dontnote cn.jpush.**
 -dontnote cn.jiguang.**
 
--dontwarn com.bilibili.base.BiliContext$*
--dontwarn com.bilibili.base.BiliContextKt$*
-
-# native gamecenter
--keep public class com.bilibili.biligame.shield.** {*;}
--keep public class com.bilibili.game.service.bean.** {*;}
-
--dontwarn com.bilibili.lib.ui.helper.**
-
--keep public class com.bilibili.dim.** {*;}
--keep class com.bilibili.cron.** {*;}
--keep class com.bilibili.cron.**$* {*;}
--keep public class com.bilibili.cron.scene.** {*;}
-
 # mobile quick login
 -dontwarn com.cmic.sso.sdk.**
 -keep class com.cmic.sso.sdk.** {*;}
@@ -298,13 +263,8 @@
 -keep class versa.recognize.**{*;}
 -keep interface versa.recognize.**{*;}
 
--dontwarn com.bilibili.blink.ndk.**
--keep class com.bilibili.blink.ndk.** {*;}
-
 -keep class **$Properties{*;}
 
-#router
--keep class com.bilibili.lib.blrouter.internal.*Registry { *; }
 
 #tcent location sdk
 -keepattributes *Annotation*
@@ -336,26 +296,9 @@
 
 -keep class com.mammon.audiosdk.**{*;}
 
-# bmm sdk 2.0
--keep class com.bilibili.bmmcaptureandroid.**{*;}
--keep interface com.bilibili.bmmcaptureandroid.interfaces**{*;}
--keep public enum com.bilibili.bmmcaptureandroid.BMMCaptureEngine$** {
-    **[] $VALUES;
-    public *;
-}
-
--keep class com.bilibili.bmmcomponet_java.**{*;}
--keep class com.bilibili.component_java.mediacodec.**{*;}
--keep class com.bilibili.component_java.utils.**{*;}
--keep class com.bilibili.bmmeffectandroid.**{*;}
-
--keep class com.bilibili.sponge.**{*;}
--keep interface com.bilibili.sponge.**{*;}
 
 ### Aurora sdk
 -keep class androidx.exifinterface.media.* { *;}
--keep class com.bilibili.aurorasdk.utils.*{ *;}
--keep class com.bilibili.aurorasdk.*{ *;}
 -keep class org.libpag.* { *;}
 
 -keep class com.hippo.quickjs.android.**{*;}
@@ -364,11 +307,5 @@
 -keep class org.msgpack.** {*;}
 -keep class com.google.protobuf.** { *; }
 
-# 连麦SDK
--keep class org.webrtc.** {*;}
--keep class com.bilibili.bililive.mediastreaming.rtccore.**{*;}
--keep class com.bilibili.bililive.mediastreaming.rtccore.nativec.**{*;}
--keep class com.bilibili.bililive.mediastreaming.rtccore.nativec.*
 
-### CV-SDK
--keep class com.bilibili.mobile.**{*;}
+-keep class org.webrtc.** {*;}
