@@ -83,10 +83,6 @@
 }
 -keepclassmembers class * extends android.webkit.WebChromeClient{ <methods>; }
 
-### fastjson
--keepnames class com.alibaba.fastjson.annotation.**{ public *;}
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.**{*;}
 -keepattributes Signature
 -keepclassmembers class * implements java.io.Serializable { *; }
 
