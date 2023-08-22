@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,18 +40,26 @@ import kotlinx.coroutines.delay
 @Composable
 @Preview
 fun SplashPage(onClose: () -> Unit = {}) {
+
+    val countDownState = remember {
+        mutableStateOf(true)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
         val timeLeft = remember {
-            mutableIntStateOf(5)
+            mutableIntStateOf(3)
         }
         SkipButton(
             modifier = Modifier.align(Alignment.TopEnd),
             skipText = "跳过 ${timeLeft.intValue}",
-            onClose = onClose
+            onClose = {
+                if (countDownState.value) {
+                    onClose.invoke()
+                }
+            }
         )
         if (timeLeft.intValue == 0) {
             onClose.invoke()
@@ -58,7 +67,10 @@ fun SplashPage(onClose: () -> Unit = {}) {
         LaunchedEffect(key1 = "count_down") {
             while (timeLeft.intValue > 0) {
                 delay(1000)
-                timeLeft.intValue = timeLeft.intValue - 1
+                if (countDownState.value) {
+                    timeLeft.intValue = timeLeft.intValue - 1
+                }
+
             }
         }
 
@@ -77,6 +89,12 @@ fun SplashPage(onClose: () -> Unit = {}) {
         }
 
     }
+
+    StartCheckPage(onClose = {
+        countDownState.value = true
+    }, onShow = {
+        countDownState.value = false
+    })
 }
 
 @Composable

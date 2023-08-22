@@ -30,15 +30,15 @@ class HomeApp : Application() {
 
         val versionCode by lazy {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                context.applicationContext?.packageManager?.getPackageInfo(
+                (context.applicationContext?.packageManager?.getPackageInfo(
                     context.packageName,
                     0
-                )?.longVersionCode ?: 100
+                )?.longVersionCode ?: 0).toLong()
             } else {
-                context.applicationContext?.packageManager?.getPackageInfo(
+                (context.applicationContext?.packageManager?.getPackageInfo(
                     context.packageName,
                     0
-                )?.versionCode ?: 100
+                )?.versionCode ?: 0).toLong()
             }
         }
 

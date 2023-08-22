@@ -1,4 +1,4 @@
-package com.home.torrent.setting.widget
+package com.home.torrent.common.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,11 +41,11 @@ import com.home.torrent.ui.theme.LightGrayBackground
 fun CommonAlertDialog(
     title: String = "提示",
     content: String = "",
-    open: Boolean = true,
+    okText: String? = "确定",
+    cancelText: String? = "取消",
     onOk: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
-    if (!open) return
     AlertDialog(
         onDismissRequest = { onCancel.invoke() },
         modifier = Modifier
@@ -103,38 +103,44 @@ fun CommonAlertDialog(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp)
             ) {
-                Text(text = "取消",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .weight(1f)
-                        .wrapContentHeight()
-                        .clickable(indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
-                            onCancel.invoke()
-                        })
-                Spacer(
-                    modifier = Modifier
-                        .width(0.5.dp)
-                        .background(LightGrayBackground)
-                        .height(20.dp)
-                )
-                Text(text = "确定",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .weight(1f)
-                        .wrapContentHeight()
-                        .clickable(indication = null,
-                            interactionSource = remember { MutableInteractionSource() }) {
-                            onOk.invoke()
-                        })
+                cancelText?.let {
+                    Text(text = "取消",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(vertical = 20.dp)
+                            .weight(1f)
+                            .wrapContentHeight()
+                            .clickable(indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                onCancel.invoke()
+                            })
+                }
+
+                okText?.let {
+                    Spacer(
+                        modifier = Modifier
+                            .width(0.5.dp)
+                            .background(LightGrayBackground)
+                            .height(20.dp)
+                    )
+                    Text(text = "确定",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(vertical = 20.dp)
+                            .weight(1f)
+                            .wrapContentHeight()
+                            .clickable(indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                onOk.invoke()
+                            })
+                }
+
             }
         }
     }

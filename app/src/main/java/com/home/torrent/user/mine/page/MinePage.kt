@@ -47,7 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.home.torrent.R
 import com.home.torrent.setting.page.SettingActivity
-import com.home.torrent.setting.widget.CommonAlertDialog
+import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.ui.theme.LightGrayBackground
 import com.home.torrent.user.login.page.LoginPage
