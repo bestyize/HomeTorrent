@@ -6,7 +6,7 @@ import androidx.annotation.Keep
 data class HomeAppConfig(
     val domain: String = "https://thewind.xyz",
     val domainPublishPage:String = "https://github.com/bestyize/bestyize.github.io/blob/main/domain",
-    val newVersionCode: Long = 1,
+    val newVersionCode: Int = 1,
     val updateUrl: String = "https://thewind.xyz",
     val updateTitle: String = "发现新版本",
     val updateMessage: String = "支持更多能力！",

@@ -1,5 +1,8 @@
 package com.home.torrent.main.model
 
+import androidx.annotation.Keep
+
+@Keep
 data class StartupNotice(
     val show: Boolean = false,
     val title: String? = null,

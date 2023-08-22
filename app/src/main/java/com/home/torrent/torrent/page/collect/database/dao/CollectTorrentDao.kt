@@ -1,5 +1,6 @@
 package com.home.torrent.torrent.page.collect.database.dao
 
+import androidx.annotation.Keep
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -7,6 +8,7 @@ import androidx.room.Query
 import com.home.torrent.torrent.page.collect.database.bean.CollectTorrentInfo
 import com.home.torrent.torrent.page.collect.database.bean.TB_TORRENT_COLLECT
 
+@Keep
 @Dao
 interface CollectTorrentDao {
 
