@@ -56,7 +56,6 @@ android {
 dependencies {
 
     implementation(libs.coreKtx)
-    implementation(platform(libs.kotlinBom))
     implementation(libs.lifecycleRuntimeKtx)
     implementation(libs.lifecycleViewModelKtx)
     implementation(libs.lifecycleViewModelCompose)
@@ -81,6 +80,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:downloader")))
+    implementation(project(mapOf("path" to ":framework:resources")))
     implementation(libs.matrial)
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)

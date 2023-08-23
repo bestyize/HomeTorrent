@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.torrent.R
 
 /**
  * @author: read
@@ -25,7 +27,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 @Preview
 internal fun TitleHeader(
-    title: String = "标题",
+    title: String = stringResource(R.string.title),
     color: Color = Color.Black,
     backgroundColor: Color = Color.White
 ) {

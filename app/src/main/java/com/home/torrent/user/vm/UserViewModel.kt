@@ -2,7 +2,9 @@ package com.home.torrent.user.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
+import com.home.torrent.R
 import com.home.torrent.util.isValidEmail
 import com.home.torrent.util.isValidPassword
 import com.home.torrent.util.isValidUsername
@@ -26,11 +28,11 @@ class UserViewModel : ViewModel() {
     fun login(userName: String? = null, email: String? = null, password: String?) {
         viewModelScope.launch {
             if (userName == null && email == null) {
-                toast("用户名或邮箱至少填一个")
+                toast(HomeApp.context.getString(R.string.must_input_username_or_email))
                 return@launch
             }
             if (password == null) {
-                toast("请填写密码")
+                toast(HomeApp.context.getString(R.string.input_password))
                 return@launch
             }
             LoginService.login(userName = userName, email = email, password = password).let {
@@ -47,7 +49,7 @@ class UserViewModel : ViewModel() {
                 return@launch
             }
             if (!email.isValidEmail) {
-                toast("邮箱格式不正确")
+                toast(HomeApp.context.getString(R.string.email_invalid))
                 return@launch
             }
             if (!password.isValidPassword) {
@@ -55,7 +57,7 @@ class UserViewModel : ViewModel() {
                 return@launch
             }
             if (verifyCode == 0) {
-                toast("请填写验证码")
+                toast(HomeApp.context.getString(R.string.input_verifycode))
                 return@launch
             }
             LoginService.register(
@@ -72,11 +74,11 @@ class UserViewModel : ViewModel() {
 
     fun modifyPassword(email: String?, verifyCode: Int, newPassword: String?) {
         if (email == null || !email.isValidEmail) {
-            toast("邮箱格式不正确")
+            toast(HomeApp.context.getString(R.string.email_invalid))
             return
         }
         if (verifyCode == 0) {
-            toast("请填写验证码")
+            toast(HomeApp.context.getString(R.string.input_verifycode))
             return
         }
         if (newPassword == null || !newPassword.isValidPassword) {
@@ -99,10 +101,10 @@ class UserViewModel : ViewModel() {
     fun sendVerifyCode(email: String?) {
         viewModelScope.launch {
             if (email == null || !email.isValidEmail) {
-                toast("邮箱格式不正确")
+                toast(HomeApp.context.getString(R.string.email_invalid))
                 return@launch
             }
-            toast("已发送")
+            toast(HomeApp.context.getString(R.string.have_send))
             LoginService.sendVerifyCode(email).let {
                 toast(it.message)
             }

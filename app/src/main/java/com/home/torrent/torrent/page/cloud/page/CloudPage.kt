@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.toast.toast
+import com.home.torrent.R
 import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.torrent.page.cloud.bean.TorrentInfoBean
 import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
@@ -81,7 +83,7 @@ internal fun CloudPage() {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TitleHeader(title = "云收藏")
+        TitleHeader(title = stringResource(R.string.cloud_collect))
         CloudTorrentListView(dataList = dataList.value, onLoad = {
             vm.loadCloudCollectList()
         }, onUnCollect = { index, hash ->

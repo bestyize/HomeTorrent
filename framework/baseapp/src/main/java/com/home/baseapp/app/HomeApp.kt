@@ -7,7 +7,7 @@ import android.content.pm.ApplicationInfo
 import android.os.Build
 import com.tencent.mmkv.MMKV
 
-class HomeApp : Application() {
+open class HomeApp : Application() {
     override fun onCreate() {
         _context = this
         super.onCreate()

@@ -20,11 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.torrent.R
 import com.home.torrent.torrent.page.cloud.page.CloudPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
@@ -37,7 +39,10 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview
 fun MainPage() {
-    val tabs = listOf("首页", "收藏", "云端", "我的")
+    val tabs = listOf(stringResource(R.string.main_page),
+        stringResource(R.string.collect), stringResource(R.string.cloud),
+        stringResource(R.string.my)
+    )
     val pagerState = rememberPagerState(initialPage = 0) {
         tabs.size
     }

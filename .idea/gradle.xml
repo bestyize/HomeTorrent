@@ -17,6 +17,8 @@
             <option value="$PROJECT_DIR$/framework/baseapp" />
             <option value="$PROJECT_DIR$/framework/downloader" />
             <option value="$PROJECT_DIR$/framework/network" />
+            <option value="$PROJECT_DIR$/framework/resources" />
+            <option value="$PROJECT_DIR$/framework/widget" />
             <option value="$PROJECT_DIR$/torrent" />
           </set>
         </option>

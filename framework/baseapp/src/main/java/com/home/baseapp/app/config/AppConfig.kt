@@ -1,6 +1,7 @@
 package com.home.baseapp.app.config
 
 import com.tencent.mmkv.MMKV
+import java.util.Locale
 
 /**
  * @author: read
@@ -11,4 +12,8 @@ import com.tencent.mmkv.MMKV
 
 val appHost by lazy {
     MMKV.defaultMMKV().decodeString("api_host") ?: "https://thewind.xyz"
+}
+
+val isEn by lazy {
+    Locale.getDefault().language.equals("en")
 }

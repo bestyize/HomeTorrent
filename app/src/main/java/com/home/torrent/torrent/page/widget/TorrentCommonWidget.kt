@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.toast.toast
+import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
 
@@ -59,7 +61,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                 address
             )
         )
-        toast("复制成功")
+        toast(stringResource(R.string.copy_success))
         onCopy.invoke()
     }
     AlertDialog(onDismissRequest = { onCopy.invoke() }) {
@@ -72,7 +74,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
         ) {
             item {
                 Text(
-                    text = "温馨提示",
+                    text = stringResource(R.string.notice),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -107,7 +109,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                         .padding(vertical = 10.dp)
                         .background(Color.Gray)
                 )
-                Text(text = "复制",
+                Text(text = stringResource(R.string.copy),
                     modifier = Modifier
                         .padding(vertical = 15.dp)
                         .fillMaxWidth(0.8f)
@@ -199,7 +201,7 @@ fun TorrentSearchItemView(
                         .wrapContentHeight()
                 ) {
                     data.date?.let {
-                        TorrentItemTag(title = "日期：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.date), data = it)
                     }
                     data.size?.let {
                         Spacer(
@@ -207,7 +209,7 @@ fun TorrentSearchItemView(
                                 .width(10.dp)
                                 .height(1.dp)
                         )
-                        TorrentItemTag(title = "大小：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.size), data = it)
                     }
                     data.downloadCount?.let {
                         Spacer(
@@ -215,7 +217,7 @@ fun TorrentSearchItemView(
                                 .width(10.dp)
                                 .height(1.dp)
                         )
-                        TorrentItemTag(title = "下载：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.download), data = it)
                     }
                     data.lastDownloadDate?.let {
                         Spacer(
@@ -223,7 +225,7 @@ fun TorrentSearchItemView(
                                 .width(10.dp)
                                 .height(1.dp)
                         )
-                        TorrentItemTag(title = "最近：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.nearly), data = it)
                     }
                     data.leacherCount?.let {
                         Spacer(
@@ -231,7 +233,7 @@ fun TorrentSearchItemView(
                                 .width(10.dp)
                                 .height(1.dp)
                         )
-                        TorrentItemTag(title = "下行：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.leacher), data = it)
                     }
                     data.senderCount?.let {
                         Spacer(
@@ -239,13 +241,13 @@ fun TorrentSearchItemView(
                                 .width(10.dp)
                                 .height(1.dp)
                         )
-                        TorrentItemTag(title = "上行：", data = it)
+                        TorrentItemTag(title = stringResource(R.string.sender), data = it)
                     }
 
                 }
             }
             Icon(imageVector = if (isCollected) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = "收藏",
+                contentDescription = stringResource(id = R.string.collect),
                 tint = if (isCollected) Color.Red else Color.LightGray,
                 modifier = Modifier
                     .weight(1f)

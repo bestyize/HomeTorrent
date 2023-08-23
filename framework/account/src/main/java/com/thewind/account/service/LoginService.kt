@@ -21,14 +21,14 @@ object LoginService {
     suspend fun sendVerifyCode(email: String) = withContext(Dispatchers.IO) {
         runCatching {
             val resp = get("$appHost/user/api/send/verify/code?email=$email")
-            if (resp.isBlank()) return@withContext SendEmailResponse(-1, "网络错误")
+            if (resp.isBlank()) return@withContext SendEmailResponse(-1, "Network Error")
             val response: SendEmailResponse? = Gson().fromJson(resp, SendEmailResponse::class.java)
             response?.let {
                 return@withContext it
             }
         }
 
-        return@withContext SendEmailResponse(-1, "网络错误")
+        return@withContext SendEmailResponse(-1, "Network Error")
     }
 
     suspend fun register(userName: String, email: String, password: String, verifyCode: Int) =
@@ -42,7 +42,7 @@ object LoginService {
                     return@withContext it
                 }
             }
-            return@withContext RegisterResponse(-1, "网络错误")
+            return@withContext RegisterResponse(-1, "Network Error")
 
         }
 
@@ -58,7 +58,7 @@ object LoginService {
                     return@withContext it
                 }
             }
-            return@withContext LoginResponse(-1, "网络错误")
+            return@withContext LoginResponse(-1, "Network Error")
         }
 
     suspend fun modifyPassword(verifyCode: Int, email: String, newPassword: String) = withContext(Dispatchers.IO) {
@@ -70,7 +70,7 @@ object LoginService {
                 return@withContext it
             }
         }
-        return@withContext LoginResponse(-1, "网络错误")
+        return@withContext LoginResponse(-1, "Network Error")
     }
 
 

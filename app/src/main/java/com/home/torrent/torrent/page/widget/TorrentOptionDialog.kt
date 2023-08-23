@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.baseapp.app.HomeApp
+import com.home.torrent.R
 
 /**
  * @author: read
@@ -77,7 +79,10 @@ internal fun TorrentClickOptionDialog(
 }
 
 internal enum class TorrentClickOption(val value: String) {
-    GET_MAGNET_URL("获取磁力链接"), GET_TORRENT_URL("获取种子地址"), COLLECT_CLOUD("收藏到云端"), CANCEL(
-        "取消"
+    GET_MAGNET_URL(HomeApp.context.getString(R.string.get_magnet_url)), GET_TORRENT_URL(
+        HomeApp.context.getString(
+            R.string.get_torrent_url
+        )), COLLECT_CLOUD(HomeApp.context.getString(R.string.collect_to_cloud)), CANCEL(
+        HomeApp.context.getString(R.string.cancel)
     )
 }

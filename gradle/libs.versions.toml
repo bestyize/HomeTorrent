@@ -13,7 +13,6 @@ kotlinCompilerExtensionVersion = "1.4.3"
 
 coreKtxVersion = "1.10.1"
 
-kotlinBomVersion = "1.8.22"
 lifecycleVersion = "2.6.1"
 composeBomVersion = "2023.08.00"
 composeConstraintVersion = "1.1.0-alpha12"
@@ -46,7 +45,6 @@ espresso-core = "3.5.1"
 [libraries]
 
 coreKtx = {module = "androidx.core:core-ktx", version.ref = "coreKtxVersion"}
-kotlinBom = {module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlinBomVersion"}
 kotlinxCoroutinesCore = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion"}
 lifecycleRuntimeKtx = {module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion"}
 lifecycleRuntimeCompose = {module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleVersion"}
@@ -90,5 +88,7 @@ com-android-library = { id = "com.android.library", version.ref = "agp" }
 com-android-application = {id = "com.android.application", version.ref = "agp"}
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "org-jetbrains-kotlin-android" }
 com-google-devtools-ksp = {id = "com.google.devtools.ksp", version.ref = "kspVersion"}
+
+hiltPlugin = {id = "com.google.dagger.hilt.android", version.ref = "hiltVersion"}
 
 kotlin-parcelize = {id = "kotlin-parcelize"}

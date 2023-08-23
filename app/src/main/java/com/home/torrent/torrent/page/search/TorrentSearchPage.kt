@@ -88,7 +88,9 @@ fun TorrentSearchPage() {
 fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
 
     Box(
-        modifier = Modifier.fillMaxWidth().background(Color.White)
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
     ) {
         TextField(value = query.value,
             onValueChange = {
@@ -103,26 +105,30 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             leadingIcon = {
                 if (query.value.isBlank()) {
                     Icon(imageVector = Icons.Default.Search,
-                        contentDescription = "搜索",
-                        modifier = Modifier.padding(start = 16.dp).clickable {
+                        contentDescription = stringResource(R.string.search),
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable {
                                 vm.updateKeyword("")
                             })
                 } else {
                     Icon(
                         imageVector = Icons.Default.Clear,
-                        contentDescription = "清除",
+                        contentDescription = stringResource(R.string.clear),
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
 
             },
             trailingIcon = {
-                Text(text = "搜索",
+                Text(text = stringResource(R.string.search),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Red,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(end = 18.dp).wrapContentHeight()
+                    modifier = Modifier
+                        .padding(end = 18.dp)
+                        .wrapContentHeight()
                         .clickable(indication = null, interactionSource = remember {
                             MutableInteractionSource()
                         }) {
@@ -135,7 +141,10 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(horizontal = 20.dp)
                 .clip(RoundedCornerShape(100.dp))
         )
     }
@@ -163,7 +172,9 @@ fun TorrentSearchContentArea(
             divider = {},
             indicator = {
                 Spacer(
-                    modifier = Modifier.tabIndicatorOffset(it[pageState.currentPage]).height(3.dp)
+                    modifier = Modifier
+                        .tabIndicatorOffset(it[pageState.currentPage])
+                        .height(3.dp)
                         .background(Color.Red, RoundedCornerShape(3.dp))
                 )
             },
@@ -176,7 +187,9 @@ fun TorrentSearchContentArea(
                     fontSize = if (isSelected) 16.sp else 15.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 12.dp).clickable {
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .clickable {
                             scope.launch {
                                 pageState.scrollToPage(index)
                             }
@@ -184,7 +197,10 @@ fun TorrentSearchContentArea(
             }
         }
         Spacer(
-            modifier = Modifier.fillMaxWidth().height(2.dp).padding(vertical = 2.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(2.dp)
+                .padding(vertical = 2.dp)
                 .background(Color.LightGray)
         )
 
@@ -315,7 +331,9 @@ fun TorrentPagerArea(
             }
 
             TorrentListView(dataListState = dataList,
-                bottomText = if (noMoreToast.value) "已全部加载" else "正在为您加载中...",
+                bottomText = if (noMoreToast.value) stringResource(R.string.loaded_all) else stringResource(
+                    R.string.loading
+                ),
                 onLoad = {
                     update.value = true
                 },

@@ -10,6 +10,7 @@ import java.net.HttpURLConnection
 import java.net.Proxy
 import java.net.URL
 import java.nio.charset.StandardCharsets
+import java.util.Locale
 
 
 /**
@@ -174,7 +175,8 @@ private val commonHeaders by lazy {
     mapOf(
         "package" to HomeApp.context.applicationInfo.packageName,
         "version" to HomeApp.versionCode.toString(),
-        "debug" to HomeApp.isDebug.toString()
+        "debug" to HomeApp.isDebug.toString(),
+        "lng" to Locale.getDefault().language
     )
 }
 

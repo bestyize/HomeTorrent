@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -100,7 +101,7 @@ fun MinePage() {
             openLoginPage.value = true
         })
         Spacer(modifier = Modifier.height(20.dp))
-        SettingItemView(title = "设置", icon = Icons.Default.Settings) {
+        SettingItemView(title = stringResource(R.string.setting), icon = Icons.Default.Settings) {
             activity.startActivity(Intent(activity, SettingActivity::class.java))
         }
 
@@ -109,7 +110,7 @@ fun MinePage() {
                 mutableStateOf(false)
             }
             if (logoutWaringDialogOpenState.value) {
-                CommonAlertDialog(content = "您真的要退出登录吗？", onCancel = {
+                CommonAlertDialog(content = stringResource(R.string.do_you_want_to_logout), onCancel = {
                     logoutWaringDialogOpenState.value = false
                 }, onOk = {
                     logoutWaringDialogOpenState.value = false
@@ -117,7 +118,7 @@ fun MinePage() {
                 })
             }
             Spacer(modifier = Modifier.height(20.dp))
-            SettingItemView(title = "退出登录", icon = Icons.Default.ExitToApp) {
+            SettingItemView(title = stringResource(R.string.logout), icon = Icons.Default.ExitToApp) {
                 logoutWaringDialogOpenState.value = true
             }
         }
@@ -159,19 +160,19 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
                     .wrapContentWidth()
                     .align(Alignment.CenterStart)
             ) {
-                Text(text = user?.userName.takeIf { it?.isNotBlank() == true } ?: "未登录",
+                Text(text = user?.userName.takeIf { it?.isNotBlank() == true } ?: stringResource(R.string.not_login),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.Black)
 
                 user?.registerTime.toDate().takeIf { it.isNotBlank() }?.let {
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(text = "注册日:${user?.registerTime.toDate()}", fontSize = 12.sp)
+                    Text(text = stringResource(R.string.register_date, user?.registerTime.toDate()), fontSize = 12.sp)
                 }
 
             }
             if (user == null) {
-                Text(text = "登录/注册",
+                Text(text = stringResource(R.string.login_or_register),
                     modifier = Modifier
                         .padding(end = 10.dp)
                         .wrapContentWidth()

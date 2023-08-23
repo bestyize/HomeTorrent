@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,7 +111,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "彩虹磁力",
+                text = stringResource(R.string.app_name),
                 fontWeight = FontWeight.Bold,
                 color = BrandPink,
                 fontSize = 18.sp,
@@ -129,7 +130,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     userName.value = it
                 }, label = {
                     Text(
-                        text = "用户名", color = BrandPink, fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.username), color = BrandPink, fontWeight = FontWeight.Bold
                     )
                 }, colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = BrandPink,
@@ -145,7 +146,9 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 password.value = it
             }, label = {
                 Text(
-                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) "新密码" else "密码",
+                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) stringResource(R.string.new_password) else stringResource(
+                        R.string.password
+                    ),
                     color = BrandPink,
                     fontWeight = FontWeight.Bold
                 )
@@ -177,10 +180,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     verifyCode.value = it
                 }, label = {
                     Text(
-                        text = "验证码", color = BrandPink, fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.verify_code), color = BrandPink, fontWeight = FontWeight.Bold
                     )
                 }, trailingIcon = {
-                    Text(text = "发送",
+                    Text(text = stringResource(R.string.send),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
@@ -234,9 +237,9 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
             ) {
                 val txt = when (pageState.value) {
-                    LoginPageAction.REGISTER -> "注册"
-                    LoginPageAction.LOGIN -> "登录"
-                    LoginPageAction.MODIFY_PASSWORD -> "修改/找回密码"
+                    LoginPageAction.REGISTER -> stringResource(R.string.register)
+                    LoginPageAction.LOGIN -> stringResource(R.string.login)
+                    LoginPageAction.MODIFY_PASSWORD -> stringResource(R.string.modify_or_find_password)
                 }
                 Text(text = txt)
             }
@@ -248,7 +251,9 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .wrapContentHeight()
             ) {
                 if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
-                    Text(if (pageState.value == LoginPageAction.REGISTER) "切换登录" else "切换注册",
+                    Text(if (pageState.value == LoginPageAction.REGISTER) stringResource(R.string.switch_login) else stringResource(
+                        R.string.switch_register
+                    ),
                         modifier = Modifier
                             .wrapContentWidth()
                             .align(Alignment.CenterEnd)
@@ -261,7 +266,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                             })
                 }
 
-                Text(text = "找回/修改密码",
+                Text(text = stringResource(R.string.modify_or_find_password),
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.CenterStart)
@@ -274,7 +279,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
         }
 
         Text(
-            text = "登录后可解锁更多功能",
+            text = stringResource(R.string.login_to_unlock_more_function),
             color = Color.Gray,
             modifier = Modifier
                 .padding(bottom = 20.dp)

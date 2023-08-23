@@ -7,7 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import com.home.baseapp.app.HomeApp
+import com.home.torrent.R
 import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.main.model.HomeAppConfig
 import com.home.torrent.main.page.splash.service.SplashService
@@ -30,14 +32,14 @@ fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
     appConfig.value?.let { config ->
         if (config.forbidden) {
             onShow.invoke()
-            CommonAlertDialog(title = "温馨提示", content = "软件暂不可用", onOk = {
+            CommonAlertDialog(title = stringResource(R.string.warning), content = stringResource(R.string.not_valid_now), onOk = {
                 exitProcess(0)
             }, cancelText = null)
         } else if (config.newVersionCode > HomeApp.versionCode) {
             onShow.invoke()
             CommonAlertDialog(title = config.updateTitle,
                 content = config.updateMessage,
-                cancelText = if (config.updateForce) null else "取消",
+                cancelText = if (config.updateForce) null else stringResource(R.string.cancel),
                 onOk = {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(config.updateUrl)))
                 },

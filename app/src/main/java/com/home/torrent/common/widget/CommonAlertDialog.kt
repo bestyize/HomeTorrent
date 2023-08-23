@@ -22,12 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.home.torrent.R
 import com.home.torrent.ui.theme.LightGrayBackground
 
 /**
@@ -39,10 +41,10 @@ import com.home.torrent.ui.theme.LightGrayBackground
 @Composable
 @Preview
 fun CommonAlertDialog(
-    title: String = "提示",
+    title: String = stringResource(R.string.notice),
     content: String = "",
-    okText: String? = "确定",
-    cancelText: String? = "取消",
+    okText: String? = stringResource(R.string.ok),
+    cancelText: String? = stringResource(R.string.cancel),
     onOk: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {
@@ -104,7 +106,7 @@ fun CommonAlertDialog(
                     .padding(horizontal = 10.dp)
             ) {
                 cancelText?.let {
-                    Text(text = "取消",
+                    Text(text = cancelText,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
@@ -126,7 +128,7 @@ fun CommonAlertDialog(
                             .background(LightGrayBackground)
                             .height(20.dp)
                     )
-                    Text(text = "确定",
+                    Text(text = okText,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,

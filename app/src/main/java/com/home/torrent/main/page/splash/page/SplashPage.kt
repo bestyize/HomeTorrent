@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
         }
         SkipButton(
             modifier = Modifier.align(Alignment.TopEnd),
-            skipText = "跳过 ${timeLeft.intValue}",
+            skipText = stringResource(R.string.skip) + " ${timeLeft.intValue}",
             onClose = {
                 if (countDownState.value) {
                     onClose.invoke()
@@ -85,7 +86,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
                 contentDescription = "",
                 modifier = Modifier.width(180.dp)
             )
-            TitleHeader("彩虹磁力", color = BrandPink, backgroundColor = Color.Transparent)
+            TitleHeader(stringResource(R.string.app_name), color = BrandPink, backgroundColor = Color.Transparent)
         }
 
     }
@@ -99,7 +100,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
 
 @Composable
 private fun SkipButton(
-    modifier: Modifier = Modifier, skipText: String = "跳过", onClose: () -> Unit = {}
+    modifier: Modifier = Modifier, skipText: String = stringResource(R.string.skip), onClose: () -> Unit = {}
 ) {
     Box(
         modifier = modifier
