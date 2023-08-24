@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.home.torrent.ui.theme.BrandRed
+import com.home.torrent.ui.theme.LocalColors
 
 /**
  * @author: read
@@ -24,18 +24,24 @@ import com.home.torrent.ui.theme.BrandRed
  */
 
 @Composable
-fun SwitchSettingView(title: String, checked: Boolean, onClick: (Boolean) -> Unit) {
+fun SwitchSettingView(
+    title: String = "",
+    titleColor: Color = LocalColors.current.Text1,
+    backgroundColor: Color = LocalColors.current.Bg1,
+    checked: Boolean = false,
+    onClick: (Boolean) -> Unit = {}
+) {
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(Color.White)
+            .background(backgroundColor)
     ) {
         Text(
             text = title,
             fontSize = 16.sp,
-            color = Color.Black,
+            color = titleColor,
             modifier = Modifier
                 .padding(16.dp)
                 .wrapContentHeight()
@@ -43,19 +49,16 @@ fun SwitchSettingView(title: String, checked: Boolean, onClick: (Boolean) -> Uni
                 .align(Alignment.CenterStart)
         )
         Switch(
-            checked = checked,
-            onCheckedChange = {
+            checked = checked, onCheckedChange = {
                 onClick.invoke(it)
-            },
-            colors = SwitchDefaults.colors(
+            }, colors = SwitchDefaults.colors(
                 uncheckedBorderColor = Color.Transparent,
-                uncheckedThumbColor = Color.White,
+                uncheckedThumbColor = LocalColors.current.Wh0_s,
                 checkedBorderColor = Color.Transparent,
                 checkedThumbColor = Color.White,
-                checkedTrackColor = BrandRed,
+                checkedTrackColor = LocalColors.current.Brand_pink,
                 checkedIconColor = Color.Transparent
-            ),
-            modifier = Modifier
+            ), modifier = Modifier
                 .padding(horizontal = 10.dp)
                 .align(Alignment.CenterEnd)
         )

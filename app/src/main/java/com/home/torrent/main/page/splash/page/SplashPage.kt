@@ -86,7 +86,11 @@ fun SplashPage(onClose: () -> Unit = {}) {
                 contentDescription = "",
                 modifier = Modifier.width(180.dp)
             )
-            TitleHeader(stringResource(R.string.app_name), color = BrandPink, backgroundColor = Color.Transparent)
+            TitleHeader(
+                stringResource(R.string.app_name),
+                color = BrandPink,
+                backgroundColor = Color.Transparent
+            )
         }
 
     }
@@ -100,7 +104,9 @@ fun SplashPage(onClose: () -> Unit = {}) {
 
 @Composable
 private fun SkipButton(
-    modifier: Modifier = Modifier, skipText: String = stringResource(R.string.skip), onClose: () -> Unit = {}
+    modifier: Modifier = Modifier,
+    skipText: String = stringResource(R.string.skip),
+    onClose: () -> Unit = {}
 ) {
     Box(
         modifier = modifier

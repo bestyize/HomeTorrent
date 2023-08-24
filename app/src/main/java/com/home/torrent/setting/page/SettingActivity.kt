@@ -4,18 +4,21 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.home.torrent.ui.theme.AppTheme
+import com.home.torrent.ui.theme.LocalColors
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface(
-                modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
-            ) {
-                MainSettingPage()
+            AppTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(), color = LocalColors.current.Bg2
+                ) {
+                    MainSettingPage()
+                }
             }
         }
     }

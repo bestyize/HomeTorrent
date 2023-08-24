@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.home.torrent.R
 import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.setting.widget.SwitchSettingView
-import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 import com.tencent.mmkv.MMKV
 
 /**
@@ -35,11 +35,15 @@ fun MainSettingPage() {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            TitleHeader(stringResource(R.string.setting))
+            TitleHeader(
+                stringResource(R.string.setting),
+                color = LocalColors.current.Text1,
+                backgroundColor = LocalColors.current.Bg1
+            )
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(20.dp),
                 modifier = Modifier
-                    .background(LightGrayBackground)
+                    .background(LocalColors.current.Bg2)
                     .fillMaxWidth()
                     .fillMaxHeight()
             ) {
@@ -55,8 +59,7 @@ fun MainSettingPage() {
                     SwitchSettingView(
                         title = if (onlineState.value) stringResource(R.string.online_search) else stringResource(
                             R.string.offline_search
-                        ),
-                        checked = onlineState.value
+                        ), checked = onlineState.value
                     ) {
                         MMKV.defaultMMKV().encode("torrent_api_use_local", !it)
                         onlineState.value = it
