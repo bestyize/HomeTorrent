@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.home.torrent.ui.theme.LocalColors
 
 /**
  * @author: read
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 @Preview
 fun SettingItemView(
     title: String = "",
+    titleColor: Color = LocalColors.current.Text1,
     icon: ImageVector = Icons.Default.KeyboardArrowRight,
     onClick: () -> Unit = {}
 ) {
@@ -38,20 +40,21 @@ fun SettingItemView(
         .padding(5.dp)
         .fillMaxWidth()
         .wrapContentHeight()
-        .background(color = Color.White, shape = RoundedCornerShape(5.dp))
+        .background(color = LocalColors.current.Bg1, shape = RoundedCornerShape(5.dp))
         .clickable {
             onClick.invoke()
         }) {
         Text(
             text = title,
             fontSize = 16.sp,
-            color = Color.Black,
+            color = titleColor,
             modifier = Modifier
                 .padding(15.dp)
                 .wrapContentSize()
         )
         Icon(
             imageVector = icon,
+            tint = LocalColors.current.Text1,
             contentDescription = "",
             modifier = Modifier
                 .padding(end = 15.dp)

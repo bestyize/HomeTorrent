@@ -29,6 +29,7 @@ import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
+import com.home.torrent.ui.theme.LocalColors
 
 @Composable
 fun TorrentCollectPage() {
@@ -51,7 +52,7 @@ fun TorrentCollectPage() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(0.5.dp)
-                    .background(Color.LightGray)
+                    .background(LocalColors.current.Bg2)
                     .align(
                         Alignment.BottomCenter
                     )

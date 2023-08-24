@@ -61,6 +61,7 @@ import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentListView
+import com.home.torrent.ui.theme.LocalColors
 import kotlinx.coroutines.launch
 
 
@@ -90,7 +91,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
+            .background(LocalColors.current.Bg1)
     ) {
         TextField(value = query.value,
             onValueChange = {
@@ -101,11 +102,12 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 vm.updateKeyword(query.value)
             }),
             maxLines = 3,
-            placeholder = { Text(text = stringResource(id = R.string.search_more_torrent)) },
+            placeholder = { Text(text = stringResource(id = R.string.search_more_torrent), color = LocalColors.current.Text1) },
             leadingIcon = {
                 if (query.value.isBlank()) {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = stringResource(R.string.search),
+                        tint = LocalColors.current.Text1,
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
@@ -115,6 +117,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = stringResource(R.string.clear),
+                        tint = LocalColors.current.Text1,
                         modifier = Modifier.padding(start = 16.dp)
                     )
                 }
@@ -124,7 +127,7 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 Text(text = stringResource(R.string.search),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Red,
+                    color = LocalColors.current.Brand_pink,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(end = 18.dp)
@@ -138,6 +141,8 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             colors = TextFieldDefaults.colors(
                 disabledTextColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
+                focusedContainerColor = LocalColors.current.Bg2,
+                unfocusedContainerColor = LocalColors.current.Bg2,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
@@ -170,6 +175,7 @@ fun TorrentSearchContentArea(
         ScrollableTabRow(selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
+            containerColor = LocalColors.current.Bg1,
             indicator = {
                 Spacer(
                     modifier = Modifier
@@ -183,7 +189,7 @@ fun TorrentSearchContentArea(
             tabs.forEachIndexed { index, source ->
                 val isSelected = index == pageState.currentPage
                 Text(text = source.title,
-                    color = if (isSelected) Color.Red else Color.Black,
+                    color = if (isSelected) LocalColors.current.Brand_pink else LocalColors.current.Text1,
                     fontSize = if (isSelected) 16.sp else 15.sp,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     textAlign = TextAlign.Center,

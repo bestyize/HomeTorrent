@@ -45,6 +45,7 @@ import com.home.baseapp.app.toast.toast
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
+import com.home.torrent.ui.theme.LocalColors
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +70,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(Color.White, RoundedCornerShape(10.dp)),
+                .background(LocalColors.current.Bg1, RoundedCornerShape(10.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
@@ -77,7 +78,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                     text = stringResource(R.string.notice),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = LocalColors.current.Text1,
                     modifier = Modifier.padding(vertical = 15.dp)
                 )
                 Spacer(
@@ -85,7 +86,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                         .fillMaxWidth(0.8f)
                         .height(1.dp)
                         .padding(vertical = 10.dp)
-                        .background(Color.LightGray)
+                        .background(LocalColors.current.Bg2)
                 )
             }
             item {
@@ -107,7 +108,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                         .fillMaxWidth(0.8f)
                         .height(1.dp)
                         .padding(vertical = 10.dp)
-                        .background(Color.Gray)
+                        .background(LocalColors.current.Bg2)
                 )
                 Text(text = stringResource(R.string.copy),
                     modifier = Modifier
@@ -121,7 +122,7 @@ fun CopyAddressDialog(copyTorrent: TorrentInfo, magnetType: Boolean = true, onCo
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = Color.Black
+                    color = LocalColors.current.Text1
                 )
             }
 
@@ -155,7 +156,7 @@ fun TorrentSearchItemView(
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()
-        .background(Color.White)
+        .background(LocalColors.current.Bg1)
         .clickable {
             onClicked.invoke(data)
         }) {
@@ -169,7 +170,7 @@ fun TorrentSearchItemView(
                 text = "$index",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.Black,
+                color = LocalColors.current.Text1,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(10.dp)
@@ -187,7 +188,7 @@ fun TorrentSearchItemView(
                     text = data.title ?: "",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = Color.Black,
+                    color = LocalColors.current.Text1,
                     textAlign = TextAlign.Left,
                 )
                 Spacer(
@@ -281,7 +282,7 @@ fun TorrentItemTag(title: String, data: String) {
             text = title,
             fontSize = 11.sp,
             fontWeight = FontWeight.Normal,
-            color = Color.Black,
+            color = LocalColors.current.Text1,
             textAlign = TextAlign.Left,
             lineHeight = 11.sp
         )
@@ -290,7 +291,7 @@ fun TorrentItemTag(title: String, data: String) {
             fontSize = 11.sp,
             lineHeight = 11.sp,
             fontWeight = FontWeight.Normal,
-            color = Color.DarkGray,
+            color = LocalColors.current.Text1,
             textAlign = TextAlign.Left
         )
     }

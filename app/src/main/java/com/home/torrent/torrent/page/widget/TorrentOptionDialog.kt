@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.baseapp.app.HomeApp
 import com.home.torrent.R
+import com.home.torrent.ui.theme.LocalColors
 
 /**
  * @author: read
@@ -36,45 +37,50 @@ internal fun TorrentClickOptionDialog(
     options: Array<TorrentClickOption> = TorrentClickOption.values()
 ) {
 
-    ModalBottomSheet(onDismissRequest = {
-        onClicked.invoke(TorrentClickOption.CANCEL)
-    }, content = {
-        Spacer(
-            modifier = Modifier
-                .padding(vertical = 10.dp)
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(0.8f)
-                .height(0.5.dp)
-                .background(Color.LightGray)
-        )
-        options.forEach { option ->
-            Text(text = option.value,
-                color = Color.Black,
-                fontSize = 17.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(vertical = 10.dp)
-                    .fillMaxWidth(0.8f)
-                    .wrapContentHeight()
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(indication = null, interactionSource = remember {
-                        MutableInteractionSource()
-                    }) {
-                        onClicked.invoke(option)
-                    })
+    ModalBottomSheet(
+        onDismissRequest = {
+            onClicked.invoke(TorrentClickOption.CANCEL)
+        },
+        content = {
             Spacer(
                 modifier = Modifier
                     .padding(vertical = 10.dp)
                     .align(Alignment.CenterHorizontally)
                     .fillMaxWidth(0.8f)
                     .height(0.5.dp)
-                    .background(if (option != TorrentClickOption.CANCEL) Color.LightGray else Color.Transparent)
+                    .background(LocalColors.current.Bg2)
             )
+            options.forEach { option ->
+                Text(text = option.value,
+                    color = LocalColors.current.Text1,
+                    fontSize = 17.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .fillMaxWidth(0.8f)
+                        .wrapContentHeight()
+                        .align(Alignment.CenterHorizontally)
+                        .clickable(indication = null, interactionSource = remember {
+                            MutableInteractionSource()
+                        }) {
+                            onClicked.invoke(option)
+                        })
+                Spacer(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(0.8f)
+                        .height(0.5.dp)
+                        .background(if (option != TorrentClickOption.CANCEL) LocalColors.current.Bg2 else Color.Transparent)
+                )
 
-        }
-    }, windowInsets = WindowInsets(0.dp), modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()
+            }
+        },
+        windowInsets = WindowInsets(0.dp),
+        containerColor = LocalColors.current.Bg1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
     )
 }
 
@@ -82,7 +88,9 @@ internal enum class TorrentClickOption(val value: String) {
     GET_MAGNET_URL(HomeApp.context.getString(R.string.get_magnet_url)), GET_TORRENT_URL(
         HomeApp.context.getString(
             R.string.get_torrent_url
-        )), COLLECT_CLOUD(HomeApp.context.getString(R.string.collect_to_cloud)), CANCEL(
+        )
+    ),
+    COLLECT_CLOUD(HomeApp.context.getString(R.string.collect_to_cloud)), CANCEL(
         HomeApp.context.getString(R.string.cancel)
     )
 }

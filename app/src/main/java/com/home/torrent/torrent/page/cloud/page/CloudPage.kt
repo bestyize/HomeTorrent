@@ -49,7 +49,7 @@ import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
 import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentItemTag
-import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.util.toDate
 
 /**
@@ -139,7 +139,7 @@ private fun CloudTorrentListView(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
-            .background(LightGrayBackground)
+            .background(LocalColors.current.Bg2)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(count = dataList.size, key = {
@@ -179,7 +179,7 @@ private fun CloudTorrentItemView(
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()
-        .background(Color.White)
+        .background(LocalColors.current.Bg1)
         .clickable {
             onClick.invoke(data)
         }) {
@@ -193,7 +193,7 @@ private fun CloudTorrentItemView(
                 text = "$index",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color.Black,
+                color = LocalColors.current.Text1,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(10.dp)
@@ -211,7 +211,7 @@ private fun CloudTorrentItemView(
                     text = data.title ?: "",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Normal,
-                    color = Color.Black,
+                    color = LocalColors.current.Text1,
                     textAlign = TextAlign.Left,
                 )
                 Spacer(

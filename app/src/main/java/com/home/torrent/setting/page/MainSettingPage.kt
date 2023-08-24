@@ -64,6 +64,38 @@ fun MainSettingPage() {
                         MMKV.defaultMMKV().encode("torrent_api_use_local", !it)
                         onlineState.value = it
                     }
+
+                    val themeModeAuto = remember {
+                        mutableStateOf(MMKV.defaultMMKV().decodeBool("theme_mode_auto", true))
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(10.dp)
+                    )
+                    SwitchSettingView(
+                        title = "深色跟随系统", checked = themeModeAuto.value
+                    ) {
+                        MMKV.defaultMMKV().encode("theme_mode_auto", it)
+                        themeModeAuto.value = it
+                    }
+
+                    val darkMode = remember {
+                        mutableStateOf(MMKV.defaultMMKV().decodeBool("theme_mode_user_dark", false))
+                    }
+                    if (!themeModeAuto.value) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(10.dp)
+                        )
+                        SwitchSettingView(
+                            title = "深色模式", checked = darkMode.value
+                        ) {
+                            MMKV.defaultMMKV().encode("theme_mode_user_dark", it)
+                            darkMode.value = it
+                        }
+                    }
                 }
             }
         }

@@ -38,8 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
-import com.home.torrent.ui.theme.BrandPink
-import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.vm.UserViewModel
 import com.home.torrent.util.toIntOrDefault
 
@@ -84,7 +83,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(LocalColors.current.Bg1)
     ) {
         Box(
             modifier = Modifier
@@ -93,6 +92,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
         ) {
             Icon(imageVector = Icons.Default.Close,
                 contentDescription = "Close",
+                tint = LocalColors.current.Text1,
                 modifier = Modifier
                     .align(
                         Alignment.CenterEnd
@@ -113,7 +113,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
             Text(
                 text = stringResource(R.string.app_name),
                 fontWeight = FontWeight.Bold,
-                color = BrandPink,
+                color = LocalColors.current.Brand_pink,
                 fontSize = 18.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
@@ -130,13 +130,17 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     userName.value = it
                 }, label = {
                     Text(
-                        text = stringResource(R.string.username), color = BrandPink, fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.username),
+                        color = LocalColors.current.Brand_pink,
+                        fontWeight = FontWeight.Bold
                     )
                 }, colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = BrandPink,
+                    focusedBorderColor = LocalColors.current.Brand_pink,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedContainerColor = LightGrayBackground,
-                    unfocusedContainerColor = LightGrayBackground
+                    focusedContainerColor = LocalColors.current.Bg2,
+                    unfocusedContainerColor = LocalColors.current.Bg2,
+                    focusedTextColor = LocalColors.current.Text1,
+                    unfocusedTextColor = LocalColors.current.Text1
                 ), modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -146,17 +150,19 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 password.value = it
             }, label = {
                 Text(
-                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) stringResource(R.string.new_password) else stringResource(
+                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) stringResource(
+                        R.string.new_password
+                    ) else stringResource(
                         R.string.password
-                    ),
-                    color = BrandPink,
-                    fontWeight = FontWeight.Bold
+                    ), color = LocalColors.current.Brand_pink, fontWeight = FontWeight.Bold
                 )
             }, colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = BrandPink,
-                focusedContainerColor = LightGrayBackground,
-                unfocusedContainerColor = LightGrayBackground
+                focusedBorderColor = LocalColors.current.Brand_pink,
+                focusedContainerColor = LocalColors.current.Bg2,
+                unfocusedContainerColor = LocalColors.current.Bg2,
+                focusedTextColor = LocalColors.current.Text1,
+                unfocusedTextColor = LocalColors.current.Text1
             ), modifier = Modifier.fillMaxWidth()
             )
 
@@ -166,13 +172,17 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     email.value = it
                 }, label = {
                     Text(
-                        text = "邮箱", color = BrandPink, fontWeight = FontWeight.Bold
+                        text = "邮箱",
+                        color = LocalColors.current.Brand_pink,
+                        fontWeight = FontWeight.Bold
                     )
                 }, colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = BrandPink,
-                    focusedContainerColor = LightGrayBackground,
-                    unfocusedContainerColor = LightGrayBackground
+                    focusedBorderColor = LocalColors.current.Brand_pink,
+                    focusedContainerColor = LocalColors.current.Bg2,
+                    unfocusedContainerColor = LocalColors.current.Bg2,
+                    focusedTextColor = LocalColors.current.Text1,
+                    unfocusedTextColor = LocalColors.current.Text1
                 ), modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(15.dp))
@@ -180,12 +190,15 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     verifyCode.value = it
                 }, label = {
                     Text(
-                        text = stringResource(R.string.verify_code), color = BrandPink, fontWeight = FontWeight.Bold
+                        text = stringResource(R.string.verify_code),
+                        color = LocalColors.current.Brand_pink,
+                        fontWeight = FontWeight.Bold
                     )
                 }, trailingIcon = {
                     Text(text = stringResource(R.string.send),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
+                        color = LocalColors.current.Text1,
                         modifier = Modifier
                             .padding(end = 20.dp)
                             .clickable {
@@ -193,9 +206,11 @@ fun LoginPage(onClose: () -> Unit = {}) {
                             })
                 }, colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = BrandPink,
-                    focusedContainerColor = LightGrayBackground,
-                    unfocusedContainerColor = LightGrayBackground
+                    focusedBorderColor = LocalColors.current.Brand_pink,
+                    focusedContainerColor = LocalColors.current.Bg2,
+                    unfocusedContainerColor = LocalColors.current.Bg2,
+                    focusedTextColor = LocalColors.current.Text1,
+                    unfocusedTextColor = LocalColors.current.Text1
                 ), modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -234,14 +249,19 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BrandPink)
+                colors = ButtonDefaults.buttonColors(containerColor = LocalColors.current.Brand_pink)
             ) {
                 val txt = when (pageState.value) {
                     LoginPageAction.REGISTER -> stringResource(R.string.register)
                     LoginPageAction.LOGIN -> stringResource(R.string.login)
                     LoginPageAction.MODIFY_PASSWORD -> stringResource(R.string.modify_or_find_password)
                 }
-                Text(text = txt)
+                Text(
+                    text = txt,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = LocalColors.current.Text_white
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -251,9 +271,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .wrapContentHeight()
             ) {
                 if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
-                    Text(if (pageState.value == LoginPageAction.REGISTER) stringResource(R.string.switch_login) else stringResource(
+                    Text(text = if (pageState.value == LoginPageAction.REGISTER) stringResource(R.string.switch_login) else stringResource(
                         R.string.switch_register
                     ),
+                        color = LocalColors.current.Text1,
                         modifier = Modifier
                             .wrapContentWidth()
                             .align(Alignment.CenterEnd)
@@ -267,6 +288,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 }
 
                 Text(text = stringResource(R.string.modify_or_find_password),
+                    color = LocalColors.current.Text_white,
                     modifier = Modifier
                         .wrapContentWidth()
                         .align(Alignment.CenterStart)
@@ -280,7 +302,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
 
         Text(
             text = stringResource(R.string.login_to_unlock_more_function),
-            color = Color.Gray,
+            color = LocalColors.current.Text1,
             modifier = Modifier
                 .padding(bottom = 20.dp)
                 .align(Alignment.BottomCenter)

@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.home.torrent.R
-import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 
 /**
  * @author: read
@@ -61,14 +60,14 @@ fun CommonAlertDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(color = Color.White, shape = RoundedCornerShape(8.dp)),
+                .background(color = LocalColors.current.Bg1, shape = RoundedCornerShape(8.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = LocalColors.current.Text1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(vertical = 20.dp)
@@ -79,13 +78,13 @@ fun CommonAlertDialog(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .height(1.dp)
-                    .background(LightGrayBackground)
+                    .background(LocalColors.current.Bg2)
             )
 
             Text(
                 text = content,
                 fontSize = 14.sp,
-                color = Color.Black,
+                color = LocalColors.current.Text1,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(20.dp)
@@ -97,7 +96,7 @@ fun CommonAlertDialog(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .height(1.dp)
-                    .background(LightGrayBackground)
+                    .background(LocalColors.current.Bg2)
             )
 
             Row(
@@ -109,7 +108,7 @@ fun CommonAlertDialog(
                     Text(text = cancelText,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = LocalColors.current.Text1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(vertical = 20.dp)
@@ -125,13 +124,13 @@ fun CommonAlertDialog(
                     Spacer(
                         modifier = Modifier
                             .width(0.5.dp)
-                            .background(LightGrayBackground)
+                            .background(LocalColors.current.Bg2)
                             .height(20.dp)
                     )
                     Text(text = okText,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = LocalColors.current.Text1,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .padding(vertical = 20.dp)

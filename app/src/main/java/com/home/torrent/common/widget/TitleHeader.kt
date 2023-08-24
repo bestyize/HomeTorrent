@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.R
+import com.home.torrent.ui.theme.LocalColors
 
 /**
  * @author: read
@@ -28,8 +29,8 @@ import com.home.torrent.R
 @Preview
 internal fun TitleHeader(
     title: String = stringResource(R.string.title),
-    color: Color = Color.Black,
-    backgroundColor: Color = Color.White
+    color: Color = LocalColors.current.Text1,
+    backgroundColor: Color = LocalColors.current.Bg1
 ) {
     Box(
         modifier = Modifier

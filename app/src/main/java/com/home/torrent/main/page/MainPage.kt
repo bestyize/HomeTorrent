@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +29,7 @@ import com.home.torrent.R
 import com.home.torrent.torrent.page.cloud.page.CloudPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
-import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.mine.page.MinePage
 import kotlinx.coroutines.launch
 
@@ -39,7 +38,8 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview
 fun MainPage() {
-    val tabs = listOf(stringResource(R.string.main_page),
+    val tabs = listOf(
+        stringResource(R.string.main_page),
         stringResource(R.string.collect), stringResource(R.string.cloud),
         stringResource(R.string.my)
     )
@@ -57,7 +57,7 @@ fun MainPage() {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(LightGrayBackground),
+                    .background(LocalColors.current.Bg2),
                 contentAlignment = Alignment.Center
             ) {
                 when (it) {
@@ -69,8 +69,10 @@ fun MainPage() {
             }
         }
 
-        TabRow(selectedTabIndex = 0,
+        TabRow(
+            selectedTabIndex = 0,
             indicator = {},
+            containerColor = LocalColors.current.Bg1,
             divider = {},
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -83,7 +85,7 @@ fun MainPage() {
                 Text(
                     text = title,
                     textAlign = TextAlign.Center,
-                    color = if (isSelected) Color.Red else Color.Black,
+                    color = if (isSelected) LocalColors.current.Brand_pink else LocalColors.current.Text1,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = if (isSelected) 18.sp else 17.sp,
                     modifier = Modifier.clickable(onClick = {
@@ -99,6 +101,3 @@ fun MainPage() {
 
     }
 }
-
-
-private const val TAG = "[Main]MainPage"

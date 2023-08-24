@@ -34,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,10 +46,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.home.torrent.R
-import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.common.widget.CommonAlertDialog
+import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.ui.theme.LightGrayBackground
+import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
 import com.home.torrent.util.toDate
@@ -93,7 +93,7 @@ fun MinePage() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(LightGrayBackground),
+            .background(LocalColors.current.Bg2),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.statusBarsPadding())
@@ -110,15 +110,21 @@ fun MinePage() {
                 mutableStateOf(false)
             }
             if (logoutWaringDialogOpenState.value) {
-                CommonAlertDialog(content = stringResource(R.string.do_you_want_to_logout), onCancel = {
-                    logoutWaringDialogOpenState.value = false
-                }, onOk = {
-                    logoutWaringDialogOpenState.value = false
-                    userVm.logout()
-                })
+                CommonAlertDialog(
+                    content = stringResource(R.string.do_you_want_to_logout),
+                    onCancel = {
+                        logoutWaringDialogOpenState.value = false
+                    },
+                    onOk = {
+                        logoutWaringDialogOpenState.value = false
+                        userVm.logout()
+                    })
             }
             Spacer(modifier = Modifier.height(20.dp))
-            SettingItemView(title = stringResource(R.string.logout), icon = Icons.Default.ExitToApp) {
+            SettingItemView(
+                title = stringResource(R.string.logout),
+                icon = Icons.Default.ExitToApp
+            ) {
                 logoutWaringDialogOpenState.value = true
             }
         }
@@ -135,7 +141,7 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(Color.White, RoundedCornerShape(5.dp))
+            .background(LocalColors.current.Bg1, RoundedCornerShape(5.dp))
             .padding(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -160,19 +166,25 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
                     .wrapContentWidth()
                     .align(Alignment.CenterStart)
             ) {
-                Text(text = user?.userName.takeIf { it?.isNotBlank() == true } ?: stringResource(R.string.not_login),
+                Text(text = user?.userName.takeIf { it?.isNotBlank() == true }
+                    ?: stringResource(R.string.not_login),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.Black)
+                    color = LocalColors.current.Text1)
 
                 user?.registerTime.toDate().takeIf { it.isNotBlank() }?.let {
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(text = stringResource(R.string.register_date, user?.registerTime.toDate()), fontSize = 12.sp)
+                    Text(
+                        text = stringResource(R.string.register_date, user?.registerTime.toDate()),
+                        fontSize = 12.sp,
+                        color = LocalColors.current.Text4
+                    )
                 }
 
             }
             if (user == null) {
                 Text(text = stringResource(R.string.login_or_register),
+                    color = LocalColors.current.Text1,
                     modifier = Modifier
                         .padding(end = 10.dp)
                         .wrapContentWidth()
