@@ -22,8 +22,8 @@ internal object HttpUtil {
             val url = URL(link)
             val conn = url.openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
-            conn.readTimeout = 5000
-            conn.connectTimeout = 5000
+            conn.readTimeout = 8000
+            conn.connectTimeout = 8000
             headerMap.putAll(commonHeaders)
             for (key in headerMap.keys) {
                 conn.addRequestProperty(key, headerMap[key])

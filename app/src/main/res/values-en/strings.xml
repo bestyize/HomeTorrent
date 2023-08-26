@@ -54,4 +54,6 @@
     <string name="get_torrent_url">Get Torrent Url</string>
     <string name="collect_to_cloud">Collect To Cloud</string>
     <string name="uid">uid:%1$s</string>
+    <string name="theme_color_follow_system_setting">Auto Theme Color</string>
+    <string name="dark_mode">Dark Mode</string>
 </resources>

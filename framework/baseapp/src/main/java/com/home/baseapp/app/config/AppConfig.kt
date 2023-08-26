@@ -1,5 +1,9 @@
 package com.home.baseapp.app.config
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.tencent.mmkv.MMKV
 import java.util.Locale
 
@@ -17,3 +21,6 @@ val appHost by lazy {
 val isEn by lazy {
     Locale.getDefault().language.equals("en")
 }
+
+// At the top level of your kotlin file:
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")

@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ScrollableTabRow
@@ -93,7 +92,8 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             .fillMaxWidth()
             .background(LocalColors.current.Bg1)
     ) {
-        TextField(value = query.value,
+        TextField(
+            value = query.value,
             onValueChange = {
                 query.value = it
             },
@@ -102,26 +102,21 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                 vm.updateKeyword(query.value)
             }),
             maxLines = 3,
-            placeholder = { Text(text = stringResource(id = R.string.search_more_torrent), color = LocalColors.current.Text1) },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search_more_torrent),
+                    color = LocalColors.current.Text1
+                )
+            },
             leadingIcon = {
-                if (query.value.isBlank()) {
-                    Icon(imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(R.string.search),
-                        tint = LocalColors.current.Text1,
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .clickable {
-                                vm.updateKeyword("")
-                            })
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = stringResource(R.string.clear),
-                        tint = LocalColors.current.Text1,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-                }
-
+                Icon(imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search),
+                    tint = LocalColors.current.Brand_pink,
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .clickable {
+                            vm.updateKeyword("")
+                        })
             },
             trailingIcon = {
                 Text(text = stringResource(R.string.search),
@@ -139,6 +134,8 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
                         })
             },
             colors = TextFieldDefaults.colors(
+                focusedTextColor = LocalColors.current.Text1,
+                unfocusedTextColor = LocalColors.current.Text1,
                 disabledTextColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 focusedContainerColor = LocalColors.current.Bg3,
@@ -172,7 +169,8 @@ fun TorrentSearchContentArea(
     val scope = rememberCoroutineScope()
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScrollableTabRow(selectedTabIndex = pageState.currentPage,
+        ScrollableTabRow(
+            selectedTabIndex = pageState.currentPage,
             edgePadding = 0.dp,
             divider = {},
             containerColor = LocalColors.current.Bg1,

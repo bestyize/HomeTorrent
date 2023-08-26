@@ -18,8 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.home.torrent.R
 import com.home.torrent.common.widget.TitleHeader
+import com.home.torrent.setting.theme.ThemeId
+import com.home.torrent.setting.theme.ThemeManager
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.home.torrent.ui.theme.LocalColors
 import com.tencent.mmkv.MMKV
@@ -34,10 +37,12 @@ import com.tencent.mmkv.MMKV
 @Preview
 fun MainSettingPage() {
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(LocalColors.current.Bg1)
-        .statusBarsPadding()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LocalColors.current.Bg1)
+            .statusBarsPadding()
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleHeader(
                 stringResource(R.string.setting),
@@ -69,36 +74,29 @@ fun MainSettingPage() {
                         onlineState.value = it
                     }
 
-                    val themeModeAuto = remember {
-                        mutableStateOf(MMKV.defaultMMKV().decodeBool("theme_mode_auto", true))
-                    }
+                    val theme =
+                        ThemeManager.themeFlow.collectAsStateWithLifecycle(initialValue = ThemeId.AUTO)
                     Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(10.dp)
                     )
                     SwitchSettingView(
-                        title = "深色跟随系统", checked = themeModeAuto.value
+                        title = stringResource(R.string.theme_color_follow_system_setting), checked = theme.value == ThemeId.AUTO
                     ) {
-                        MMKV.defaultMMKV().encode("theme_mode_auto", it)
-                        MMKV.defaultMMKV().encode("theme_mode_user_dark", false)
-                        themeModeAuto.value = it
+                        ThemeManager.updateTheme(if (it) ThemeId.AUTO else ThemeId.DAY)
                     }
 
-                    val darkMode = remember {
-                        mutableStateOf(MMKV.defaultMMKV().decodeBool("theme_mode_user_dark", false))
-                    }
-                    if (!themeModeAuto.value) {
+                    if (theme.value != ThemeId.AUTO) {
                         Spacer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(10.dp)
                         )
                         SwitchSettingView(
-                            title = "深色模式", checked = darkMode.value
+                            title = stringResource(R.string.dark_mode), checked = theme.value == ThemeId.NIGHT
                         ) {
-                            MMKV.defaultMMKV().encode("theme_mode_user_dark", it)
-                            darkMode.value = it
+                            ThemeManager.updateTheme(if (it) ThemeId.NIGHT else ThemeId.DAY)
                         }
                     }
                 }
