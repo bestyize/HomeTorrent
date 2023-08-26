@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +34,10 @@ import com.tencent.mmkv.MMKV
 @Preview
 fun MainSettingPage() {
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(LocalColors.current.Bg1)
+        .statusBarsPadding()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleHeader(
                 stringResource(R.string.setting),
@@ -77,6 +81,7 @@ fun MainSettingPage() {
                         title = "深色跟随系统", checked = themeModeAuto.value
                     ) {
                         MMKV.defaultMMKV().encode("theme_mode_auto", it)
+                        MMKV.defaultMMKV().encode("theme_mode_user_dark", false)
                         themeModeAuto.value = it
                     }
 

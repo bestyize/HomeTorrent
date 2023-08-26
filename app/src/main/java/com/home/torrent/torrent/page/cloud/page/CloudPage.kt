@@ -290,7 +290,7 @@ private fun CopyAddressDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(Color.White, RoundedCornerShape(10.dp)),
+                .background(LocalColors.current.Bg1, RoundedCornerShape(10.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
@@ -298,7 +298,7 @@ private fun CopyAddressDialog(
                     text = "温馨提示",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = LocalColors.current.Text1,
                     modifier = Modifier.padding(vertical = 15.dp)
                 )
                 Spacer(
@@ -306,7 +306,7 @@ private fun CopyAddressDialog(
                         .fillMaxWidth(0.8f)
                         .height(1.dp)
                         .padding(vertical = 10.dp)
-                        .background(Color.LightGray)
+                        .background(LocalColors.current.Bg2)
                 )
             }
             item {
@@ -328,7 +328,7 @@ private fun CopyAddressDialog(
                         .fillMaxWidth(0.8f)
                         .height(1.dp)
                         .padding(vertical = 10.dp)
-                        .background(Color.Gray)
+                        .background(LocalColors.current.Bg2)
                 )
                 Text(text = "复制",
                     modifier = Modifier
@@ -342,7 +342,7 @@ private fun CopyAddressDialog(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = Color.Black
+                    color = LocalColors.current.Text1
                 )
             }
 

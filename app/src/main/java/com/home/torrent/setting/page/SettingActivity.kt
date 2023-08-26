@@ -19,7 +19,7 @@ class SettingActivity : AppCompatActivity() {
             val night = MMKV.defaultMMKV().decodeBool("theme_mode_user_dark", false)
             AppTheme(darkTheme = if (auto) isSystemInDarkTheme() else night) {
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = LocalColors.current.Bg2
+                    modifier = Modifier.fillMaxSize(), color = LocalColors.current.Bg1
                 ) {
                     MainSettingPage()
                 }

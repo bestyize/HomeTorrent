@@ -53,4 +53,5 @@
     <string name="get_magnet_url">Get Magnet Url</string>
     <string name="get_torrent_url">Get Torrent Url</string>
     <string name="collect_to_cloud">Collect To Cloud</string>
+    <string name="uid">uid:%1$s</string>
 </resources>

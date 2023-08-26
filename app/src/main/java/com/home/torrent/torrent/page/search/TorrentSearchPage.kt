@@ -141,8 +141,8 @@ fun TorrentSearchBar(query: MutableState<String>, vm: TorrentSearchViewModel) {
             colors = TextFieldDefaults.colors(
                 disabledTextColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
-                focusedContainerColor = LocalColors.current.Bg2,
-                unfocusedContainerColor = LocalColors.current.Bg2,
+                focusedContainerColor = LocalColors.current.Bg3,
+                unfocusedContainerColor = LocalColors.current.Bg3,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
@@ -181,7 +181,7 @@ fun TorrentSearchContentArea(
                     modifier = Modifier
                         .tabIndicatorOffset(it[pageState.currentPage])
                         .height(3.dp)
-                        .background(Color.Red, RoundedCornerShape(3.dp))
+                        .background(LocalColors.current.Brand_pink, RoundedCornerShape(3.dp))
                 )
             },
             modifier = Modifier.wrapContentWidth()

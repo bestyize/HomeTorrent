@@ -40,7 +40,8 @@ import kotlinx.coroutines.launch
 fun MainPage() {
     val tabs = listOf(
         stringResource(R.string.main_page),
-        stringResource(R.string.collect), stringResource(R.string.cloud),
+        stringResource(R.string.collect),
+        stringResource(R.string.cloud),
         stringResource(R.string.my)
     )
     val pagerState = rememberPagerState(initialPage = 0) {
@@ -50,6 +51,7 @@ fun MainPage() {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(LocalColors.current.Bg1)
             .statusBarsPadding()
     ) {
 
@@ -69,8 +71,7 @@ fun MainPage() {
             }
         }
 
-        TabRow(
-            selectedTabIndex = 0,
+        TabRow(selectedTabIndex = 0,
             indicator = {},
             containerColor = LocalColors.current.Bg1,
             divider = {},

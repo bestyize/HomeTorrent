@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,8 +19,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -110,8 +114,7 @@ fun MinePage() {
                 mutableStateOf(false)
             }
             if (logoutWaringDialogOpenState.value) {
-                CommonAlertDialog(
-                    content = stringResource(R.string.do_you_want_to_logout),
+                CommonAlertDialog(content = stringResource(R.string.do_you_want_to_logout),
                     onCancel = {
                         logoutWaringDialogOpenState.value = false
                     },
@@ -122,8 +125,7 @@ fun MinePage() {
             }
             Spacer(modifier = Modifier.height(20.dp))
             SettingItemView(
-                title = stringResource(R.string.logout),
-                icon = Icons.Default.ExitToApp
+                title = stringResource(R.string.logout), icon = Icons.Default.ExitToApp
             ) {
                 logoutWaringDialogOpenState.value = true
             }
@@ -134,6 +136,7 @@ fun MinePage() {
 }
 
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 @Preview
 fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
@@ -146,8 +149,7 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = user?.icon
-                ?: "https://profile-avatar.csdnimg.cn/01a036ff39944dd4861361d35979471d_qq_23594799.jpg!1",
+            model = user?.icon?.takeIf { it.isNotBlank() },
             placeholder = painterResource(id = R.drawable.logo),
             alignment = Alignment.Center,
             modifier = Modifier
@@ -171,15 +173,30 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = LocalColors.current.Text1)
+                Spacer(modifier = Modifier.height(5.dp))
+                FlowRow(modifier = Modifier.wrapContentSize()) {
+                    user?.uid?.let {
+                        Text(
+                            text = stringResource(R.string.uid, user.uid),
+                            fontSize = 12.sp,
+                            color = LocalColors.current.Text1
+                        )
+                    }
 
-                user?.registerTime.toDate().takeIf { it.isNotBlank() }?.let {
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = stringResource(R.string.register_date, user?.registerTime.toDate()),
-                        fontSize = 12.sp,
-                        color = LocalColors.current.Text4
-                    )
+                    user?.registerTime.toDate().takeIf { it.isNotBlank() }?.let {
+                        Spacer(modifier = Modifier
+                            .height(5.dp)
+                            .width(10.dp))
+                        Text(
+                            text = stringResource(
+                                R.string.register_date,
+                                user?.registerTime.toDate()
+                            ), fontSize = 12.sp, color = LocalColors.current.Text1
+                        )
+                    }
+
                 }
+
 
             }
             if (user == null) {

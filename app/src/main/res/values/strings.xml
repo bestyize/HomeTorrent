@@ -53,4 +53,5 @@
     <string name="get_magnet_url">获取磁力链接</string>
     <string name="get_torrent_url">获取种子地址</string>
     <string name="collect_to_cloud">收藏到云端</string>
+    <string name="uid">uid:%1$s</string>
 </resources>
