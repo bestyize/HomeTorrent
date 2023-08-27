@@ -12,7 +12,7 @@ import com.home.baseapp.app.HomeApp
 import com.home.torrent.R
 import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.main.model.HomeAppConfig
-import com.home.torrent.main.page.splash.service.SplashService
+import com.home.torrent.main.service.HomeAppConfigService
 import kotlin.system.exitProcess
 
 /**
@@ -50,6 +50,6 @@ fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
     }
 
     LaunchedEffect(key1 = "config") {
-        appConfig.value = SplashService.requestAppConfig()
+        appConfig.value = HomeAppConfigService.requestAppConfig()
     }
 }

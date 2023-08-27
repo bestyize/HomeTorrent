@@ -11,5 +11,6 @@ data class HomeAppConfig(
     val updateTitle: String = "发现新版本",
     val updateMessage: String = "支持更多能力！",
     val updateForce: Boolean = false,
-    val forbidden: Boolean = false
+    val forbidden: Boolean = false,
+    val noticeList: List<NoticeOption>? = null
 )

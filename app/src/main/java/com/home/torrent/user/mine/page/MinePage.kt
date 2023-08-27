@@ -2,6 +2,7 @@ package com.home.torrent.user.mine.page
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
@@ -51,6 +53,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.home.torrent.R
 import com.home.torrent.common.widget.CommonAlertDialog
+import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.ui.theme.LightGrayBackground
@@ -92,14 +95,16 @@ fun MinePage() {
             }
         }
     }
-    val vm = viewModel(modelClass = UserViewModel::class.java)
-    val userState = vm.loginState.collectAsStateWithLifecycle()
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(LocalColors.current.Bg2),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val vm = viewModel(modelClass = UserViewModel::class.java)
+        val userState = vm.loginState.collectAsStateWithLifecycle()
         Spacer(modifier = Modifier.statusBarsPadding())
         HeaderCard(user = userState.value, onLoginClick = {
             openLoginPage.value = true
@@ -130,9 +135,31 @@ fun MinePage() {
                 logoutWaringDialogOpenState.value = true
             }
         }
+        val noticeList = remember {
+            HomeAppConfigService.appConfig.noticeList
+        }
+
+        if (!noticeList.isNullOrEmpty()) {
+            noticeList.filter { !it.title.isNullOrBlank() }.forEach { option ->
+
+                option.title?.let { title ->
+                    Spacer(modifier = Modifier.height(20.dp))
+                    SettingItemView(
+                        title = option.title, icon = Icons.Default.ArrowForward
+                    ) {
+                        option.actionUrl.takeIf { !it.isNullOrBlank() }?.let {
+                            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
+                        }
+
+                    }
+                }
+
+            }
+        }
 
 
     }
+
 }
 
 
@@ -184,13 +211,14 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
                     }
 
                     user?.registerTime.toDate().takeIf { it.isNotBlank() }?.let {
-                        Spacer(modifier = Modifier
-                            .height(5.dp)
-                            .width(10.dp))
+                        Spacer(
+                            modifier = Modifier
+                                .height(5.dp)
+                                .width(10.dp)
+                        )
                         Text(
                             text = stringResource(
-                                R.string.register_date,
-                                user?.registerTime.toDate()
+                                R.string.register_date, user?.registerTime.toDate()
                             ), fontSize = 12.sp, color = LocalColors.current.Text1
                         )
                     }

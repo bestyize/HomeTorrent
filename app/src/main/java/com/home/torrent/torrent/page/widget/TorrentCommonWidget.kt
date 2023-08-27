@@ -259,14 +259,6 @@ fun TorrentSearchItemView(
                     })
 
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp)
-                .padding(start = 20.dp, end = 20.dp)
-                .background(Color.LightGray)
-                .align(Alignment.BottomCenter)
-        )
     }
 
 }
@@ -312,6 +304,14 @@ fun TorrentListView(
                 .wrapContentHeight()
         ) {
             items(count = dataListState.size) { pos ->
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(if (pos == 0) 5.dp  else 1.dp)
+                        .padding(start = 20.dp, end = 20.dp)
+                        .background(LocalColors.current.Bg2)
+                        .align(Alignment.BottomCenter)
+                )
                 TorrentSearchItemView(
                     index = pos,
                     data = dataListState[pos],

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,7 +35,7 @@ internal fun TitleHeader(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(color = backgroundColor, shape = RoundedCornerShape(2.dp))
+            .background(color = backgroundColor)
     ) {
         Text(
             text = title,
