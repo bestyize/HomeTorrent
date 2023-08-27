@@ -49,8 +49,8 @@ import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
 import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
 import com.home.torrent.torrent.page.widget.TorrentItemTag
-import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.util.toDate
+import com.thewind.widget.theme.LocalColors
 
 /**
  * @author: read

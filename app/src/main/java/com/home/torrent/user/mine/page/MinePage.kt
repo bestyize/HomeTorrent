@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -56,13 +53,12 @@ import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
-import com.home.torrent.ui.theme.LightGrayBackground
-import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
 import com.home.torrent.util.toDate
 import com.thewind.account.AccountManager
 import com.thewind.account.bean.User
+import com.thewind.widget.theme.LocalColors
 
 /**
  * @author: read
@@ -145,7 +141,7 @@ fun MinePage() {
                 option.title?.let { title ->
                     Spacer(modifier = Modifier.height(20.dp))
                     SettingItemView(
-                        title = option.title, icon = Icons.Default.ArrowForward
+                        title = title, icon = Icons.Default.ArrowForward
                     ) {
                         option.actionUrl.takeIf { !it.isNullOrBlank() }?.let {
                             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))
@@ -241,26 +237,5 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
             }
         }
 
-    }
-}
-
-@Composable
-@Preview
-private fun BodyCard() {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        modifier = Modifier
-            .background(LightGrayBackground)
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        item {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-            )
-
-        }
     }
 }

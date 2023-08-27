@@ -38,9 +38,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
-import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.vm.UserViewModel
 import com.home.torrent.util.toIntOrDefault
+import com.thewind.widget.theme.LocalColors
 
 /**
  * @author: read

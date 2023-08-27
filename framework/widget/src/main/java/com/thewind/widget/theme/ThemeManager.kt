@@ -1,4 +1,4 @@
-package com.home.torrent.setting.theme
+package com.thewind.widget.theme
 
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey

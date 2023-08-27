@@ -45,7 +45,7 @@ import com.home.baseapp.app.toast.toast
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
-import com.home.torrent.ui.theme.LocalColors
+import com.thewind.widget.theme.LocalColors
 
 
 @OptIn(ExperimentalMaterial3Api::class)

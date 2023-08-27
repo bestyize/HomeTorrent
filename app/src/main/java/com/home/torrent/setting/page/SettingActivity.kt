@@ -8,10 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.home.torrent.setting.theme.ThemeId
-import com.home.torrent.setting.theme.ThemeManager
-import com.home.torrent.ui.theme.AppTheme
-import com.home.torrent.ui.theme.LocalColors
+import com.thewind.widget.theme.AppTheme
+import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.theme.ThemeId
+import com.thewind.widget.theme.ThemeManager
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

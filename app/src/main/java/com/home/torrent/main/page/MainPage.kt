@@ -29,8 +29,8 @@ import com.home.torrent.R
 import com.home.torrent.torrent.page.cloud.page.CloudPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
-import com.home.torrent.ui.theme.LocalColors
 import com.home.torrent.user.mine.page.MinePage
+import com.thewind.widget.theme.LocalColors
 import kotlinx.coroutines.launch
 
 

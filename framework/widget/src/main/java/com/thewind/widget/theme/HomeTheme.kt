@@ -1,4 +1,4 @@
-package com.home.torrent.ui.theme
+package com.thewind.widget.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

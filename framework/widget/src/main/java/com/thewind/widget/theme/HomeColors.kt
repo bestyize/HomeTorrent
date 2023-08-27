@@ -1,4 +1,4 @@
-package com.home.torrent.ui.theme
+package com.thewind.widget.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color

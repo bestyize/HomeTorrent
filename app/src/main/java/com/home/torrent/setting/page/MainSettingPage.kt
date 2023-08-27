@@ -21,11 +21,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.home.torrent.R
 import com.home.torrent.common.widget.TitleHeader
-import com.home.torrent.setting.theme.ThemeId
-import com.home.torrent.setting.theme.ThemeManager
 import com.home.torrent.setting.widget.SwitchSettingView
-import com.home.torrent.ui.theme.LocalColors
 import com.tencent.mmkv.MMKV
+import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.theme.ThemeId
+import com.thewind.widget.theme.ThemeManager
 
 /**
  * @author: read

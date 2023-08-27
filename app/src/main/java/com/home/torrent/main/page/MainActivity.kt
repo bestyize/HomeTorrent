@@ -11,10 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.home.torrent.main.page.splash.page.SplashPage
-import com.home.torrent.setting.theme.ThemeId
-import com.home.torrent.setting.theme.ThemeManager
-import com.home.torrent.ui.theme.AppTheme
-import com.home.torrent.ui.theme.LocalColors
+import com.thewind.widget.theme.AppTheme
+import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.theme.ThemeId
+import com.thewind.widget.theme.ThemeManager
 
 
 class MainActivity : AppCompatActivity() {

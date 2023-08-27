@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.home.torrent.R
-import com.home.torrent.ui.theme.LocalColors
+import com.thewind.widget.theme.LocalColors
 
 /**
  * @author: read

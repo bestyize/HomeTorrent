@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.thewind.widget"
+    namespace = "com.thewind.community"
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -32,7 +32,6 @@ android {
     kotlinOptions {
         jvmTarget = libs.versions.jvmTargetVersion.get()
     }
-
     buildFeatures {
         compose = true
     }
@@ -40,6 +39,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
     }
+
 }
 
 dependencies {
@@ -47,7 +47,6 @@ dependencies {
     implementation(libs.coreKtx)
     implementation(libs.appcompat)
     implementation(libs.matrial)
-    implementation(libs.dataStore)
     implementation(platform(libs.composeBom))
 
     implementation(libs.composeUi)
@@ -55,14 +54,20 @@ dependencies {
     implementation(libs.composeUiToolingPreview)
     implementation(libs.composeMaterial)
     implementation(libs.composeFoundation)
+    implementation(libs.gson)
 
+    implementation(libs.coli)
+    implementation(project(mapOf("path" to ":framework:account")))
     implementation(project(mapOf("path" to ":framework:baseapp")))
+    implementation(project(mapOf("path" to ":framework:network")))
+    implementation(project(mapOf("path" to ":framework:widget")))
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    androidTestImplementation(platform(libs.composeBom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation(libs.composeUiTooling)
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }
