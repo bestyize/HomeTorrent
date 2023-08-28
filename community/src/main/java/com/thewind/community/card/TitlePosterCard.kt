@@ -16,22 +16,21 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.ThumbUp
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.ui.ImageTag
 
 /**
  * @author: read
@@ -47,7 +46,7 @@ fun TitlePosterCard(
     content: String = "印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了、印花税减半了、印花税减半了"
 ) {
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
@@ -57,7 +56,7 @@ fun TitlePosterCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(15.dp)
                 .wrapContentHeight()
         ) {
             HeaderArea(title = title, subTitle = subTitle, modifier = Modifier.fillMaxWidth())
@@ -76,11 +75,8 @@ fun TitlePosterCard(
                     .fillMaxWidth()
                     .wrapContentSize()
             )
-
-
         }
     }
-
 }
 
 
@@ -93,10 +89,10 @@ private fun HeaderArea(
     onMenuClick: () -> Unit = {}
 ) {
     Box(modifier = modifier) {
-        Icon(imageVector = Icons.Default.Menu,
+        Icon(imageVector = Icons.Default.MoreVert,
             contentDescription = "",
             modifier = Modifier
-                .size(12.dp)
+                .size(16.dp)
                 .align(
                     Alignment.TopEnd
                 )
@@ -172,19 +168,4 @@ private fun BottomArea(
                     onComment.invoke()
                 })
     }
-}
-
-@Composable
-@Preview
-private fun ImageTag(
-    modifier: Modifier = Modifier, title: String = "分享", icon: ImageVector = Icons.Default.Share
-) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon, contentDescription = "", modifier = Modifier.size(12.dp)
-        )
-        Spacer(modifier = Modifier.width(5.dp))
-        Text(text = title, color = LocalColors.current.Text2, fontSize = 13.sp)
-    }
-
 }

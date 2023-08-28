@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.coreKtx)
     implementation(libs.appcompat)
     implementation(libs.matrial)
+    implementation(libs.lifecycleViewModelCompose)
+    implementation(libs.lifecycleRuntimeCompose)
+    implementation(libs.activityCompose)
     implementation(platform(libs.composeBom))
 
     implementation(libs.composeUi)
@@ -61,6 +64,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:widget")))
+    implementation(libs.constraintlayout)
 
 
     testImplementation(libs.junit)

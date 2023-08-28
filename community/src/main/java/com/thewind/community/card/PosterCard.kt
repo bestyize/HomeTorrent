@@ -1,0 +1,35 @@
+package com.thewind.community.card
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.thewind.widget.theme.LocalColors
+
+/**
+ * @author: read
+ * @date: 2023/8/29 上午12:31
+ * @description:
+ */
+
+@Composable
+@Preview
+fun PosterCard(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.background(LocalColors.current.Bg2)) {
+
+        TitlePosterCard()
+        Spacer(modifier = Modifier.height(10.dp))
+        CommentCardContainer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(LocalColors.current.Bg1)
+        )
+    }
+}
