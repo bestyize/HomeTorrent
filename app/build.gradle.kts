@@ -87,6 +87,7 @@ dependencies {
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)
     implementation(project(mapOf("path" to ":torrent")))
+    implementation(project(mapOf("path" to ":community")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

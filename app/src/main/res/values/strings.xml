@@ -56,4 +56,5 @@
     <string name="uid">uid:%1$s</string>
     <string name="theme_color_follow_system_setting">主题颜色跟随系统</string>
     <string name="dark_mode">深色模式</string>
+    <string name="recommend">社区</string>
 </resources>

@@ -56,4 +56,5 @@
     <string name="uid">uid:%1$s</string>
     <string name="theme_color_follow_system_setting">Auto Theme Color</string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="recommend">Recommend</string>
 </resources>

@@ -30,6 +30,7 @@ import com.home.torrent.torrent.page.cloud.page.CloudPage
 import com.home.torrent.torrent.page.collect.TorrentCollectPage
 import com.home.torrent.torrent.page.search.TorrentSearchPage
 import com.home.torrent.user.mine.page.MinePage
+import com.thewind.community.recommend.page.RecommendFeedPage
 import com.thewind.widget.theme.LocalColors
 import kotlinx.coroutines.launch
 
@@ -42,6 +43,7 @@ fun MainPage() {
         stringResource(R.string.main_page),
         stringResource(R.string.collect),
         stringResource(R.string.cloud),
+        stringResource(R.string.recommend),
         stringResource(R.string.my)
     )
     val pagerState = rememberPagerState(initialPage = 0) {
@@ -66,6 +68,7 @@ fun MainPage() {
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
                     2 -> CloudPage()
+                    3 -> RecommendFeedPage(modifier = Modifier.fillMaxSize())
                     else -> MinePage()
                 }
             }

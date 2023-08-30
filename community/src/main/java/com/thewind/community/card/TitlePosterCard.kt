@@ -43,6 +43,7 @@ import com.thewind.widget.ui.ImageTag
 fun TitlePosterCard(
     title: String = "标题",
     subTitle: String = "2022-08-29",
+    header: String? = null,
     content: String = "印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了、印花税减半了、印花税减半了"
 ) {
 
@@ -69,7 +70,7 @@ fun TitlePosterCard(
                     .fillMaxWidth()
                     .wrapContentHeight()
             )
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             BottomArea(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,6 +87,7 @@ private fun HeaderArea(
     modifier: Modifier = Modifier,
     title: String = "标题",
     subTitle: String = "2022-08-29",
+    header: String? = null,
     onMenuClick: () -> Unit = {}
 ) {
     Box(modifier = modifier) {
