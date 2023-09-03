@@ -153,7 +153,7 @@ fun PublishPage(onClose: () -> Unit = {}) {
 
 @Preview
 @Composable
-private fun PublishTitle(
+fun PublishTitle(
     modifier: Modifier = Modifier,
     isEnable: Boolean = true,
     onBack: () -> Unit = {},

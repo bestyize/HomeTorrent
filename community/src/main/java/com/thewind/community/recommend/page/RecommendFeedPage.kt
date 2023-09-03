@@ -1,5 +1,7 @@
 package com.thewind.community.recommend.page
 
+import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,6 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thewind.community.card.PosterOption
 import com.thewind.community.card.PosterOptionDialog
 import com.thewind.community.card.TitlePosterCard
+import com.thewind.community.detail.DetailActivity
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.community.util.toDate
 import com.thewind.widget.theme.LocalColors
@@ -47,7 +51,9 @@ fun RecommendFeedPage(modifier: Modifier = Modifier) {
     }
 
     Box(
-        modifier = modifier.background(LocalColors.current.Bg2).statusBarsPadding()
+        modifier = modifier
+            .background(LocalColors.current.Bg2)
+            .statusBarsPadding()
     ) {
         val vm = viewModel(modelClass = RecommendPageViewModel::class.java)
 
@@ -55,8 +61,12 @@ fun RecommendFeedPage(modifier: Modifier = Modifier) {
 
         val finishState = vm.loadFinishState.collectAsStateWithLifecycle()
 
+        val activity = LocalContext.current as Activity
+
         LazyColumn(
-            modifier = Modifier.padding(15.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(15.dp)
+                .fillMaxWidth()
         ) {
             item {
                 Spacer(modifier = Modifier.height(50.dp))
@@ -84,6 +94,12 @@ fun RecommendFeedPage(modifier: Modifier = Modifier) {
                     subTitle = data.date.toDate(),
                     header = data.userHeader,
                     content = data.content ?: "",
+                    onCardClick = {
+                        activity.startActivity(Intent(activity, DetailActivity::class.java).apply {
+                            putExtra("poster_id", data.id)
+                            putExtra("poster_content", data)
+                        })
+                    },
                     onMenuClick = {
                         menuClickState.value = true
                     })
@@ -103,10 +119,15 @@ fun RecommendFeedPage(modifier: Modifier = Modifier) {
             backgroundColor = LocalColors.current.Bg1
         )
 
-        Box(modifier = Modifier.padding(bottom = 80.dp, end = 15.dp).align(Alignment.BottomEnd)
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(100.dp)).background(
+        Box(modifier = Modifier
+            .padding(bottom = 80.dp, end = 15.dp)
+            .align(Alignment.BottomEnd)
+            .shadow(elevation = 5.dp, shape = RoundedCornerShape(100.dp))
+            .background(
                 color = LocalColors.current.Brand_pink, shape = RoundedCornerShape(100.dp)
-            ).padding(10.dp).clickable {
+            )
+            .padding(10.dp)
+            .clickable {
                 publishPageState.value = true
             }) {
             Icon(

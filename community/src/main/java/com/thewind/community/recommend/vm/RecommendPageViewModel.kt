@@ -74,13 +74,4 @@ class RecommendPageViewModel : ViewModel() {
         }
     }
 
-
-    suspend fun loadComment(posterId: Long) = RecommendPageService.requestComments(posterId)
-
-
-    suspend fun publishComment(posterId: Long, content: String, parentId: Long = -1) =
-        RecommendPageService.publishComment(posterId, content, parentId)
-
-    suspend fun deleteComment(commentId: Long) = RecommendPageService.deleteComment(commentId)
-
 }

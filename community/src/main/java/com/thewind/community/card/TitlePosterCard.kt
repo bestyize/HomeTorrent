@@ -47,6 +47,7 @@ fun TitlePosterCard(
     subTitle: String = "2022-08-29",
     header: String? = null,
     content: String = "",
+    onCardClick:() -> Unit = {},
     onMenuClick: () -> Unit = {}
 ) {
 
@@ -54,7 +55,9 @@ fun TitlePosterCard(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(LocalColors.current.Bg1, RoundedCornerShape(5.dp))
+            .background(LocalColors.current.Bg1, RoundedCornerShape(5.dp)).clickable {
+                onCardClick.invoke()
+            }
     ) {
 
         Column(

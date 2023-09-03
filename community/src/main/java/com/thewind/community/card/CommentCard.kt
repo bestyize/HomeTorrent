@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thewind.community.model.Comment
+import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.util.toDate
 import com.thewind.widget.theme.LocalColors
 
@@ -33,7 +33,10 @@ import com.thewind.widget.theme.LocalColors
  */
 
 @Composable
-fun CommentCardContainer(modifier: Modifier = Modifier, dataList: List<Comment> = emptyList()) {
+fun CommentCardContainer(
+    modifier: Modifier = Modifier,
+    dataList: List<RecommendComment> = emptyList()
+) {
     Box(modifier = modifier) {
         LazyColumn(
             modifier = Modifier
@@ -41,7 +44,7 @@ fun CommentCardContainer(modifier: Modifier = Modifier, dataList: List<Comment> 
                 .fillMaxSize()
         ) {
             items(dataList.size, key = {
-                dataList[it].id ?: ""
+                dataList[it].id
             }) {
                 val data = dataList[it]
                 CommentCard(
@@ -66,7 +69,7 @@ fun CommentCardContainer(modifier: Modifier = Modifier, dataList: List<Comment> 
 
 @Composable
 private fun CommentCard(
-    modifier: Modifier = Modifier, comment: Comment
+    modifier: Modifier = Modifier, comment: RecommendComment
 ) {
     Row(modifier = modifier) {
         Box(

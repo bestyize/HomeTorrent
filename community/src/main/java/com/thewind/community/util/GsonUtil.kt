@@ -22,6 +22,7 @@ internal fun Any?.toJson(): String {
 
 internal fun <T> String?.toObject(clazz: Class<T>): T? {
     this ?: return null
+    if (this.isBlank()) return null
     runCatching {
         return gson.fromJson(this, clazz)
     }
