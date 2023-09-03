@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="content_less_than_10_word">内容不得少于10个字符</string>
+    <string name="publish">发表</string>
+    <string name="publish_poster">发表文章</string>
+    <string name="title_optional">标题(可选)</string>
+    <string name="content_require">内容(必选)</string>
+    <string name="share">分享</string>
+    <string name="comment">评论</string>
+    <string name="like">点赞</string>
+    <string name="delete">删除</string>
+    <string name="collect">收藏</string>
+    <string name="cancel">取消</string>
+    <string name="failed">失败</string>
+</resources>

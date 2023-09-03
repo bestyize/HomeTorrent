@@ -2,7 +2,9 @@ package com.thewind.community.recommend.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
+import com.thewind.community.R
 import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.community.recommend.service.RecommendPageService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +52,7 @@ class RecommendPageViewModel : ViewModel() {
         viewModelScope.launch {
             val poster = RecommendPageService.publishPoster(title, content)
             if (poster == null) {
-                toast("failed")
+                toast(HomeApp.context.getString(R.string.failed))
                 return@launch
             }
             posterListState.value = posterListState.value.toMutableList().apply {
@@ -59,7 +61,18 @@ class RecommendPageViewModel : ViewModel() {
         }
     }
 
-    suspend fun deletePoster(posterId: Long) = RecommendPageService.deletePoster(posterId)
+    fun deletePoster(posterId: Long) {
+        viewModelScope.launch {
+            val success = RecommendPageService.deletePoster(posterId)
+            if (success) {
+                posterListState.value = posterListState.value.toMutableList().apply {
+                    removeIf { it.id == posterId }
+                }
+            } else {
+                toast(HomeApp.context.getString(R.string.failed))
+            }
+        }
+    }
 
 
     suspend fun loadComment(posterId: Long) = RecommendPageService.requestComments(posterId)

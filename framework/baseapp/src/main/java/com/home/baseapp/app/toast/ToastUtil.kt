@@ -5,5 +5,6 @@ import com.home.baseapp.app.HomeApp
 
 
 fun toast(msg: String?) {
+    if (msg.isNullOrBlank()) return
     Toast.makeText(HomeApp.context, msg, Toast.LENGTH_SHORT).show()
 }

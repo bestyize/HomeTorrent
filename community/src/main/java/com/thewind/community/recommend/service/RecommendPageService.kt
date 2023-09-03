@@ -1,7 +1,6 @@
 package com.thewind.community.recommend.service
 
 import com.home.baseapp.app.config.appHost
-import com.home.baseapp.app.toast.toast
 import com.thewind.community.recommend.model.DeleteCommentResponse
 import com.thewind.community.recommend.model.DeletePosterResponse
 import com.thewind.community.recommend.model.PublishCommentResponse
@@ -68,7 +67,6 @@ object RecommendPageService {
         runCatching {
             get("$appHost/recommend/poster/delete?posterId=$posterId").takeIf { it.isNotBlank() }
                 .toObject(DeletePosterResponse::class.java)?.let {
-                    toast(it.message)
                     return@withContext it.code == 0
                 }
         }
@@ -79,7 +77,6 @@ object RecommendPageService {
         runCatching {
             get("$appHost/recommend/poster/delete?commentId=$commentId").takeIf { it.isNotBlank() }
                 .toObject(DeleteCommentResponse::class.java)?.let {
-                    toast(it.message)
                     return@withContext it.code == 0
                 }
         }

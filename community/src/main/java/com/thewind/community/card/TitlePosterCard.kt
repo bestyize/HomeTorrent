@@ -25,10 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thewind.community.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.ImageTag
 
@@ -44,7 +46,8 @@ fun TitlePosterCard(
     title: String = "标题",
     subTitle: String = "2022-08-29",
     header: String? = null,
-    content: String = "印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了，印花税减半了、印花税减半了、印花税减半了"
+    content: String = "",
+    onMenuClick: () -> Unit = {}
 ) {
 
     Box(
@@ -60,11 +63,16 @@ fun TitlePosterCard(
                 .padding(15.dp)
                 .wrapContentHeight()
         ) {
-            HeaderArea(title = title, subTitle = subTitle, modifier = Modifier.fillMaxWidth())
+            HeaderArea(
+                title = title,
+                subTitle = subTitle,
+                modifier = Modifier.fillMaxWidth(),
+                onMenuClick = onMenuClick
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = content,
-                fontSize = 14.sp,
+                fontSize = 15.sp,
                 color = LocalColors.current.Text1,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,7 +154,7 @@ private fun BottomArea(
     onLike: () -> Unit = {}
 ) {
     Row(modifier = modifier) {
-        ImageTag(title = "分享",
+        ImageTag(title = stringResource(R.string.share),
             icon = Icons.Default.Share,
             modifier = Modifier
                 .wrapContentSize()
@@ -154,7 +162,7 @@ private fun BottomArea(
                     onShare.invoke()
                 })
         Spacer(modifier = Modifier.width(60.dp))
-        ImageTag(title = "评论",
+        ImageTag(title = stringResource(R.string.comment),
             icon = Icons.Default.Create,
             modifier = Modifier
                 .wrapContentSize()
@@ -162,7 +170,7 @@ private fun BottomArea(
                     onComment.invoke()
                 })
         Spacer(modifier = Modifier.width(60.dp))
-        ImageTag(title = "点赞",
+        ImageTag(title = stringResource(R.string.like),
             icon = Icons.Default.ThumbUp,
             modifier = Modifier
                 .wrapContentSize()

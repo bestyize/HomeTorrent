@@ -31,10 +31,10 @@ fun ImageTag(
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Icon(
-            imageVector = icon, contentDescription = "", modifier = Modifier.size(12.dp)
+            imageVector = icon, contentDescription = "", modifier = Modifier.size(14.dp)
         )
         Spacer(modifier = Modifier.width(5.dp))
-        Text(text = title, color = LocalColors.current.Text2, fontSize = 13.sp)
+        Text(text = title, color = LocalColors.current.Text2, fontSize = 14.sp)
     }
 
 }
