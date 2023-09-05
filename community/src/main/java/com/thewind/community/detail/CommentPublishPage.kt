@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.home.baseapp.app.toast.toast
 import com.thewind.community.R
 import com.thewind.community.detail.vm.DetailPageViewModel
 import com.thewind.community.recommend.page.PublishTitle
@@ -66,6 +67,10 @@ fun CommentPublishPage(
                     onClose.invoke()
                 },
                 onPublish = {
+                    if (content.value.length < 10) {
+                        toast("最少评论10个字符！")
+                        return@PublishTitle
+                    }
                     vm.publishComment(posterId = posterId, content = content.value)
                     onClose.invoke()
                 })
