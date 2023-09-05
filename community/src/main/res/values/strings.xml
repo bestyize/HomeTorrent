@@ -12,4 +12,5 @@
     <string name="collect">收藏</string>
     <string name="cancel">取消</string>
     <string name="failed">失败</string>
+    <string name="word_less_than_10">最少评论10个字符！</string>
 </resources>

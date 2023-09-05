@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
 import com.thewind.community.R
 import com.thewind.community.detail.vm.DetailPageViewModel
@@ -51,7 +52,9 @@ fun CommentPublishPage(
         onDismissRequest = { onClose.invoke() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        Column(modifier = Modifier.fillMaxSize().background(color = LocalColors.current.Bg1)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(color = LocalColors.current.Bg1)) {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -68,7 +71,7 @@ fun CommentPublishPage(
                 },
                 onPublish = {
                     if (content.value.length < 10) {
-                        toast("最少评论10个字符！")
+                        toast(HomeApp.context.resources.getString(R.string.word_less_than_10))
                         return@PublishTitle
                     }
                     vm.publishComment(posterId = posterId, content = content.value)

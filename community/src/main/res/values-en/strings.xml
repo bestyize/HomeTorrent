@@ -12,4 +12,5 @@
     <string name="collect">Collect</string>
     <string name="cancel">Cancel</string>
     <string name="failed">Failed</string>
+    <string name="word_less_than_10">Word Cannot Less Than 10！</string>
 </resources>
