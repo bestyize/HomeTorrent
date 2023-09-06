@@ -3,13 +3,17 @@ package com.thewind.community.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -21,13 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.home.baseapp.app.HomeApp
-import com.home.baseapp.app.toast.toast
 import com.thewind.community.R
-import com.thewind.community.detail.vm.DetailPageViewModel
 import com.thewind.community.recommend.page.PublishTitle
 import com.thewind.widget.theme.LocalColors
 
@@ -37,30 +35,29 @@ import com.thewind.widget.theme.LocalColors
  * @description:
  */
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun CommentPublishPage(
-    onClose: () -> Unit = {}, vm: DetailPageViewModel = viewModel(
-        modelClass = DetailPageViewModel::class.java
-    )
+    onClose: () -> Unit = {}, onPublish: (String) -> Unit = {}
 ) {
-    val posterId = vm.posterState.value?.id ?: -1L
     val content = remember {
         mutableStateOf("")
     }
-    Dialog(
+    ModalBottomSheet(
         onDismissRequest = { onClose.invoke() },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.5f),
+        dragHandle = null,
+        windowInsets = WindowInsets(0.dp)
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .background(color = LocalColors.current.Bg1)) {
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(LocalColors.current.Bg2)
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = LocalColors.current.Bg1)
+        ) {
+
             PublishTitle(modifier = Modifier
                 .padding(15.dp)
                 .fillMaxWidth()
@@ -70,13 +67,14 @@ fun CommentPublishPage(
                     onClose.invoke()
                 },
                 onPublish = {
-                    if (content.value.length < 10) {
-                        toast(HomeApp.context.resources.getString(R.string.word_less_than_10))
-                        return@PublishTitle
-                    }
-                    vm.publishComment(posterId = posterId, content = content.value)
-                    onClose.invoke()
+                    onPublish.invoke(content.value)
                 })
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(LocalColors.current.Ga1)
+            )
             TextField(
                 value = content.value,
                 onValueChange = {

@@ -174,7 +174,7 @@ fun PublishTitle(
                 })
 
         Text(
-            text = stringResource(R.string.publish_poster),
+            text = stringResource(R.string.edit),
             color = LocalColors.current.Text1,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,

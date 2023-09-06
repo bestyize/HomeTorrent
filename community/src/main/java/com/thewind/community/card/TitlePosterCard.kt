@@ -48,7 +48,10 @@ fun TitlePosterCard(
     header: String? = null,
     content: String = "",
     onCardClick:() -> Unit = {},
-    onMenuClick: () -> Unit = {}
+    onMenuClick: () -> Unit = {},
+    onShare: () -> Unit = {},
+    onComment: () -> Unit = {},
+    onLike: () -> Unit = {}
 ) {
 
     Box(
@@ -85,7 +88,10 @@ fun TitlePosterCard(
             BottomArea(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentSize()
+                    .wrapContentSize(),
+                onShare = onShare,
+                onComment = onComment,
+                onLike = onLike
             )
         }
     }

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat
  * @description:
  */
 private val sdf by lazy {
-    SimpleDateFormat("yyyy-MM-dd")
+    SimpleDateFormat("yyyy-MM-dd HH:mm")
 }
 
 internal fun Long?.toDate(): String {

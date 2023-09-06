@@ -33,19 +33,31 @@ class DetailActivity : AppCompatActivity() {
             } else {
                 vm.loadPoster(posterId)
             }
+            vm.loadComments(posterId)
             val theme =
                 ThemeManager.themeFlow.collectAsStateWithLifecycle(initialValue = ThemeId.AUTO)
+            val commentsState = vm.commentState.collectAsStateWithLifecycle()
             val isNight = when (theme.value) {
                 ThemeId.AUTO -> isSystemInDarkTheme()
                 ThemeId.NIGHT -> true
                 ThemeId.DAY -> false
             }
             AppTheme(darkTheme = isNight) {
-                DetailPage(
-                    modifier = Modifier
+                poster?.let {
+                    PosterDetailPage(modifier = Modifier
                         .fillMaxSize()
-                        .background(LocalColors.current.Bg2)
-                )
+                        .background(LocalColors.current.Bg2),
+                        poster = it,
+                        comments = commentsState.value,
+                        onPublish = { data, parentId ->
+                            vm.publishComment(
+                                posterId = posterId,
+                                content = data,
+                                parentId = parentId
+                            )
+                        })
+                }
+
             }
 
         }

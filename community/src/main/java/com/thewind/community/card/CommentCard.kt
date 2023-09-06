@@ -1,6 +1,8 @@
 package com.thewind.community.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +38,9 @@ import com.thewind.widget.theme.LocalColors
 @Composable
 fun CommentCardContainer(
     modifier: Modifier = Modifier,
-    dataList: List<RecommendComment> = emptyList()
+    dataList: List<RecommendComment> = emptyList(),
+    onHeaderClick: (RecommendComment) -> Unit = {},
+    onCommentClick: (RecommendComment) -> Unit = {}
 ) {
     Box(modifier = modifier) {
         LazyColumn(
@@ -48,9 +53,16 @@ fun CommentCardContainer(
             }) {
                 val data = dataList[it]
                 CommentCard(
-                    comment = data, modifier = Modifier
+                    comment = data,
+                    modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
+                        .clickable(indication = null, interactionSource = remember {
+                            MutableInteractionSource()
+                        }, onClick = {
+                            onCommentClick.invoke(data)
+                        }),
+                    onHeaderClick = onHeaderClick
                 )
                 Spacer(
                     modifier = Modifier
@@ -69,7 +81,9 @@ fun CommentCardContainer(
 
 @Composable
 private fun CommentCard(
-    modifier: Modifier = Modifier, comment: RecommendComment
+    modifier: Modifier = Modifier,
+    comment: RecommendComment,
+    onHeaderClick: (RecommendComment) -> Unit = {}
 ) {
     Row(modifier = modifier) {
         Box(
@@ -79,6 +93,11 @@ private fun CommentCard(
                 .background(
                     color = Color.Black, shape = RoundedCornerShape(1000.dp)
                 )
+                .clickable(indication = null, interactionSource = remember {
+                    MutableInteractionSource()
+                }, onClick = {
+                    onHeaderClick.invoke(comment)
+                })
         )
         Spacer(modifier = Modifier.width(10.dp))
         Column(
