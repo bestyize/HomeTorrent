@@ -56,7 +56,7 @@ class DetailPageViewModel : ViewModel() {
             if (comment.parentId != -1L) {
                 commentState.value = commentState.value.toMutableList().apply {
                     forEachIndexed { index, recommendComment ->
-                        if (recommendComment.id == comment.id) {
+                        if (recommendComment.id == comment.parentId) {
                             recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
                                 ?.apply {
                                     add(0, comment)

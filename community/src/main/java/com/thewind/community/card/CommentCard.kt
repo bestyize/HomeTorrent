@@ -73,6 +73,9 @@ fun CommentCardContainer(
                         .align(Alignment.BottomCenter)
                 )
             }
+            item { 
+                Spacer(modifier = Modifier.height(100.dp))
+            }
         }
 
     }
