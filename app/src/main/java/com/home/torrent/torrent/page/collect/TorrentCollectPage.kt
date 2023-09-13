@@ -23,8 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.model.TorrentInfo
-import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
-import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
+import com.home.torrent.cloud.vm.CloudViewModel
+import com.home.torrent.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOption
 import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
@@ -34,7 +34,7 @@ import com.thewind.widget.theme.LocalColors
 @Composable
 fun TorrentCollectPage() {
     val vm = viewModel(modelClass = TorrentCollectViewModel::class.java)
-    val collectedTorrentState = vm.torrentState.collectAsStateWithLifecycle(emptyList())
+    val collectedTorrentState = vm.torrentSetState.collectAsStateWithLifecycle(emptyList())
 
     LaunchedEffect(key1 = "collect") {
         vm.loadAll()

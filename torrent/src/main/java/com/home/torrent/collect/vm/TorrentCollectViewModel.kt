@@ -1,26 +1,36 @@
-package com.home.torrent.torrent.page.collect.vm
+package com.home.torrent.collect.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
+import com.home.torrent.collect.database.bean.CollectTorrentInfo
+import com.home.torrent.collect.database.bean.toCollectTorrentInfo
+import com.home.torrent.collect.database.bean.toTorrentInfo
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.service.suspendRequestMagnetUrl
 import com.home.torrent.service.transferMagnetUrlToHash
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
-import com.home.torrent.torrent.page.collect.database.bean.CollectTorrentInfo
-import com.home.torrent.torrent.page.collect.database.bean.toTorrentInfo
-import com.home.torrent.torrent.page.collect.database.torrentDb
-import com.home.torrent.torrent.service.TorrentPageService
+import com.home.torrent.collect.database.torrentDb
+import com.home.torrent.collect.service.TorrentCollectService
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class TorrentCollectViewModel : ViewModel() {
 
-    val collectedTorrent: MutableStateFlow<List<CollectTorrentInfo>> = MutableStateFlow(emptyList())
+    private val collectedTorrent: MutableStateFlow<List<CollectTorrentInfo>> = MutableStateFlow(emptyList())
 
-    val torrentState = collectedTorrent.map { it.map { it.toTorrentInfo() } }
+    val torrentListState: Flow<List<TorrentInfo>> = collectedTorrent.map { it.map { it.toTorrentInfo() }}
+
+    val torrentSetState: Flow<Set<TorrentInfo>> = torrentListState.map { it.toSet() }
+
+
+
+    fun init() {
+        loadAll()
+    }
 
     fun collect(data: TorrentInfo) {
         viewModelScope.launch {
@@ -31,7 +41,7 @@ class TorrentCollectViewModel : ViewModel() {
                 toast("收藏失败")
                 return@launch
             }
-            //torrentDb.collectDao().insert(dat.toCollectTorrentInfo())
+            torrentDb.collectDao().insert(dat.toCollectTorrentInfo())
             toast("收藏成功!")
             loadAll()
         }
@@ -59,7 +69,7 @@ class TorrentCollectViewModel : ViewModel() {
 
     fun loadAll() {
         viewModelScope.launch {
-            //collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
+            collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
         }
     }
 
@@ -82,7 +92,7 @@ class TorrentCollectViewModel : ViewModel() {
                     magnetUrl
                 ) else data.torrentUrl
             )
-            toast(TorrentPageService.collectToCloud(dat).message)
+            toast(TorrentCollectService.collectToCloud(dat).message)
         }
     }
 

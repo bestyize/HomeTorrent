@@ -1,4 +1,4 @@
-package com.home.torrent.torrent.page.cloud.bean
+package com.home.torrent.collect.model
 
 import androidx.annotation.Keep
 

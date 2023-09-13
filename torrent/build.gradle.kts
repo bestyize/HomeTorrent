@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.com.google.devtools.ksp)
     id("kotlin-parcelize")
 }
 
@@ -24,6 +25,12 @@ android {
             )
         }
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
         targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
@@ -40,8 +47,24 @@ dependencies {
     implementation(libs.kotlinxCoroutinesCore)
     implementation(libs.mmkv)
     implementation(libs.torrent)
+    implementation(libs.lifecycleRuntimeCompose)
+    implementation(libs.lifecycleViewModelCompose)
+    implementation(libs.activityCompose)
+    implementation(platform(libs.composeBom))
+    implementation(libs.composeUi)
+    implementation(libs.composeUiGraphics)
+    implementation(libs.composeUiToolingPreview)
+    implementation(libs.composeMaterial)
+    implementation(libs.composeFoundation)
+    implementation(libs.roomKtx)
+    implementation(libs.roomRuntime)
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:baseapp")))
+    implementation(project(mapOf("path" to ":framework:widget")))
+
+    annotationProcessor(libs.roomCompiler)
+    ksp(libs.roomCompiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

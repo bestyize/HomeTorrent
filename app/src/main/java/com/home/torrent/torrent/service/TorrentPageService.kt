@@ -8,7 +8,7 @@ import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.torrent.model.TorrentCollectResponse
 import com.home.torrent.torrent.model.TorrentUnCollectResponse
-import com.home.torrent.torrent.page.cloud.bean.TorrentCollectListResponse
+import com.home.torrent.cloud.bean.TorrentCollectListResponse
 import com.home.torrent.util.toJson
 import com.home.torrent.util.toObject
 import com.home.torrent.util.urlEncode

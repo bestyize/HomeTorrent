@@ -1,4 +1,4 @@
-package com.home.torrent.torrent.page.cloud.page
+package com.home.torrent.cloud.page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,14 +43,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.R
-import com.home.torrent.common.widget.TitleHeader
-import com.home.torrent.torrent.page.cloud.bean.TorrentInfoBean
-import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
-import com.home.torrent.torrent.page.widget.TorrentClickOption
-import com.home.torrent.torrent.page.widget.TorrentClickOptionDialog
-import com.home.torrent.torrent.page.widget.TorrentItemTag
-import com.home.torrent.util.toDate
+import com.home.torrent.cloud.vm.CloudViewModel
+import com.home.torrent.collect.model.TorrentInfoBean
+import com.home.torrent.widget.TorrentClickOption
+import com.home.torrent.widget.TorrentClickOptionDialog
+import com.home.torrent.widget.TorrentItemTag
+import com.home.torrentcenter.tool.toDate
 import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.ui.TitleHeader
 
 /**
  * @author: read
@@ -64,7 +64,7 @@ private val clickOptions = arrayOf(
 
 @Composable
 @Preview
-internal fun CloudPage() {
+fun CloudPage() {
 
     val vm = viewModel(modelClass = CloudViewModel::class.java)
     val dataList = vm.cloudCollectListState.collectAsStateWithLifecycle()

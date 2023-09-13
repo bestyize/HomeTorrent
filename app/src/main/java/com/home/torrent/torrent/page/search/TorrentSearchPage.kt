@@ -53,8 +53,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
-import com.home.torrent.torrent.page.cloud.vm.CloudViewModel
-import com.home.torrent.torrent.page.collect.vm.TorrentCollectViewModel
+import com.home.torrent.cloud.vm.CloudViewModel
+import com.home.torrent.collect.vm.TorrentCollectViewModel
 import com.home.torrent.torrent.page.search.vm.TorrentSearchViewModel
 import com.home.torrent.torrent.page.widget.CopyAddressDialog
 import com.home.torrent.torrent.page.widget.TorrentClickOption

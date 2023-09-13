@@ -1,10 +1,10 @@
-package com.home.torrent.torrent.page.cloud.vm
+package com.home.torrent.cloud.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
-import com.home.torrent.torrent.page.cloud.bean.TorrentInfoBean
-import com.home.torrent.torrent.service.TorrentPageService
+import com.home.torrent.collect.model.TorrentInfoBean
+import com.home.torrent.collect.service.TorrentCollectService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class CloudViewModel : ViewModel() {
     fun unCollectFromCloud(index: Int, hash: String?) {
         hash ?: return
         viewModelScope.launch {
-            toast(TorrentPageService.unCollectFromCloud(hash).message)
+            toast(TorrentCollectService.unCollectFromCloud(hash).message)
             _cloudCollectListState.value = _cloudCollectListState.value.toMutableList().apply {
                 removeAt(index)
             }
@@ -47,7 +47,7 @@ class CloudViewModel : ViewModel() {
                 _pageState.value = 0
                 _cloudCollectListState.value = emptyList()
             }
-            TorrentPageService.requestTorrentListFromServer(pageState.value).let {
+            TorrentCollectService.requestTorrentListFromServer(pageState.value).let {
                 if (it.data.isNullOrEmpty()) {
                     if (it.code == -1) toast(it.message)
                     it.data?.let {
