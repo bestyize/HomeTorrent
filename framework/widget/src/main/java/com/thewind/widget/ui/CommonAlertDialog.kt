@@ -1,4 +1,4 @@
-package com.home.torrent.common.widget
+package com.thewind.widget.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,14 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.home.torrent.R
 import com.thewind.widget.theme.LocalColors
 
 /**
@@ -38,12 +35,11 @@ import com.thewind.widget.theme.LocalColors
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
 fun CommonAlertDialog(
-    title: String = stringResource(R.string.notice),
+    title: String = "Notice",
     content: String = "",
-    okText: String? = stringResource(R.string.ok),
-    cancelText: String? = stringResource(R.string.cancel),
+    okText: String? = null,
+    cancelText: String? = null,
     onOk: () -> Unit = {},
     onCancel: () -> Unit = {}
 ) {

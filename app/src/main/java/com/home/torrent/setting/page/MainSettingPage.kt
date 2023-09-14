@@ -20,12 +20,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.home.torrent.R
-import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.tencent.mmkv.MMKV
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.theme.ThemeId
 import com.thewind.widget.theme.ThemeManager
+import com.thewind.widget.ui.TitleHeader
 
 /**
  * @author: read

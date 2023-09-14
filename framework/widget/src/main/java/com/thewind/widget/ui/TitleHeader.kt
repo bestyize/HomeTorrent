@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thewind.widget.theme.LocalColors
 
 /**
  * @author: read
@@ -26,8 +27,8 @@ import androidx.compose.ui.unit.sp
 @Preview
 fun TitleHeader(
     title: String = "标题",
-    color: Color = Color.Black,
-    backgroundColor: Color = Color.White
+    color: Color = LocalColors.current.Text1,
+    backgroundColor: Color = LocalColors.current.Bg1
 ) {
     Box(
         modifier = Modifier

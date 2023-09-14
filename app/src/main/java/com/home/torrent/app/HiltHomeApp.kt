@@ -8,5 +8,4 @@ import com.home.baseapp.app.HomeApp
  * @description:
  */
 
-class HiltHomeApp : HomeApp() {
-}
+class HiltHomeApp : HomeApp()

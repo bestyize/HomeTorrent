@@ -49,7 +49,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.home.torrent.R
-import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
@@ -59,6 +58,7 @@ import com.home.torrent.util.toDate
 import com.thewind.account.AccountManager
 import com.thewind.account.bean.User
 import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.ui.CommonAlertDialog
 
 /**
  * @author: read

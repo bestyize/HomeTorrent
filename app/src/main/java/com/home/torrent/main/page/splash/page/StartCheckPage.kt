@@ -10,9 +10,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.home.baseapp.app.HomeApp
 import com.home.torrent.R
-import com.home.torrent.common.widget.CommonAlertDialog
 import com.home.torrent.main.model.HomeAppConfig
 import com.home.torrent.main.service.HomeAppConfigService
+import com.thewind.widget.ui.CommonAlertDialog
 import kotlin.system.exitProcess
 
 /**

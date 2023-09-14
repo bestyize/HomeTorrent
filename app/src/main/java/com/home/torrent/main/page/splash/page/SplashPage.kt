@@ -28,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.R
-import com.home.torrent.common.widget.TitleHeader
 import com.home.torrent.ui.theme.BrandPink
 import com.home.torrent.ui.theme.TransportGray
+import com.thewind.widget.ui.TitleHeader
 import kotlinx.coroutines.delay
 
 /**
