@@ -49,24 +49,21 @@ internal fun TorrentListView(
                         .background(LocalColors.current.Bg2)
                         .align(Alignment.BottomCenter)
                 )
-                TorrentItemView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(LocalColors.current.Bg1),
+                TorrentItemView(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(LocalColors.current.Bg1),
                     itemIndex = itemIndex,
                     data = data,
                     isCollected = collectSet.find { it.src == data.src && it.detailUrl == data.detailUrl && it.date == data.date } != null,
                     onClick = onClick,
-                    onCollect = onCollect
-                )
+                    onCollect = onCollect)
             }
             item {
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(10.dp)
-                        .background(LocalColors.current.Bg2)
                         .align(Alignment.BottomCenter)
                 )
                 bottomText?.let {
@@ -85,7 +82,6 @@ internal fun TorrentListView(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(100.dp)
-                        .background(LocalColors.current.Bg2)
                         .align(Alignment.BottomCenter)
                 )
 

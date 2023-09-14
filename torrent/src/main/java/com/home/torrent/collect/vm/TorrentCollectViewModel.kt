@@ -6,27 +6,37 @@ import com.home.baseapp.app.toast.toast
 import com.home.torrent.collect.database.bean.CollectTorrentInfo
 import com.home.torrent.collect.database.bean.toCollectTorrentInfo
 import com.home.torrent.collect.database.bean.toTorrentInfo
+import com.home.torrent.collect.database.torrentDb
+import com.home.torrent.collect.model.CollectPageDialogState
+import com.home.torrent.collect.model.CollectPageDialogType
+import com.home.torrent.collect.service.TorrentCollectService
 import com.home.torrent.model.TorrentInfo
+import com.home.torrent.search.model.SearchPageDialogState
+import com.home.torrent.search.model.SearchPageDialogType
 import com.home.torrent.service.suspendRequestMagnetUrl
 import com.home.torrent.service.transferMagnetUrlToHash
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
-import com.home.torrent.collect.database.torrentDb
-import com.home.torrent.collect.service.TorrentCollectService
+import com.home.torrentcenter.services.suspendSearchMagnetUrl
+import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class TorrentCollectViewModel : ViewModel() {
+internal class TorrentCollectViewModel : ViewModel() {
 
-    private val collectedTorrent: MutableStateFlow<List<CollectTorrentInfo>> = MutableStateFlow(emptyList())
+    private val collectedTorrent: MutableStateFlow<List<CollectTorrentInfo>> =
+        MutableStateFlow(emptyList())
 
-    val torrentListState: Flow<List<TorrentInfo>> = collectedTorrent.map { it.map { it.toTorrentInfo() }}
+    val torrentListState: Flow<List<TorrentInfo>> =
+        collectedTorrent.map { it.map { it.toTorrentInfo() } }
 
     val torrentSetState: Flow<Set<TorrentInfo>> = torrentListState.map { it.toSet() }
 
-
+    val dialogState: MutableStateFlow<CollectPageDialogState> = MutableStateFlow(
+        CollectPageDialogState()
+    )
 
     fun init() {
         loadAll()
@@ -60,13 +70,6 @@ class TorrentCollectViewModel : ViewModel() {
         }
     }
 
-    fun clearCollect() {
-        viewModelScope.launch {
-            torrentDb.collectDao().deleteAll()
-            toast("清除成功")
-        }
-    }
-
     fun loadAll() {
         viewModelScope.launch {
             collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
@@ -84,7 +87,8 @@ class TorrentCollectViewModel : ViewModel() {
                 toast("收藏到云端失败！")
                 return@launch
             }
-            val hash = if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
+            val hash =
+                if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
             val dat = data.copy(
                 magnetUrl = magnetUrl,
                 hash = if (hash.isNullOrBlank()) magnetUrl else hash,
@@ -94,6 +98,36 @@ class TorrentCollectViewModel : ViewModel() {
             )
             toast(TorrentCollectService.collectToCloud(dat).message)
         }
+    }
+
+    fun updateDialogState(data: TorrentInfo?, isMagnet: Boolean = true) {
+        if (data == null || data.detailUrl.isNullOrBlank()) {
+            dialogState.value = CollectPageDialogState()
+            return
+        }
+        viewModelScope.launch {
+            dialogState.value = dialogState.value.copy(
+                type = CollectPageDialogType.ADDRESS,
+                data = data.copy(
+                    magnetUrl = when {
+                        !data.magnetUrl.isNullOrBlank() -> data.magnetUrl
+                        else -> suspendSearchMagnetUrl(
+                            data.src, data.detailUrl!!
+                        )
+                    }, torrentUrl = when {
+                        !data.torrentUrl.isNullOrBlank() -> data.torrentUrl
+                        !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
+                        else -> suspendSearchTorrentUrl(data.src, data.detailUrl!!)
+                    }
+                ),
+                isMagnet = isMagnet
+            )
+        }
+
+    }
+
+    fun handleTorrentInfoClick(data: TorrentInfo) {
+        dialogState.value = dialogState.value.copy(type = CollectPageDialogType.OPTION, data = data)
     }
 
 }

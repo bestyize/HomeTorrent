@@ -26,9 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.R
-import com.home.torrent.cloud.page.CloudPage
-import com.home.torrent.search.page.TorrentSearchPage2
-import com.home.torrent.collect.TorrentCollectPage
+import com.home.torrent.cloud.page.TorrentCloudPage
+import com.home.torrent.search.page.TorrentSearchPage
+import com.home.torrent.collect.page.TorrentCollectPage
 import com.home.torrent.user.mine.page.MinePage
 import com.thewind.community.recommend.page.RecommendFeedPage
 import com.thewind.widget.theme.LocalColors
@@ -65,9 +65,9 @@ fun MainPage() {
                 contentAlignment = Alignment.Center
             ) {
                 when (it) {
-                    0 -> TorrentSearchPage2()
+                    0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
-                    2 -> CloudPage()
+                    2 -> TorrentCloudPage()
                     3 -> RecommendFeedPage(modifier = Modifier.fillMaxSize())
                     else -> MinePage()
                 }
@@ -76,7 +76,7 @@ fun MainPage() {
 
         TabRow(selectedTabIndex = 0,
             indicator = {},
-            containerColor = LocalColors.current.Bg1,
+            containerColor = LocalColors.current.Bg3,
             divider = {},
             modifier = Modifier
                 .align(Alignment.BottomCenter)

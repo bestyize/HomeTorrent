@@ -17,11 +17,11 @@ import kotlinx.coroutines.withContext
  * @date: 2023/9/14 上午1:45
  * @description:
  */
-object TorrentCollectService {
+internal object TorrentCollectService {
     internal suspend fun collectToCloud(data: TorrentInfo) = withContext(Dispatchers.IO) {
         runCatching {
-            HttpUtil.get("$appHost/torrent/api/collect?data=${data.toJson().urlEncode}").takeIf { it.isNotBlank() }
-                ?.toObject(TorrentCollectResponse::class.java)?.let {
+            HttpUtil.get("$appHost/torrent/api/collect?data=${data.toJson().urlEncode}")
+                .toObject(TorrentCollectResponse::class.java)?.let {
                     return@withContext it
                 }
 
@@ -32,20 +32,20 @@ object TorrentCollectService {
 
     internal suspend fun unCollectFromCloud(hash: String) = withContext(Dispatchers.IO) {
         runCatching {
-            HttpUtil.get("$appHost/torrent/api/collect/delete?hash=$hash").takeIf { it.isNotBlank() }
-                ?.toObject(TorrentUnCollectResponse::class.java)?.let {
-                    return@withContext it
-                }
+            HttpUtil.get("$appHost/torrent/api/collect/delete?hash=$hash")
+                .toObject(TorrentUnCollectResponse::class.java)?.let {
+                return@withContext it
+            }
         }
         return@withContext TorrentUnCollectResponse(-1, "网络异常，取消收藏失败")
     }
 
     internal suspend fun requestTorrentListFromServer(page: Int) = withContext(Dispatchers.IO) {
         runCatching {
-            HttpUtil.get("$appHost/torrent/api/collect/list/page?page=$page").takeIf { it.isNotBlank() }
+            HttpUtil.get("$appHost/torrent/api/collect/list/page?page=$page")
                 .toObject(TorrentCollectListResponse::class.java)?.let {
-                    return@withContext it
-                }
+                return@withContext it
+            }
         }
 
         return@withContext TorrentCollectListResponse(code = -1, message = "网络错误，加载失败")

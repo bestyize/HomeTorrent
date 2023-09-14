@@ -33,7 +33,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.collect.vm.TorrentCollectViewModel
+import com.home.torrent.search.model.SearchPageDialogType
 import com.home.torrent.search.vm.TorrentSearchPageViewModel
+import com.home.torrent.widget.CopyAddressDialog
+import com.home.torrent.widget.TorrentClickOption
+import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentSearchBar
 import com.thewind.widget.theme.LocalColors
 import kotlinx.coroutines.launch
@@ -45,7 +49,7 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TorrentSearchPage2(
+fun TorrentSearchPage(
 ) {
     val vm = viewModel(modelClass = TorrentSearchPageViewModel::class.java)
 
@@ -77,6 +81,41 @@ fun TorrentSearchPage2(
     LaunchedEffect(key1 = "pager-torrent") {
         snapshotFlow { pagerState.currentPage }.collect { _ ->
             vm.updateGlobalKeyword(query.value)
+        }
+    }
+
+    val dialogState = vm.dialogState.collectAsStateWithLifecycle()
+
+    if (dialogState.value.type != SearchPageDialogType.NONE) {
+        when (dialogState.value.type) {
+            SearchPageDialogType.OPTION -> TorrentClickOptionDialog(onClicked = {
+                when (it) {
+                    TorrentClickOption.GET_MAGNET_URL -> {
+                        vm.updateDialogState(dialogState.value.data)
+                    }
+
+                    TorrentClickOption.GET_TORRENT_URL -> {
+                        vm.updateDialogState(dialogState.value.data, false)
+                    }
+
+                    TorrentClickOption.COLLECT_CLOUD -> {
+                        vm.collectToCloud(dialogState.value.data)
+                    }
+
+                    else -> {
+                        vm.updateDialogState(null)
+                    }
+                }
+            })
+
+            SearchPageDialogType.ADDRESS -> CopyAddressDialog(
+                address = (if (dialogState.value.isMagnet) dialogState.value.data?.magnetUrl else dialogState.value.data?.torrentUrl)
+                    ?: ""
+            ) {
+                vm.updateDialogState(null)
+            }
+
+            else -> {}
         }
     }
 
@@ -143,7 +182,7 @@ fun TorrentSearchPage2(
 
                     },
                     onClick = { data ->
-
+                        vm.handleTorrentInfoClick(data)
                     })
             }
         }

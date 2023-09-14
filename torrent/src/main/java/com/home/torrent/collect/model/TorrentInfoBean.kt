@@ -9,7 +9,7 @@ import com.home.torrent.model.TorrentInfo
  * @description:
  */
 @Keep
-data class TorrentInfoBean(
+internal data class TorrentInfoBean(
     var id: Long = 0,
     var uid: Long = 0,
     var hash: String? = null,

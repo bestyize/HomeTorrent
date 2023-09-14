@@ -14,13 +14,14 @@ import kotlinx.coroutines.launch
  * @date: 2023/8/21 上午1:00
  * @description:
  */
-class CloudViewModel : ViewModel() {
+internal class CloudViewModel : ViewModel() {
 
-    private val _cloudCollectListState: MutableStateFlow<List<TorrentInfoBean>> = MutableStateFlow(emptyList())
+    private val _cloudCollectListState: MutableStateFlow<List<TorrentInfoBean>> =
+        MutableStateFlow(emptyList())
 
     private val _pageState: MutableStateFlow<Int> = MutableStateFlow(0)
 
-    val pageState = _pageState.asStateFlow()
+    private val pageState = _pageState.asStateFlow()
 
     val cloudCollectListState = _cloudCollectListState.asStateFlow()
 
@@ -54,9 +55,10 @@ class CloudViewModel : ViewModel() {
                         loadFinish = true
                     }
                 } else {
-                    _cloudCollectListState.value = _cloudCollectListState.value.toMutableList().apply {
-                        addAll(it.data)
-                    }
+                    _cloudCollectListState.value =
+                        _cloudCollectListState.value.toMutableList().apply {
+                            addAll(it.data)
+                        }
                     _pageState.value = _pageState.value + 1
                 }
             }

@@ -2,4 +2,8 @@ package com.home.torrent.search.model
 
 import com.home.torrent.model.TorrentInfo
 
-data class SearchPageDialogState(val type: Int = 0, val data: TorrentInfo? = null)
+internal data class SearchPageDialogState(
+    val type: SearchPageDialogType = SearchPageDialogType.NONE,
+    val data: TorrentInfo? = null,
+    val isMagnet: Boolean = true
+)

@@ -4,10 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.home.baseapp.app.toast.toast
+import com.home.torrent.collect.service.TorrentCollectService
+import com.home.torrent.model.TorrentInfo
 import com.home.torrent.model.TorrentSource
+import com.home.torrent.search.model.SearchPageDialogState
+import com.home.torrent.search.model.SearchPageDialogType
 import com.home.torrent.search.model.TorrentSearchPageState
 import com.home.torrent.service.requestTorrentSources
+import com.home.torrent.service.suspendRequestMagnetUrl
+import com.home.torrent.service.transferMagnetUrlToHash
+import com.home.torrent.service.transferMagnetUrlToTorrentUrl
+import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrent
+import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,8 +41,12 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 
     val keywordState: MutableStateFlow<String> = MutableStateFlow("")
 
+    val dialogState: MutableStateFlow<SearchPageDialogState> = MutableStateFlow(
+        SearchPageDialogState()
+    )
+
     val initFinishState: Flow<Boolean> = combine(sourceState, pagesState) { sources, pages ->
-        return@combine !sources.isEmpty() && pages.size == sources.size
+        return@combine sources.isNotEmpty() && pages.size == sources.size
     }
 
     fun init() {
@@ -53,7 +67,8 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         keywordState.value = key
         pagesState.value = pagesState.value.toMutableList().apply {
             forEachIndexed { index, pageState ->
-                this[index] = pageState.copy(keyword = key, page = 1, dataList = emptyList(), loaded = false)
+                this[index] =
+                    pageState.copy(keyword = key, page = 1, dataList = emptyList(), loaded = false)
             }
         }
 
@@ -86,6 +101,57 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         }
 
 
+    }
+
+    fun handleTorrentInfoClick(data: TorrentInfo) {
+        dialogState.value = dialogState.value.copy(type = SearchPageDialogType.OPTION, data = data)
+    }
+
+    fun updateDialogState(data: TorrentInfo?, isMagnet: Boolean = true) {
+        if (data == null || data.detailUrl.isNullOrBlank()) {
+            dialogState.value = SearchPageDialogState()
+            return
+        }
+        viewModelScope.launch {
+            dialogState.value = dialogState.value.copy(
+                type = SearchPageDialogType.ADDRESS, data = data.copy(
+                    magnetUrl = when {
+                        !data.magnetUrl.isNullOrBlank() -> data.magnetUrl
+                        else -> suspendSearchMagnetUrl(
+                            data.src, data.detailUrl!!
+                        )
+                    }, torrentUrl = when {
+                        !data.torrentUrl.isNullOrBlank() -> data.torrentUrl
+                        !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
+                        else -> suspendSearchTorrentUrl(data.src, data.detailUrl!!)
+                    }
+                ), isMagnet = isMagnet
+            )
+        }
+
+    }
+
+    fun collectToCloud(data: TorrentInfo?) {
+        data ?: return
+        viewModelScope.launch {
+            val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
+                data.src, data.detailUrl!!
+            ) else data.magnetUrl
+            if (magnetUrl == null) {
+                toast("收藏到云端失败！")
+                return@launch
+            }
+            val hash =
+                if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
+            val dat = data.copy(
+                magnetUrl = magnetUrl,
+                hash = if (hash.isNullOrBlank()) magnetUrl else hash,
+                torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
+                    magnetUrl
+                ) else data.torrentUrl
+            )
+            toast(TorrentCollectService.collectToCloud(dat).message)
+        }
     }
 
 }
