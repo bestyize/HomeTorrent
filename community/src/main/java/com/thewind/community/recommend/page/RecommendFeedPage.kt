@@ -32,7 +32,7 @@ import com.thewind.community.card.PosterOptionDialog
 import com.thewind.community.card.TitlePosterCard
 import com.thewind.community.detail.DetailActivity
 import com.thewind.community.recommend.vm.RecommendPageViewModel
-import com.thewind.community.util.toDate
+import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 

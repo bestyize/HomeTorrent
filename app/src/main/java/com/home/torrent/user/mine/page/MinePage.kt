@@ -54,9 +54,9 @@ import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
-import com.home.torrent.util.toDate
 import com.thewind.account.AccountManager
 import com.thewind.account.bean.User
+import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonAlertDialog
 

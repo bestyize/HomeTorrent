@@ -83,6 +83,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:downloader")))
     implementation(project(mapOf("path" to ":framework:resources")))
     implementation(project(mapOf("path" to ":framework:widget")))
+    implementation(project(mapOf("path" to ":framework:utils")))
     implementation(libs.matrial)
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)

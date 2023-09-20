@@ -6,7 +6,7 @@ import com.thewind.community.recommend.model.PublishCommentResponse
 import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.recommend.model.RecommendCommentResponse
 import com.thewind.community.recommend.model.RecommendPoster
-import com.thewind.community.util.toObject
+import com.thewind.utils.toObject
 import com.thewind.network.HttpUtil.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

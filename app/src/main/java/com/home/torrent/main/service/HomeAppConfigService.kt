@@ -2,8 +2,8 @@ package com.home.torrent.main.service
 
 import com.home.baseapp.app.config.appHost
 import com.home.torrent.main.model.HomeAppConfig
-import com.home.torrent.util.toObject
 import com.thewind.network.HttpUtil.get
+import com.thewind.utils.toObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

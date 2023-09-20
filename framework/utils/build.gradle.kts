@@ -2,11 +2,10 @@
 plugins {
     alias(libs.plugins.com.android.library)
     alias(libs.plugins.org.jetbrains.kotlin.android)
-    id("kotlin-parcelize")
 }
 
 android {
-    namespace = "com.thewind.community"
+    namespace = "com.thewind.utils"
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
@@ -29,18 +28,9 @@ android {
         sourceCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
         targetCompatibility = JavaVersion.toVersion(libs.versions.jvmTargetVersion.get().toInt())
     }
-
     kotlinOptions {
         jvmTarget = libs.versions.jvmTargetVersion.get()
     }
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
-    }
-
 }
 
 dependencies {
@@ -48,32 +38,8 @@ dependencies {
     implementation(libs.coreKtx)
     implementation(libs.appcompat)
     implementation(libs.matrial)
-    implementation(libs.lifecycleViewModelCompose)
-    implementation(libs.lifecycleRuntimeCompose)
-    implementation(libs.activityCompose)
-    implementation(platform(libs.composeBom))
-
-    implementation(libs.composeUi)
-    implementation(libs.composeUiGraphics)
-    implementation(libs.composeUiToolingPreview)
-    implementation(libs.composeMaterial)
-    implementation(libs.composeFoundation)
     implementation(libs.gson)
-
-    implementation(libs.coli)
-    implementation(project(mapOf("path" to ":framework:account")))
-    implementation(project(mapOf("path" to ":framework:baseapp")))
-    implementation(project(mapOf("path" to ":framework:network")))
-    implementation(project(mapOf("path" to ":framework:widget")))
-    implementation(project(mapOf("path" to ":framework:utils")))
-    implementation(libs.constraintlayout)
-
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation(libs.composeUiTooling)
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
 }

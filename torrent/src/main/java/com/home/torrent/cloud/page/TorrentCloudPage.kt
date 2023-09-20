@@ -45,7 +45,7 @@ import com.home.torrent.widget.CopyAddressDialog
 import com.home.torrent.widget.TorrentClickOption
 import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentItemTag
-import com.home.torrentcenter.tool.toDate
+import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 

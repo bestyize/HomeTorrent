@@ -7,12 +7,12 @@ import com.home.torrent.model.TorrentSource
 import com.home.torrent.service.requestMagnetUrl
 import com.home.torrent.service.requestTorrentSources
 import com.home.torrent.service.searchTorrentList
-import com.home.torrentcenter.tool.urlEncode
 import com.tencent.mmkv.MMKV
 import com.thewind.network.HttpUtil.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.home.baseapp.app.config.appHost
+import com.thewind.utils.urlEncode
 
 
 private val useLocal by lazy {
@@ -32,10 +32,6 @@ fun requestTorrentSource(): List<TorrentSource> {
     }
     return emptyList()
 
-}
-
-suspend fun suspendRequestTorrentSource() = withContext(Dispatchers.IO) {
-    requestTorrentSource()
 }
 
 fun searchTorrent(src: Int, key: String, page: Int = 1): List<TorrentInfo> {

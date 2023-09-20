@@ -5,10 +5,10 @@ import com.home.torrent.collect.model.TorrentCollectListResponse
 import com.home.torrent.collect.model.TorrentCollectResponse
 import com.home.torrent.collect.model.TorrentUnCollectResponse
 import com.home.torrent.model.TorrentInfo
-import com.home.torrentcenter.tool.toJson
-import com.home.torrentcenter.tool.toObject
-import com.home.torrentcenter.tool.urlEncode
 import com.thewind.network.HttpUtil
+import com.thewind.utils.toJson
+import com.thewind.utils.toObject
+import com.thewind.utils.urlEncode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

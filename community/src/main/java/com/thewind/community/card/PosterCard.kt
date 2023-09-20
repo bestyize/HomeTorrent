@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.recommend.model.RecommendPoster
-import com.thewind.community.util.toDate
+import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 
 /**
