@@ -15,9 +15,8 @@ import com.home.baseapp.app.config.appHost
 import com.thewind.utils.urlEncode
 
 
-private val useLocal by lazy {
-    MMKV.defaultMMKV().decodeBool("torrent_api_use_local")
-}
+private val useLocal : Boolean
+    get() = MMKV.defaultMMKV().decodeBool("torrent_api_use_local")
 
 fun requestTorrentSource(): List<TorrentSource> {
 
