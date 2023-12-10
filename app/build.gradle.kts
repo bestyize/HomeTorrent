@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.hiltPlugin)
     id("kotlin-parcelize")
 }
 
@@ -77,6 +78,8 @@ dependencies {
     implementation(libs.roomRuntime)
     implementation(libs.roomKtx)
     implementation(libs.dataStore)
+    implementation(libs.hilt)
+    ksp(libs.hiltCompiler)
     implementation(project(mapOf("path" to ":framework:account")))
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:network")))

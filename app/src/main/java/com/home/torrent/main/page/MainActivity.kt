@@ -15,8 +15,9 @@ import com.thewind.widget.theme.AppTheme
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.theme.ThemeId
 import com.thewind.widget.theme.ThemeManager
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

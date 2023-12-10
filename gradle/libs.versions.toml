@@ -24,7 +24,7 @@ fragemntKtxVersion = "1.6.2"
 matrialVersion = "1.10.0"
 datastoreVersion = "1.0.0"
 
-hiltVersion = "2.44"
+hiltVersion = "2.48"
 
 gsonVersion = "2.10.1"
 jsoupVersion = "1.16.1"
