@@ -42,6 +42,7 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 constraintlayout = "2.1.4"
+navVersion = "2.7.5"
 
 
 [libraries]
@@ -75,6 +76,7 @@ composeUiTooling = {module = "androidx.compose.ui:ui-tooling"}
 composeUiToolingPreview = {module = "androidx.compose.ui:ui-tooling-preview"}
 composeMaterial = {module = "androidx.compose.material3:material3"}
 composeConstraintLayout = {module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "composeConstraintVersion"}
+composeNavigation = {module = "androidx.navigation:navigation-compose", version.ref = "navVersion"}
 
 gson = {module = "com.google.code.gson:gson", version.ref = "gsonVersion"}
 
