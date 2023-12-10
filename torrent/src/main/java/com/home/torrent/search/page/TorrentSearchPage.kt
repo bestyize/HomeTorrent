@@ -71,7 +71,8 @@ fun TorrentSearchPage(
 
     val tabs = vm.sourceState.collectAsStateWithLifecycle()
 
-    val pagerState = rememberPagerState(initialPage = 0,
+    val pagerState = rememberPagerState(
+        initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { tabs.value.size })
 

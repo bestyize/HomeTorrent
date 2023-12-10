@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         mavenLocal()
+        maven("https://maven.aliyun.com/repository/public/")
     }
 }
 rootProject.name = "HomeTorrent"
