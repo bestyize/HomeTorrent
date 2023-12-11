@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.home.torrent.model.TorrentInfo
-import com.home.torrent.search.model.TorrentSearchPageState
+import com.home.torrent.search.model.TorrentSearchTabState
 import com.home.torrent.widget.TorrentListView
 import com.thewind.widget.theme.LocalColors
 
@@ -18,7 +18,7 @@ import com.thewind.widget.theme.LocalColors
 
 @Composable
 internal fun TorrentSearchTab(
-    pageState: TorrentSearchPageState,
+    pageState: TorrentSearchTabState,
     onLoad: () -> Unit,
     collectSet: Set<TorrentInfo>,
     onCollect: (TorrentInfo, Boolean) -> Unit,

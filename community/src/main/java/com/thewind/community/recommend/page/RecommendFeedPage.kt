@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,14 +45,15 @@ import com.thewind.widget.ui.TitleHeader
 
 @Composable
 @Preview
-fun RecommendFeedPage(modifier: Modifier = Modifier) {
+fun RecommendFeedPage() {
 
     val publishPageState = remember {
         mutableStateOf(false)
     }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .fillMaxSize()
             .background(LocalColors.current.Bg2)
             .statusBarsPadding()
     ) {

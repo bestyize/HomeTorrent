@@ -66,7 +66,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
         if (timeLeft.intValue == 0) {
             onClose.invoke()
         }
-        LaunchedEffect(key1 = "count_down") {
+        LaunchedEffect(key1 = Unit) {
             while (timeLeft.intValue > 0) {
                 delay(1000)
                 if (countDownState.value) {

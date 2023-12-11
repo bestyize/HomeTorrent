@@ -21,7 +21,7 @@ import kotlin.system.exitProcess
  * @description:
  */
 @Composable
-fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
+internal fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
 
     val appConfig = remember {
         mutableStateOf<HomeAppConfig?>(null)

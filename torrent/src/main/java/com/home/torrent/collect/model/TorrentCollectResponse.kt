@@ -8,4 +8,7 @@ import androidx.annotation.Keep
  * @description:
  */
 @Keep
-internal data class TorrentCollectResponse(val code: Int = 0, val message: String? = null)
+internal data class TorrentCollectResponse(
+    val code: Int = 0,
+    val message: String? = null
+)

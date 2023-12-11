@@ -1,11 +1,10 @@
 package com.home.torrent.search.model
 
-import com.home.torrent.model.TorrentInfo
+import com.home.torrent.model.TorrentSource
 
 internal data class TorrentSearchPageState(
-    val src: Int,
     val keyword: String = "",
-    val page: Int = 1,
-    val dataList: List<TorrentInfo> = emptyList(),
-    val loaded: Boolean = false
+    val source:List<TorrentSource> = emptyList(),
+    val tabs: List<TorrentSearchTabState> = emptyList(),
+    val dialogState: SearchPageDialogState = SearchPageDialogState()
 )

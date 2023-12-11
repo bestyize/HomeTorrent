@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.home.torrent.main.page.nav.MainNavigationRouter
 import com.home.torrent.main.page.splash.page.SplashPage
 import com.thewind.widget.theme.AppTheme
 import com.thewind.widget.theme.LocalColors
@@ -31,25 +32,14 @@ class MainActivity : AppCompatActivity() {
                 ThemeId.DAY -> false
             }
             AppTheme(darkTheme = isNight) {
-                val showSplashPage = remember {
-                    mutableStateOf(true)
-                }
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = LocalColors.current.Bg1
                 ) {
-                    if (showSplashPage.value) {
-                        SplashPage {
-                            showSplashPage.value = false
-                        }
-                    } else {
-                        MainPage()
-                    }
-
+                    MainNavigationRouter()
                 }
             }
 
         }
-
 
     }
 

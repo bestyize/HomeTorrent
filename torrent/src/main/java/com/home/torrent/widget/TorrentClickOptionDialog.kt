@@ -37,7 +37,6 @@ internal fun TorrentClickOptionDialog(
     onClicked: (TorrentClickOption) -> Unit,
     options: Array<TorrentClickOption> = TorrentClickOption.values()
 ) {
-
     ModalBottomSheet(
         onDismissRequest = {
             onClicked.invoke(TorrentClickOption.CANCEL)

@@ -1,5 +1,6 @@
 package com.home.torrent.main.page
 
+import android.content.res.Resources
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +20,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.R
 import com.home.torrent.cloud.page.TorrentCloudPage
-import com.home.torrent.search.page.TorrentSearchPage
 import com.home.torrent.collect.page.TorrentCollectPage
+import com.home.torrent.search.page.TorrentSearchPage
 import com.home.torrent.user.mine.page.MinePage
 import com.thewind.community.recommend.page.RecommendFeedPage
 import com.thewind.widget.theme.LocalColors
@@ -38,14 +39,19 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
-fun MainPage() {
-    val tabs = listOf(
-        stringResource(R.string.main_page),
-        stringResource(R.string.collect),
-        stringResource(R.string.cloud),
-        stringResource(R.string.recommend),
-        stringResource(R.string.my)
-    )
+fun MainPage(
+    resources: Resources = LocalContext.current.resources,
+    tabs: List<String> = remember {
+        listOf(
+            resources.getString(R.string.main_page),
+            resources.getString(R.string.collect),
+            resources.getString(R.string.cloud),
+            resources.getString(R.string.recommend),
+            resources.getString(R.string.my)
+        )
+    }
+) {
+
     val pagerState = rememberPagerState(initialPage = 0) {
         tabs.size
     }
@@ -68,13 +74,14 @@ fun MainPage() {
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
                     2 -> TorrentCloudPage()
-                    3 -> RecommendFeedPage(modifier = Modifier.fillMaxSize())
+                    3 -> RecommendFeedPage()
                     else -> MinePage()
                 }
             }
         }
 
-        TabRow(selectedTabIndex = 0,
+        TabRow(
+            selectedTabIndex = 0,
             indicator = {},
             containerColor = LocalColors.current.Bg3,
             divider = {},

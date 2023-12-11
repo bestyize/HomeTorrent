@@ -38,7 +38,7 @@ internal class TorrentCollectViewModel : ViewModel() {
         CollectPageDialogState()
     )
 
-    fun init() {
+    init {
         loadAll()
     }
 
@@ -70,7 +70,7 @@ internal class TorrentCollectViewModel : ViewModel() {
         }
     }
 
-    fun loadAll() {
+    private fun loadAll() {
         viewModelScope.launch {
             collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
         }

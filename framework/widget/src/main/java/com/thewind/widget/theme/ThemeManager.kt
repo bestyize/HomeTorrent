@@ -25,7 +25,7 @@ object ThemeManager {
 
     val themeFlow: Flow<ThemeId> = HomeApp.context.dataStore.data.map { pref ->
         val local = pref[DATA_STORE_KEY_THEME_ID] ?: 0
-        ThemeId.values().find { it.value == local } ?: ThemeId.AUTO
+        ThemeId.entries.find { it.value == local } ?: ThemeId.AUTO
     }
 
     @OptIn(DelicateCoroutinesApi::class)

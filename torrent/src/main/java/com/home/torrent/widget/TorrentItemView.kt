@@ -69,7 +69,6 @@ internal fun TorrentItemView(
                     .weight(1f),
                 textAlign = TextAlign.Center,
             )
-
             Column(
                 modifier = Modifier
                     .weight(5f)
@@ -149,7 +148,8 @@ internal fun TorrentItemView(
                         MutableInteractionSource()
                     }) {
                         onCollect.invoke(data, !isCollected)
-                    })
+                    }
+            )
         }
     }
 }

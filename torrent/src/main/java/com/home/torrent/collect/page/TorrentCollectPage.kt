@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,8 +30,7 @@ import com.thewind.widget.ui.TitleHeader
 @Composable
 fun TorrentCollectPage() {
     val vm = viewModel(modelClass = TorrentCollectViewModel::class.java)
-    vm.init()
-    val collectList = vm.torrentListState.collectAsStateWithLifecycle(emptyList())
+    val collectList by vm.torrentListState.collectAsStateWithLifecycle(emptyList())
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -52,38 +52,38 @@ fun TorrentCollectPage() {
             )
         }
 
-        TorrentListView(list = collectList.value,
-            collectSet = collectList.value.toSet(),
+        TorrentListView(
+            list = collectList,
+            collectSet = collectList.toSet(),
             onClick = { data ->
                 vm.handleTorrentInfoClick(data)
             },
             onCollect = { data, collect ->
                 if (collect) vm.collect(data) else vm.unCollect(data)
-            })
-
+            }
+        )
     }
 
     TorrentCollectPageDialog()
 }
 
 @Composable
-private fun TorrentCollectPageDialog() {
-    val vm = viewModel(modelClass = TorrentCollectViewModel::class.java)
-    val dialogState = vm.dialogState.collectAsStateWithLifecycle()
-    if (dialogState.value.type != CollectPageDialogType.NONE) {
-        when (dialogState.value.type) {
+private fun TorrentCollectPageDialog(vm: TorrentCollectViewModel = viewModel(modelClass = TorrentCollectViewModel::class.java)) {
+    val dialogState by vm.dialogState.collectAsStateWithLifecycle()
+    if (dialogState.type != CollectPageDialogType.NONE) {
+        when (dialogState.type) {
             CollectPageDialogType.OPTION -> TorrentClickOptionDialog(onClicked = {
                 when (it) {
                     TorrentClickOption.GET_MAGNET_URL -> {
-                        vm.updateDialogState(dialogState.value.data)
+                        vm.updateDialogState(dialogState.data)
                     }
 
                     TorrentClickOption.GET_TORRENT_URL -> {
-                        vm.updateDialogState(dialogState.value.data, false)
+                        vm.updateDialogState(dialogState.data, false)
                     }
 
                     TorrentClickOption.COLLECT_CLOUD -> {
-                        vm.collectToCloud(dialogState.value.data)
+                        vm.collectToCloud(dialogState.data)
                     }
 
                     else -> {
@@ -93,7 +93,7 @@ private fun TorrentCollectPageDialog() {
             })
 
             CollectPageDialogType.ADDRESS -> CopyAddressDialog(
-                address = (if (dialogState.value.isMagnet) dialogState.value.data?.magnetUrl else dialogState.value.data?.torrentUrl)
+                address = (if (dialogState.isMagnet) dialogState.data?.magnetUrl else dialogState.data?.torrentUrl)
                     ?: ""
             ) {
                 vm.updateDialogState(null)

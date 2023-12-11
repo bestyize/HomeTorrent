@@ -18,6 +18,7 @@ object AccountManager {
     fun saveUser(user: User?) {
         user ?: return
         MMKV.defaultMMKV().encode(KEY_USER_INFO, user.toJson())
+        _user = user
     }
 
     fun getUser(): User? {

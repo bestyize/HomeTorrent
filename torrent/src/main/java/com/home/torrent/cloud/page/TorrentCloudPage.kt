@@ -24,8 +24,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -64,31 +63,17 @@ private val clickOptions = arrayOf(
 fun TorrentCloudPage() {
 
     val vm = viewModel(modelClass = CloudViewModel::class.java)
-    val dataList = vm.cloudCollectListState.collectAsStateWithLifecycle()
-
-
-    val showOptionDialog = remember {
-        mutableStateOf(false)
-    }
-
-    val showCopyDialog = remember {
-        mutableStateOf(false)
-    }
-
-    val selectedTorrent = remember {
-        mutableStateOf<TorrentInfoBean?>(null)
-    }
+    val cloudPageState by vm.cloudPageState.collectAsStateWithLifecycle()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleHeader(title = stringResource(R.string.cloud_collect))
-            CloudTorrentListView(dataList = dataList.value, onLoad = {
+            CloudTorrentListView(dataList = cloudPageState.list, onLoad = {
                 vm.loadCloudCollectList()
             }, onUnCollect = { index, hash ->
                 vm.unCollectFromCloud(index, hash)
             }, onItemClick = {
-                selectedTorrent.value = it
-                showOptionDialog.value = true
+                vm.handleItemClick(true, it)
             })
         }
         Box(modifier = Modifier
@@ -111,33 +96,32 @@ fun TorrentCloudPage() {
         }
     }
 
-    val clickOptionType = remember {
-        mutableStateOf(TorrentClickOption.GET_MAGNET_URL)
-    }
-
-    if (showOptionDialog.value) {
+    if (cloudPageState.showOptionDialog) {
         TorrentClickOptionDialog(options = clickOptions, onClicked = {
-            clickOptionType.value = it
             when (it) {
                 TorrentClickOption.GET_MAGNET_URL -> {
-                    showCopyDialog.value = true
+                    vm.updateCopyDialogState(true, it)
                 }
 
                 TorrentClickOption.GET_TORRENT_URL -> {
-                    showCopyDialog.value = true
+                    vm.updateCopyDialogState(true, it)
                 }
 
                 else -> {}
             }
-            showOptionDialog.value = false
+            vm.handleItemClick(showOptionDialog = false, clickOption = it)
         })
     }
 
     val address =
-        if (clickOptionType.value == TorrentClickOption.GET_MAGNET_URL) selectedTorrent.value?.magnetUrl else selectedTorrent.value?.torrentUrl
-    if (showCopyDialog.value) {
+        if (cloudPageState.clickOption == TorrentClickOption.GET_MAGNET_URL) {
+            cloudPageState.selectedTorrent?.magnetUrl
+        } else {
+            cloudPageState.selectedTorrent?.torrentUrl
+        }
+    if (cloudPageState.showCopyDialog) {
         CopyAddressDialog(address = address ?: "", onCopy = {
-            showCopyDialog.value = false
+            vm.updateCopyDialogState(false)
         })
     }
 }
@@ -181,7 +165,6 @@ private fun CloudTorrentListView(
         }
     }
 }
-
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

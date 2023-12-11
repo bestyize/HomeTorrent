@@ -3,8 +3,10 @@ package com.home.torrent.cloud.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
+import com.home.torrent.cloud.model.TorrentCloudPageData
 import com.home.torrent.collect.model.TorrentInfoBean
 import com.home.torrent.collect.service.TorrentCollectService
+import com.home.torrent.widget.TorrentClickOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -16,25 +18,42 @@ import kotlinx.coroutines.launch
  */
 internal class CloudViewModel : ViewModel() {
 
-    private val _cloudCollectListState: MutableStateFlow<List<TorrentInfoBean>> =
-        MutableStateFlow(emptyList())
+    private val _cloudPageState: MutableStateFlow<TorrentCloudPageData> = MutableStateFlow(
+        TorrentCloudPageData()
+    )
 
-    private val _pageState: MutableStateFlow<Int> = MutableStateFlow(0)
-
-    private val pageState = _pageState.asStateFlow()
-
-    val cloudCollectListState = _cloudCollectListState.asStateFlow()
-
+    val cloudPageState = _cloudPageState.asStateFlow()
 
     private var loadFinish = false
+
+    fun handleItemClick(
+        showOptionDialog: Boolean,
+        selectedTorrent: TorrentInfoBean? = _cloudPageState.value.selectedTorrent,
+        clickOption: TorrentClickOption = _cloudPageState.value.clickOption
+    ) {
+        _cloudPageState.value = _cloudPageState.value.copy(
+            showOptionDialog = showOptionDialog,
+            selectedTorrent = selectedTorrent,
+            clickOption = clickOption
+        )
+    }
+
+    fun updateCopyDialogState(
+        showCopyDialog: Boolean,
+        clickOption: TorrentClickOption = _cloudPageState.value.clickOption
+    ) {
+        _cloudPageState.value =
+            _cloudPageState.value.copy(showCopyDialog = showCopyDialog, clickOption = clickOption)
+    }
 
     fun unCollectFromCloud(index: Int, hash: String?) {
         hash ?: return
         viewModelScope.launch {
             toast(TorrentCollectService.unCollectFromCloud(hash).message)
-            _cloudCollectListState.value = _cloudCollectListState.value.toMutableList().apply {
-                removeAt(index)
-            }
+            _cloudPageState.value =
+                _cloudPageState.value.copy(list = _cloudPageState.value.list.toMutableList().apply {
+                    removeAt(index)
+                })
         }
     }
 
@@ -44,22 +63,22 @@ internal class CloudViewModel : ViewModel() {
         }
         if (loadFinish) return
         viewModelScope.launch {
+            var data = _cloudPageState.value
             if (reset) {
-                _pageState.value = 0
-                _cloudCollectListState.value = emptyList()
+                data = TorrentCloudPageData()
             }
-            TorrentCollectService.requestTorrentListFromServer(pageState.value).let {
+            TorrentCollectService.requestTorrentListFromServer(data.page).let {
                 if (it.data.isNullOrEmpty()) {
                     if (it.code == -1) toast(it.message)
                     it.data?.let {
                         loadFinish = true
                     }
                 } else {
-                    _cloudCollectListState.value =
-                        _cloudCollectListState.value.toMutableList().apply {
+                    _cloudPageState.value = _cloudPageState.value.copy(
+                        page = _cloudPageState.value.page + 1,
+                        list = data.list.toMutableList().apply {
                             addAll(it.data)
-                        }
-                    _pageState.value = _pageState.value + 1
+                        })
                 }
             }
         }
