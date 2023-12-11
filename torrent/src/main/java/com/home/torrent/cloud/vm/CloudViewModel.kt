@@ -70,9 +70,6 @@ internal class CloudViewModel : ViewModel() {
             TorrentCollectService.requestTorrentListFromServer(data.page).let {
                 if (it.data.isNullOrEmpty()) {
                     if (it.code == -1) toast(it.message)
-                    it.data?.let {
-                        loadFinish = true
-                    }
                 } else {
                     _cloudPageState.value = _cloudPageState.value.copy(
                         page = _cloudPageState.value.page + 1,
@@ -81,6 +78,7 @@ internal class CloudViewModel : ViewModel() {
                         })
                 }
             }
+            loadFinish = true
         }
     }
 

@@ -18,8 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -46,10 +48,9 @@ import com.thewind.widget.ui.TitleHeader
 @Composable
 @Preview
 fun RecommendFeedPage() {
-
-    val publishPageState = remember {
-        mutableStateOf(false)
-    }
+    val vm: RecommendPageViewModel = viewModel(modelClass = RecommendPageViewModel::class.java)
+    val recommendPageState by vm.recommendPageData.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
 
     Box(
         modifier = Modifier
@@ -57,14 +58,6 @@ fun RecommendFeedPage() {
             .background(LocalColors.current.Bg2)
             .statusBarsPadding()
     ) {
-        val vm = viewModel(modelClass = RecommendPageViewModel::class.java)
-
-        val posterListState = vm.posterListState.collectAsStateWithLifecycle()
-
-        val finishState = vm.loadFinishState.collectAsStateWithLifecycle()
-
-        val activity = LocalContext.current as Activity
-
         LazyColumn(
             modifier = Modifier
                 .padding(15.dp)
@@ -73,12 +66,14 @@ fun RecommendFeedPage() {
             item {
                 Spacer(modifier = Modifier.height(50.dp))
             }
-            items(posterListState.value.size, key = { "${posterListState.value[it].id}" }) { pos ->
-                val data = posterListState.value[pos]
-                val menuClickState = remember {
+            items(
+                recommendPageState.list.size,
+                key = { "${recommendPageState.list[it].id}" }) { pos ->
+                val data = recommendPageState.list[pos]
+                var menuClickState by remember {
                     mutableStateOf(false)
                 }
-                if (menuClickState.value) {
+                if (menuClickState) {
                     PosterOptionDialog(onClicked = { option ->
                         when (option) {
                             PosterOption.DELETE -> {
@@ -88,7 +83,7 @@ fun RecommendFeedPage() {
                             PosterOption.CANCEL -> {}
                             else -> {}
                         }
-                        menuClickState.value = false
+                        menuClickState = false
 
                     })
                 }
@@ -103,14 +98,14 @@ fun RecommendFeedPage() {
                         })
                     },
                     onMenuClick = {
-                        menuClickState.value = true
+                        menuClickState = true
                     })
                 Spacer(modifier = Modifier.height(15.dp))
             }
 
             item {
                 Spacer(modifier = Modifier.height(100.dp))
-                if (!finishState.value) {
+                if (!recommendPageState.loadFinish) {
                     vm.loadPoster(false)
                 }
             }
@@ -130,7 +125,7 @@ fun RecommendFeedPage() {
             )
             .padding(10.dp)
             .clickable {
-                publishPageState.value = true
+                vm.updatePublishPageState(true)
             }) {
             Icon(
                 Icons.Filled.Add,
@@ -141,11 +136,9 @@ fun RecommendFeedPage() {
         }
     }
 
-    if (publishPageState.value) {
+    if (recommendPageState.publishState) {
         PublishPage {
-            publishPageState.value = false
+            vm.updatePublishPageState(false)
         }
     }
-
-
 }

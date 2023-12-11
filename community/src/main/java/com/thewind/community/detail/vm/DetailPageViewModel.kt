@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
  */
 class DetailPageViewModel : ViewModel() {
 
-    val posterState: MutableStateFlow<RecommendPoster?> = MutableStateFlow(null)
+    private val posterState: MutableStateFlow<RecommendPoster?> = MutableStateFlow(null)
 
     val commentState: MutableStateFlow<List<RecommendComment>> = MutableStateFlow(emptyList())
 

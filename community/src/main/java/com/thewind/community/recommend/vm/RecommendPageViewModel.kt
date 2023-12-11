@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
 import com.thewind.community.R
+import com.thewind.community.recommend.model.RecommendPageData
 import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.community.recommend.service.RecommendPageService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -17,33 +19,38 @@ import kotlinx.coroutines.launch
  */
 class RecommendPageViewModel : ViewModel() {
 
-    val posterListState: MutableStateFlow<List<RecommendPoster>> = MutableStateFlow(emptyList())
+    private val _recommendPageState: MutableStateFlow<RecommendPageData> = MutableStateFlow(
+        RecommendPageData()
+    )
 
-    val loadFinishState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
-    private var currentPage = 0
+    val recommendPageData = _recommendPageState.asStateFlow()
 
 
     fun loadPoster(fullRefresh: Boolean) {
         viewModelScope.launch {
+            var currentPage = _recommendPageState.value.currentPage
             if (fullRefresh) {
                 currentPage = 0
-                loadFinishState.value = true
             }
             val list = RecommendPageService.requestRecommendFeeds(page = currentPage)
             if (list.isEmpty()) {
                 toast("load finish")
-                loadFinishState.value = true
+                _recommendPageState.value =
+                    _recommendPageState.value.copy(currentPage = currentPage, loadFinish = true)
                 return@launch
             }
-            posterListState.value = if (fullRefresh) {
+            val newList = if (fullRefresh) {
                 list
             } else {
-                posterListState.value.toMutableList().apply {
+                _recommendPageState.value.list.toMutableList().apply {
                     addAll(list)
                 }
             }
-            currentPage++
+            _recommendPageState.value = _recommendPageState.value.copy(
+                currentPage = currentPage + 1,
+                list = newList,
+                loadFinish = true
+            )
 
         }
     }
@@ -55,9 +62,11 @@ class RecommendPageViewModel : ViewModel() {
                 toast(HomeApp.context.getString(R.string.failed))
                 return@launch
             }
-            posterListState.value = posterListState.value.toMutableList().apply {
-                add(0, poster)
-            }
+            _recommendPageState.value =
+                _recommendPageState.value.copy(list = _recommendPageState.value.list.toMutableList()
+                    .apply {
+                        add(0, poster)
+                    })
         }
     }
 
@@ -65,13 +74,18 @@ class RecommendPageViewModel : ViewModel() {
         viewModelScope.launch {
             val success = RecommendPageService.deletePoster(posterId)
             if (success) {
-                posterListState.value = posterListState.value.toMutableList().apply {
-                    removeIf { it.id == posterId }
-                }
+                _recommendPageState.value = _recommendPageState.value.copy(
+                    list = _recommendPageState.value.list.toMutableList().apply {
+                            removeIf { it.id == posterId }
+                        })
             } else {
                 toast(HomeApp.context.getString(R.string.failed))
             }
         }
+    }
+
+    fun updatePublishPageState(open: Boolean) {
+        _recommendPageState.value = _recommendPageState.value.copy(publishState = open)
     }
 
 }
