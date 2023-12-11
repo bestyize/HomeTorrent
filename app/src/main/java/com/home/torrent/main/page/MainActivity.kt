@@ -6,12 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.home.torrent.main.page.nav.MainNavigationRouter
-import com.home.torrent.main.page.splash.page.SplashPage
 import com.thewind.widget.theme.AppTheme
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.theme.ThemeId

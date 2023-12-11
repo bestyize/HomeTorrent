@@ -11,8 +11,6 @@ import com.home.torrent.collect.model.CollectPageDialogState
 import com.home.torrent.collect.model.CollectPageDialogType
 import com.home.torrent.collect.service.TorrentCollectService
 import com.home.torrent.model.TorrentInfo
-import com.home.torrent.search.model.SearchPageDialogState
-import com.home.torrent.search.model.SearchPageDialogType
 import com.home.torrent.service.suspendRequestMagnetUrl
 import com.home.torrent.service.transferMagnetUrlToHash
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
