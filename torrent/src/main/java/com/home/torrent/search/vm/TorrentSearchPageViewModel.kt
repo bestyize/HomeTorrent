@@ -1,6 +1,5 @@
 package com.home.torrent.search.vm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -63,11 +62,27 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                             pageState.copy(
                                 page = 1,
                                 dataList = emptyList(),
+                                keyword = data.keyword,
                                 loaded = false
                             )
                     }
                 }.toImmutableList()
             )
+        }
+    }
+
+    fun reloadTabKeywordWhenPageSwitch(tapIndex: Int) {
+        viewModelScope.launch {
+            val data = searchPageState.value
+            val tabData = data.tabs.getOrNull(tapIndex) ?: return@launch
+            if (tabData.dataList.isNotEmpty() && tabData.keyword != data.keyword) {
+                _searchPageState.value = data.copy(
+                    tabs = data.tabs.toMutableList().apply {
+                        this[tapIndex] = TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
+                    }.toImmutableList()
+                )
+            }
+
         }
     }
 

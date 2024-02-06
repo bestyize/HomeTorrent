@@ -19,9 +19,12 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +42,7 @@ import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentSearchBar
 import com.thewind.widget.theme.LocalColors
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -57,11 +61,9 @@ fun TorrentSearchPage() {
 
     val searchPageState by vm.searchPageState.collectAsStateWithLifecycle()
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
+    val pagerState = rememberPagerState(initialPage = 0,
         initialPageOffsetFraction = 0f,
-        pageCount = { searchPageState.tabs.size }
-    )
+        pageCount = { searchPageState.tabs.size })
 
     if (searchPageState.dialogState.type != SearchPageDialogType.NONE) {
         when (searchPageState.dialogState.type) {
@@ -96,18 +98,21 @@ fun TorrentSearchPage() {
         }
     }
 
+    LaunchedEffect(key1 = Unit) {
+        snapshotFlow { pagerState.currentPage }.collectLatest {  tabIndex ->
+            vm.reloadTabKeywordWhenPageSwitch(tabIndex)
+        }
+    }
 
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            TorrentSearchBar(
-                queryWord = searchPageState.keyword,
-                onSubmit = {
-                    vm.reloadKeyword()
-                }, onChange = {
-                    vm.updateKeyword(it)
-                })
+            TorrentSearchBar(queryWord = searchPageState.keyword, onSubmit = {
+                vm.reloadKeyword()
+            }, onChange = {
+                vm.updateKeyword(it)
+            })
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
                 edgePadding = 0.dp,
@@ -138,8 +143,7 @@ fun TorrentSearchPage() {
                                 scope.launch {
                                     pagerState.scrollToPage(index)
                                 }
-                            }
-                    )
+                            })
                 }
             }
             Spacer(
@@ -152,18 +156,13 @@ fun TorrentSearchPage() {
 
             HorizontalPager(state = pagerState) { pagerIndex ->
                 val pageState = searchPageState.tabs[pagerIndex]
-                TorrentSearchTab(pageState = pageState,
-                    collectSet = collectSetState,
-                    onLoad = {
-                        vm.loadMore(src = pageState.src)
-                    },
-                    onCollect = { data, collect ->
-                        if (collect) collectVm.collect(data) else collectVm.unCollect(data)
-                    },
-                    onClick = { data ->
-                        vm.handleTorrentInfoClick(data)
-                    }
-                )
+                TorrentSearchTab(pageState = pageState, collectSet = collectSetState, onLoad = {
+                    vm.loadMore(src = pageState.src)
+                }, onCollect = { data, collect ->
+                    if (collect) collectVm.collect(data) else collectVm.unCollect(data)
+                }, onClick = { data ->
+                    vm.handleTorrentInfoClick(data)
+                })
             }
         }
     }
