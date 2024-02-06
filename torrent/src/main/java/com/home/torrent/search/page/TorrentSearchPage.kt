@@ -6,13 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -40,6 +38,7 @@ import com.home.torrent.widget.TorrentClickOption
 import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentSearchBar
 import com.thewind.widget.theme.LocalColors
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.launch
 
 /**
@@ -54,7 +53,7 @@ fun TorrentSearchPage() {
 
     val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
 
-    val collectSetState by collectVm.torrentSetState.collectAsStateWithLifecycle(emptySet())
+    val collectSetState by collectVm.torrentSetState.collectAsStateWithLifecycle(persistentSetOf())
 
     val searchPageState by vm.searchPageState.collectAsStateWithLifecycle()
 

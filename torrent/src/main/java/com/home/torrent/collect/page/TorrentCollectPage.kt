@@ -26,6 +26,8 @@ import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentListView
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 
 @Composable
 fun TorrentCollectPage() {
@@ -53,8 +55,8 @@ fun TorrentCollectPage() {
         }
 
         TorrentListView(
-            list = collectList,
-            collectSet = collectList.toSet(),
+            list = collectList.toImmutableList(),
+            collectSet = collectList.toImmutableSet(),
             onClick = { data ->
                 vm.handleTorrentInfoClick(data)
             },

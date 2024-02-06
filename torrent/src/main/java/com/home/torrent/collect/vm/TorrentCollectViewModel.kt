@@ -16,6 +16,8 @@ import com.home.torrent.service.transferMagnetUrlToHash
 import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrentUrl
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +32,8 @@ internal class TorrentCollectViewModel : ViewModel() {
     val torrentListState: Flow<List<TorrentInfo>> =
         collectedTorrent.map { it.map { it.toTorrentInfo() } }
 
-    val torrentSetState: Flow<Set<TorrentInfo>> = torrentListState.map { it.toSet() }
+    val torrentSetState: Flow<ImmutableSet<TorrentInfo>> =
+        torrentListState.map { it.toImmutableSet() }
 
     val dialogState: MutableStateFlow<CollectPageDialogState> = MutableStateFlow(
         CollectPageDialogState()
@@ -78,8 +81,7 @@ internal class TorrentCollectViewModel : ViewModel() {
         data ?: return
         viewModelScope.launch {
             val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
-                data.src,
-                data.detailUrl!!
+                data.src, data.detailUrl!!
             ) else data.magnetUrl
             if (magnetUrl == null) {
                 toast("收藏到云端失败！")
@@ -105,8 +107,7 @@ internal class TorrentCollectViewModel : ViewModel() {
         }
         viewModelScope.launch {
             dialogState.value = dialogState.value.copy(
-                type = CollectPageDialogType.ADDRESS,
-                data = data.copy(
+                type = CollectPageDialogType.ADDRESS, data = data.copy(
                     magnetUrl = when {
                         !data.magnetUrl.isNullOrBlank() -> data.magnetUrl
                         else -> suspendSearchMagnetUrl(
@@ -117,8 +118,7 @@ internal class TorrentCollectViewModel : ViewModel() {
                         !data.magnetUrl.isNullOrBlank() -> transferMagnetUrlToTorrentUrl(data.magnetUrl!!)
                         else -> suspendSearchTorrentUrl(data.src, data.detailUrl!!)
                     }
-                ),
-                isMagnet = isMagnet
+                ), isMagnet = isMagnet
             )
         }
 

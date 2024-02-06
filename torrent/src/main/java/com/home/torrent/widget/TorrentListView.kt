@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.model.TorrentInfo
 import com.thewind.widget.theme.LocalColors
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 
 /**
  * @author: read
@@ -31,8 +33,8 @@ import com.thewind.widget.theme.LocalColors
 @Composable
 internal fun TorrentListView(
     modifier: Modifier = Modifier,
-    list: List<TorrentInfo>,
-    collectSet: Set<TorrentInfo>,
+    list: ImmutableList<TorrentInfo>,
+    collectSet: ImmutableSet<TorrentInfo>,
     onClick: (TorrentInfo) -> Unit,
     onCollect: (TorrentInfo, Boolean) -> Unit,
     onLoad: () -> Unit = {},

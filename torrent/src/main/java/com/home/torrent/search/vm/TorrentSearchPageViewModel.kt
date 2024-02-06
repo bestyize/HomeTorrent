@@ -21,6 +21,8 @@ import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrent
 import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import com.tencent.mmkv.MMKV
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -46,7 +48,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                 val data = _searchPageState.value
                 _searchPageState.value = data.copy(tabs = data.source.map {
                     TorrentSearchTabState(src = it.src)
-                })
+                }.toImmutableList())
             }
         }
     }
@@ -59,13 +61,12 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                     forEachIndexed { index, pageState ->
                         this[index] =
                             pageState.copy(
-                                keyword = data.keyword,
                                 page = 1,
                                 dataList = emptyList(),
                                 loaded = false
                             )
                     }
-                }
+                }.toImmutableList()
             )
         }
     }
@@ -97,7 +98,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                     }
                 }
             }
-            _searchPageState.value = _searchPageState.value.copy(tabs = newTabs)
+            _searchPageState.value = _searchPageState.value.copy(tabs = newTabs.toImmutableList())
 
         }
 
@@ -179,14 +180,14 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 }
 
 
-internal fun loadTorrentSourcesLocal(): List<TorrentSource> {
+internal fun loadTorrentSourcesLocal(): ImmutableList<TorrentSource> {
     runCatching {
         val localData = MMKV.defaultMMKV().decodeString(SP_LOCAL_TORRENT_SOURCES) ?: ""
         val list: List<TorrentSource>? =
             Gson().fromJson(localData, object : TypeToken<List<TorrentSource>>() {}.type)
-        if (!list.isNullOrEmpty()) return list
+        if (!list.isNullOrEmpty()) return list.toImmutableList()
     }
-    return requestTorrentSources()
+    return requestTorrentSources().toImmutableList()
 }
 
 private fun saveTorrentSourcesToLocal(data: List<TorrentSource>?) {

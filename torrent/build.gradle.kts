@@ -37,6 +37,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = libs.versions.jvmTargetVersion.get()
+        freeCompilerArgs += listOf(
+            "-P",
+            "plugin:androidx.compose.compiler.plugins.kotlin:stabilityConfigurationPath=" +
+                    "${project.rootDir}/compose_compiler_config.conf"
+        )
     }
 }
 
@@ -58,6 +63,7 @@ dependencies {
     implementation(libs.composeFoundation)
     implementation(libs.roomKtx)
     implementation(libs.roomRuntime)
+    implementation(libs.kotlinImmutable)
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:widget")))

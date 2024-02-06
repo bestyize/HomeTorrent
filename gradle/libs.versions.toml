@@ -33,6 +33,7 @@ torrentVersion = "1.0.0"
 coliVersion = "2.5.0"
 
 kotlinxCoroutinesCoreVersion = "1.7.3"
+kotlinImmutableVersion = "0.3.7"
 
 roomVersion = "2.6.1"
 agp = "8.2.2"
@@ -89,6 +90,9 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+kotlinImmutable = {module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinImmutableVersion"}
+
+
 [plugins]
 com-android-library = { id = "com.android.library", version.ref = "agp" }
 com-android-application = {id = "com.android.application", version.ref = "agp"}
