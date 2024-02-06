@@ -49,7 +49,7 @@ internal fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
         }
     }
 
-    LaunchedEffect(key1 = "config") {
+    LaunchedEffect(Unit) {
         appConfig.value = HomeAppConfigService.requestAppConfig()
     }
 }

@@ -24,7 +24,6 @@ internal fun TorrentSearchTab(
     onCollect: (TorrentInfo, Boolean) -> Unit,
     onClick: (TorrentInfo) -> Unit
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -36,8 +35,17 @@ internal fun TorrentSearchTab(
             onClick = onClick,
             onCollect = onCollect,
             onLoad = onLoad,
-            bottomText = if (pageState.loaded) "已全部加载" else "加载中...",
-            loadFinished = pageState.loaded
+            bottomText = when {
+                pageState.loaded && pageState.dataList.isEmpty() -> "暂无结果，点此刷新"
+                pageState.loaded -> "已全部加载"
+                else -> "加载中..."
+            },
+            loadFinished = pageState.loaded,
+            onBottomTextClick = {
+                if (pageState.dataList.isEmpty()) {
+                    onLoad.invoke()
+                }
+            }
         )
     }
 }

@@ -6,11 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -19,12 +21,9 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -50,13 +49,12 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun TorrentSearchPage(
-) {
+fun TorrentSearchPage() {
     val vm = viewModel(modelClass = TorrentSearchPageViewModel::class.java)
 
     val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
 
-    val collectSetState = collectVm.torrentSetState.collectAsStateWithLifecycle(emptySet())
+    val collectSetState by collectVm.torrentSetState.collectAsStateWithLifecycle(emptySet())
 
     val searchPageState by vm.searchPageState.collectAsStateWithLifecycle()
 
@@ -65,15 +63,6 @@ fun TorrentSearchPage(
         initialPageOffsetFraction = 0f,
         pageCount = { searchPageState.tabs.size }
     )
-
-    val query = remember {
-        mutableStateOf("")
-    }
-    LaunchedEffect(key1 = "pager-torrent") {
-        snapshotFlow { pagerState.currentPage }.collect { _ ->
-            vm.updateGlobalKeyword(query.value)
-        }
-    }
 
     if (searchPageState.dialogState.type != SearchPageDialogType.NONE) {
         when (searchPageState.dialogState.type) {
@@ -115,10 +104,10 @@ fun TorrentSearchPage(
         Column(modifier = Modifier.fillMaxSize()) {
             TorrentSearchBar(
                 queryWord = searchPageState.keyword,
-                onSubmit = { key ->
-                    vm.updateGlobalKeyword(key = key, true)
+                onSubmit = {
+                    vm.reloadKeyword()
                 }, onChange = {
-                    query.value = it
+                    vm.updateKeyword(it)
                 })
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
@@ -165,7 +154,7 @@ fun TorrentSearchPage(
             HorizontalPager(state = pagerState) { pagerIndex ->
                 val pageState = searchPageState.tabs[pagerIndex]
                 TorrentSearchTab(pageState = pageState,
-                    collectSet = collectSetState.value,
+                    collectSet = collectSetState,
                     onLoad = {
                         vm.loadMore(src = pageState.src)
                     },

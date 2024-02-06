@@ -1,5 +1,6 @@
 package com.home.torrent.search.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -50,18 +51,15 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         }
     }
 
-    fun updateGlobalKeyword(key: String, forceUpdate: Boolean = false) {
-
+    fun reloadKeyword() {
         viewModelScope.launch {
             val data = searchPageState.value
-            if (data.keyword == key && !forceUpdate) return@launch
             _searchPageState.value = data.copy(
-                keyword = key,
                 tabs = data.tabs.toMutableList().apply {
                     forEachIndexed { index, pageState ->
                         this[index] =
                             pageState.copy(
-                                keyword = key,
+                                keyword = data.keyword,
                                 page = 1,
                                 dataList = emptyList(),
                                 loaded = false
@@ -76,7 +74,11 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         viewModelScope.launch {
             val pages = _searchPageState.value.tabs
             val pageData = pages.find { it.src == src } ?: return@launch
-            val list = suspendSearchTorrent(src = src, key = pageData.keyword, page = pageData.page)
+            val list = suspendSearchTorrent(
+                src = src,
+                key = _searchPageState.value.keyword,
+                page = pageData.page
+            )
             val newTabs = pages.toMutableList().apply {
                 forEachIndexed { index, data ->
                     if (data.src == src) {
@@ -99,7 +101,12 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 
         }
 
+    }
 
+    fun updateKeyword(keyword: String) {
+        viewModelScope.launch {
+            _searchPageState.value = _searchPageState.value.copy(keyword = keyword)
+        }
     }
 
     fun handleTorrentInfoClick(data: TorrentInfo) {
@@ -115,7 +122,10 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 
     }
 
-    fun updateDialogState(data: TorrentInfo? = _searchPageState.value.dialogState.data, isMagnet: Boolean = true) {
+    fun updateDialogState(
+        data: TorrentInfo? = _searchPageState.value.dialogState.data,
+        isMagnet: Boolean = true
+    ) {
         if (data == null || data.detailUrl.isNullOrBlank()) {
             _searchPageState.value =
                 _searchPageState.value.copy(dialogState = SearchPageDialogState())
@@ -179,9 +189,11 @@ internal fun loadTorrentSourcesLocal(): List<TorrentSource> {
     return requestTorrentSources()
 }
 
-internal fun saveTorrentSourcesToLocal(data: List<TorrentSource>?) {
+private fun saveTorrentSourcesToLocal(data: List<TorrentSource>?) {
     if (data.isNullOrEmpty()) return
     MMKV.defaultMMKV().encode(SP_LOCAL_TORRENT_SOURCES, Gson().toJson(data))
 }
 
 private const val SP_LOCAL_TORRENT_SOURCES = "sp_local_torrent_sources"
+
+private const val TAG = "[Torrent]TorrentSearchPageViewModel"

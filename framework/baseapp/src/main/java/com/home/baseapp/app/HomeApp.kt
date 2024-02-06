@@ -23,10 +23,10 @@ open class HomeApp : Application() {
     companion object {
 
         @SuppressLint("StaticFieldLeak")
-        private var _context: Context? = null
+        private lateinit var _context: Context
 
         val context: Context
-            get() = _context!!
+            get() = _context
 
         val versionCode by lazy {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

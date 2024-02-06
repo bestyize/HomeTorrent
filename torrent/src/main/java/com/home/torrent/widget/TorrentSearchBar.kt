@@ -38,23 +38,27 @@ import com.thewind.widget.theme.LocalColors
  */
 
 @Composable
-internal fun TorrentSearchBar(queryWord: String, onSubmit: (String) -> Unit, onChange: (String) -> Unit) {
+internal fun TorrentSearchBar(queryWord: String, onSubmit: () -> Unit, onChange: (String) -> Unit) {
 
     val query = remember {
         mutableStateOf(queryWord)
     }
 
     Box(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight().background(LocalColors.current.Bg1)
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(LocalColors.current.Bg1)
     ) {
-        TextField(value = query.value,
+        TextField(
+            value = query.value,
             onValueChange = {
                 query.value = it
                 onChange.invoke(query.value)
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
-                onSubmit.invoke(query.value)
+                onSubmit.invoke()
             }),
             maxLines = 3,
             placeholder = {
@@ -67,8 +71,10 @@ internal fun TorrentSearchBar(queryWord: String, onSubmit: (String) -> Unit, onC
                 Icon(imageVector = Icons.Default.Search,
                     contentDescription = stringResource(R.string.search),
                     tint = LocalColors.current.Brand_pink,
-                    modifier = Modifier.padding(start = 16.dp).clickable {
-                            onSubmit.invoke(query.value)
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .clickable {
+                            onSubmit.invoke()
                         })
             },
             trailingIcon = {
@@ -77,11 +83,13 @@ internal fun TorrentSearchBar(queryWord: String, onSubmit: (String) -> Unit, onC
                     fontWeight = FontWeight.Bold,
                     color = LocalColors.current.Brand_pink,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(end = 18.dp).wrapContentHeight()
+                    modifier = Modifier
+                        .padding(end = 18.dp)
+                        .wrapContentHeight()
                         .clickable(indication = null, interactionSource = remember {
                             MutableInteractionSource()
                         }) {
-                            onSubmit.invoke(query.value)
+                            onSubmit.invoke()
                         })
             },
             colors = TextFieldDefaults.colors(
@@ -94,7 +102,10 @@ internal fun TorrentSearchBar(queryWord: String, onSubmit: (String) -> Unit, onC
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent
             ),
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(horizontal = 20.dp)
                 .clip(RoundedCornerShape(100.dp))
         )
     }

@@ -1,6 +1,7 @@
 package com.home.torrent.widget
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +36,7 @@ internal fun TorrentListView(
     onClick: (TorrentInfo) -> Unit,
     onCollect: (TorrentInfo, Boolean) -> Unit,
     onLoad: () -> Unit = {},
+    onBottomTextClick: () -> Unit = {},
     bottomText: String? = null,
     loadFinished: Boolean = true
 ) {
@@ -74,7 +76,8 @@ internal fun TorrentListView(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .padding(vertical = 40.dp),
+                            .padding(vertical = 40.dp)
+                            .clickable { onBottomTextClick.invoke() },
                         textAlign = TextAlign.Center
                     )
                 }
