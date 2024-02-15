@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.thewind.community.recommend.model.PosterType
 import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.utils.toDate
@@ -40,6 +41,7 @@ fun PosterCard(
             subTitle = poster?.date.toDate(),
             header = poster?.userHeader,
             content = poster?.content ?: "",
+            type = poster?.type ?: PosterType.DEFAULT.value,
             onMenuClick = onMenuClick,
             onShare = onShare,
             onComment = onComment,

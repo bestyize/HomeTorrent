@@ -2,6 +2,7 @@ package com.thewind.community.recommend.model
 
 import android.os.Parcelable
 import androidx.annotation.Keep
+import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -12,6 +13,7 @@ import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
+@Immutable
 data class RecommendPoster (
     val id: Long = 0,
     val date: Long = 0L,
@@ -22,5 +24,6 @@ data class RecommendPoster (
     val commentCount: Long = 0,
     val uid: Long = 0,
     val userName: String? = null,
-    val userHeader: String? = null
+    val userHeader: String? = null,
+    val type: Int = PosterType.BOARDCAST.value
 ): Parcelable

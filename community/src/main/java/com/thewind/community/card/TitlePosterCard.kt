@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thewind.community.R
+import com.thewind.community.recommend.model.PosterType
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.ImageTag
 
@@ -47,21 +48,20 @@ fun TitlePosterCard(
     subTitle: String = "2022-08-29",
     header: String? = null,
     content: String = "",
-    onCardClick:() -> Unit = {},
+    type: Int = PosterType.DEFAULT.value,
+    onCardClick: () -> Unit = {},
     onMenuClick: () -> Unit = {},
     onShare: () -> Unit = {},
     onComment: () -> Unit = {},
     onLike: () -> Unit = {}
 ) {
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .background(LocalColors.current.Bg1, RoundedCornerShape(5.dp)).clickable {
-                onCardClick.invoke()
-            }
-    ) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .background(LocalColors.current.Bg1, RoundedCornerShape(5.dp))
+        .clickable {
+            onCardClick.invoke()
+        }) {
 
         Column(
             modifier = Modifier
@@ -85,14 +85,17 @@ fun TitlePosterCard(
                     .wrapContentHeight()
             )
             Spacer(modifier = Modifier.height(12.dp))
-            BottomArea(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize(),
-                onShare = onShare,
-                onComment = onComment,
-                onLike = onLike
-            )
+            if (type == PosterType.DEFAULT.value) {
+                BottomArea(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentSize(),
+                    onShare = onShare,
+                    onComment = onComment,
+                    onLike = onLike
+                )
+            }
+
         }
     }
 }

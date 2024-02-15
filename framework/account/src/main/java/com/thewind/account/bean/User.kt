@@ -4,12 +4,12 @@ import androidx.annotation.Keep
 
 @Keep
 data class User(
-    var uid: Long = -1,
-    var userName: String = "",
-    var password: String = "",
-    var email: String = "",
-    var registerTime: Long = -1,
-    var lastLoginTime: Long = -1,
-    var icon: String = "",
-    var level: Int = 0,
+    val uid: Long = -1,
+    val userName: String = "",
+    val password: String = "",
+    val email: String = "",
+    val registerTime: Long = -1,
+    val lastLoginTime: Long = -1,
+    val icon: String = "",
+    val level: Int = 0,
 )

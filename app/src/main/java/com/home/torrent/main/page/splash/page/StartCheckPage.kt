@@ -32,14 +32,22 @@ internal fun StartCheckPage(onShow: () -> Unit = {}, onClose: () -> Unit = {}) {
     appConfig.value?.let { config ->
         if (config.forbidden) {
             onShow.invoke()
-            CommonAlertDialog(title = stringResource(R.string.warning), content = stringResource(R.string.not_valid_now), onOk = {
-                exitProcess(0)
-            }, cancelText = null)
+            CommonAlertDialog(title = stringResource(R.string.warning),
+                content = stringResource(R.string.not_valid_now),
+                okText = stringResource(
+                    id = R.string.ok,
+                ),
+                onOk = {
+                    exitProcess(0)
+                })
         } else if (config.newVersionCode > HomeApp.versionCode) {
             onShow.invoke()
             CommonAlertDialog(title = config.updateTitle,
                 content = config.updateMessage,
                 cancelText = if (config.updateForce) null else stringResource(R.string.cancel),
+                okText = stringResource(
+                    id = R.string.ok
+                ),
                 onOk = {
                     context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(config.updateUrl)))
                 },

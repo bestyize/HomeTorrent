@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
+import com.thewind.account.AccountManager
 import com.thewind.community.R
 import com.thewind.community.recommend.model.RecommendPageData
-import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.community.recommend.service.RecommendPageService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -76,8 +76,8 @@ class RecommendPageViewModel : ViewModel() {
             if (success) {
                 _recommendPageState.value = _recommendPageState.value.copy(
                     list = _recommendPageState.value.list.toMutableList().apply {
-                            removeIf { it.id == posterId }
-                        })
+                        removeIf { it.id == posterId }
+                    })
             } else {
                 toast(HomeApp.context.getString(R.string.failed))
             }
@@ -85,7 +85,13 @@ class RecommendPageViewModel : ViewModel() {
     }
 
     fun updatePublishPageState(open: Boolean) {
-        _recommendPageState.value = _recommendPageState.value.copy(publishState = open)
+        val user = AccountManager.getUser() ?: return
+        if (user.level > 0) {
+            _recommendPageState.value = _recommendPageState.value.copy(publishState = open)
+        } else {
+            toast(HomeApp.context.getString(R.string.no_publish_permission))
+        }
+
     }
 
 }

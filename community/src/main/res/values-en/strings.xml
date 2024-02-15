@@ -15,4 +15,5 @@
     <string name="word_less_than_10">Word Cannot Less Than 10！</string>
     <string name="detail">Detail</string>
     <string name="edit">Edit</string>
+    <string name="no_publish_permission">Not have Permission</string>
 </resources>

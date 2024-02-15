@@ -1,5 +1,8 @@
 package com.thewind.community.recommend.model
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class RecommendPageData(
     val list:List<RecommendPoster> = emptyList(),
     val loadFinish: Boolean = false,

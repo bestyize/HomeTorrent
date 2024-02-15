@@ -52,7 +52,7 @@ fun PosterDetailPage(
         )
         Spacer(modifier = Modifier.height(5.dp))
         PosterCard(poster = poster, comments = comments, onMenuClick = {
-            openCommentState.value = true
+            //openCommentState.value = true
         }, onShare = {}, onComment = {
             parentId.longValue = -1L
             openCommentState.value = true

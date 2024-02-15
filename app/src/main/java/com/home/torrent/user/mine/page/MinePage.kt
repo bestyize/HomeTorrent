@@ -25,7 +25,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
@@ -115,7 +116,10 @@ fun MinePage() {
                 mutableStateOf(false)
             }
             if (logoutWaringDialogOpenState.value) {
-                CommonAlertDialog(content = stringResource(R.string.do_you_want_to_logout),
+                CommonAlertDialog(title = stringResource(R.string.notice),
+                    content = stringResource(R.string.do_you_want_to_logout),
+                    okText = stringResource(id = R.string.ok),
+                    cancelText = stringResource(id = R.string.cancel),
                     onCancel = {
                         logoutWaringDialogOpenState.value = false
                     },
@@ -126,7 +130,7 @@ fun MinePage() {
             }
             Spacer(modifier = Modifier.height(20.dp))
             SettingItemView(
-                title = stringResource(R.string.logout), icon = Icons.Default.ExitToApp
+                title = stringResource(R.string.logout), icon = Icons.AutoMirrored.Filled.ExitToApp
             ) {
                 logoutWaringDialogOpenState.value = true
             }
@@ -141,7 +145,7 @@ fun MinePage() {
                 option.title?.let { title ->
                     Spacer(modifier = Modifier.height(20.dp))
                     SettingItemView(
-                        title = title, icon = Icons.Default.ArrowForward
+                        title = title, icon = Icons.AutoMirrored.Filled.ArrowForward
                     ) {
                         option.actionUrl.takeIf { !it.isNullOrBlank() }?.let {
                             activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(it)))

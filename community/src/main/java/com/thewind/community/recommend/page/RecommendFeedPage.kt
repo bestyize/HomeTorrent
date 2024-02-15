@@ -34,6 +34,7 @@ import com.thewind.community.card.PosterOption
 import com.thewind.community.card.PosterOptionDialog
 import com.thewind.community.card.TitlePosterCard
 import com.thewind.community.detail.DetailActivity
+import com.thewind.community.recommend.model.PosterType
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
@@ -73,7 +74,7 @@ fun RecommendFeedPage() {
                 var menuClickState by remember {
                     mutableStateOf(false)
                 }
-                if (menuClickState) {
+                if (menuClickState && data.type == PosterType.DEFAULT.value) {
                     PosterOptionDialog(onClicked = { option ->
                         when (option) {
                             PosterOption.DELETE -> {
@@ -91,6 +92,7 @@ fun RecommendFeedPage() {
                     subTitle = data.date.toDate(),
                     header = data.userHeader,
                     content = data.content ?: "",
+                    type = data.type,
                     onCardClick = {
                         activity.startActivity(Intent(activity, DetailActivity::class.java).apply {
                             putExtra("poster_id", data.id)
