@@ -97,20 +97,29 @@ fun TorrentSearchPage() {
         }
     }
 
+    val scope = rememberCoroutineScope()
+
     LaunchedEffect(key1 = Unit) {
         snapshotFlow { pagerState.currentPage }.collectLatest {  tabIndex ->
-            vm.reloadTabKeywordWhenPageSwitch(tabIndex)
+            scope.launch {
+                vm.reloadTabKeywordWhenPageSwitch(tabIndex)
+            }
         }
     }
 
-    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TorrentSearchBar(queryWord = searchPageState.keyword, onSubmit = {
-                vm.reloadKeyword()
+                scope.launch {
+                    vm.reloadKeyword()
+                }
+
             }, onChange = {
-                vm.updateKeyword(it)
+                scope.launch {
+                    vm.updateKeyword(it)
+                }
+
             })
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
@@ -154,13 +163,23 @@ fun TorrentSearchPage() {
             )
 
             HorizontalPager(state = pagerState) { pagerIndex ->
+                val pagerScope = rememberCoroutineScope()
                 val pageState = searchPageState.tabs[pagerIndex]
                 TorrentSearchTab(tabState = pageState, collectSet = collectSetState, onLoad = {
-                    vm.loadMore(src = pageState.src)
+                    pagerScope.launch {
+                        vm.loadMore(src = pageState.src)
+                    }
+
                 }, onCollect = { data, collect ->
-                    if (collect) collectVm.collect(data) else collectVm.unCollect(data)
+                    pagerScope.launch {
+                        if (collect) collectVm.collect(data) else collectVm.unCollect(data)
+                    }
+
                 }, onClick = { data ->
-                    vm.handleTorrentInfoClick(data)
+                    pagerScope.launch {
+                        vm.handleTorrentInfoClick(data)
+                    }
+
                 })
             }
         }

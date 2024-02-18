@@ -54,109 +54,98 @@ internal class TorrentSearchPageViewModel : ViewModel() {
     }
 
     fun reloadKeyword() {
-        viewModelScope.launch {
-            val data = searchPageState.value
+        val data = searchPageState.value
+        _searchPageState.value = data.copy(
+            tabs = data.tabs.toMutableList().apply {
+                forEachIndexed { index, pageState ->
+                    this[index] =
+                        TorrentSearchTabState(src = pageState.src, keyword = data.keyword)
+                }
+            }.toImmutableList()
+        )
+    }
+
+    fun reloadTabKeywordWhenPageSwitch(tapIndex: Int) {
+        val data = searchPageState.value
+        val tabData = data.tabs.getOrNull(tapIndex) ?: return
+        if (tabData.keyword != data.keyword) {
             _searchPageState.value = data.copy(
                 tabs = data.tabs.toMutableList().apply {
-                    forEachIndexed { index, pageState ->
-                        this[index] =
-                            TorrentSearchTabState(src = pageState.src, keyword = data.keyword)
-                    }
+                    this[tapIndex] =
+                        TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
                 }.toImmutableList()
             )
         }
     }
 
-    fun reloadTabKeywordWhenPageSwitch(tapIndex: Int) {
-        viewModelScope.launch {
-            val data = searchPageState.value
-            val tabData = data.tabs.getOrNull(tapIndex) ?: return@launch
-            if (tabData.keyword != data.keyword) {
+    suspend fun loadMore(src: Int) {
+        val data = _searchPageState.value
+        val tabStates = _searchPageState.value.tabs
+        val tabState = tabStates.find { it.src == src } ?: return
+        val list = suspendSearchTorrent(
+            src = src, key = _searchPageState.value.keyword, page = tabState.page
+        )
+        when (tabState.loadState) {
+            PageLoadState.INIT -> {
                 _searchPageState.value = data.copy(
                     tabs = data.tabs.toMutableList().apply {
-                        this[tapIndex] =
-                            TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
+                        forEachIndexed { index, tabData ->
+                            if (tabData.src == src) {
+                                this[index] = tabData.copy(
+                                    page = if (list.isEmpty()) 0 else 1,
+                                    keyword = data.keyword,
+                                    dataList = list,
+                                    loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
+                                )
+                            }
+                        }
                     }.toImmutableList()
                 )
             }
 
-        }
-    }
-
-    fun loadMore(src: Int) {
-        viewModelScope.launch {
-            val data = _searchPageState.value
-            val tabStates = _searchPageState.value.tabs
-            val tabState = tabStates.find { it.src == src } ?: return@launch
-            val list = suspendSearchTorrent(
-                src = src, key = _searchPageState.value.keyword, page = tabState.page
-            )
-            when (tabState.loadState) {
-                PageLoadState.INIT -> {
-                    _searchPageState.value = data.copy(
-                        tabs = data.tabs.toMutableList().apply {
-                            forEachIndexed { index, tabData ->
-                                if (tabData.src == src) {
-                                    this[index] = tabData.copy(
-                                        page = if (list.isEmpty()) 0 else 1,
-                                        keyword = data.keyword,
-                                        dataList = list,
-                                        loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
-                                    )
-                                }
+            PageLoadState.FINISH -> {
+                _searchPageState.value = data.copy(
+                    tabs = data.tabs.toMutableList().apply {
+                        list
+                        forEachIndexed { index, tabData ->
+                            if (tabData.src == src) {
+                                this[index] = tabData.copy(
+                                    page = if (list.isEmpty()) tabData.page else tabData.page + 1,
+                                    keyword = data.keyword,
+                                    dataList = tabData.dataList.toMutableList().apply {
+                                        addAll(list)
+                                    },
+                                    loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
+                                )
                             }
-                        }.toImmutableList()
-                    )
-                }
-
-                PageLoadState.FINISH -> {
-                    _searchPageState.value = data.copy(
-                        tabs = data.tabs.toMutableList().apply {
-                            list
-                            forEachIndexed { index, tabData ->
-                                if (tabData.src == src) {
-                                    this[index] = tabData.copy(
-                                        page = if (list.isEmpty()) tabData.page else tabData.page + 1,
-                                        keyword = data.keyword,
-                                        dataList = tabData.dataList.toMutableList().apply {
-                                            addAll(list)
-                                        },
-                                        loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
-                                    )
-                                }
-                            }
-                        }.toImmutableList()
-                    )
-                }
-
-                PageLoadState.ALL_LOADED -> {
-
-                }
-
-                PageLoadState.ERROR -> {
-
-                }
+                        }
+                    }.toImmutableList()
+                )
             }
 
+            PageLoadState.ALL_LOADED -> {
+
+            }
+
+            PageLoadState.ERROR -> {
+
+            }
         }
+
 
     }
 
     fun updateKeyword(keyword: String) {
-        viewModelScope.launch {
-            _searchPageState.value = _searchPageState.value.copy(keyword = keyword)
-        }
+        _searchPageState.value = _searchPageState.value.copy(keyword = keyword)
     }
 
-    fun handleTorrentInfoClick(data: TorrentInfo) {
-        viewModelScope.launch {
-            val stateData = _searchPageState.value
-            _searchPageState.value = stateData.copy(
-                dialogState = stateData.dialogState.copy(
-                    type = SearchPageDialogType.OPTION, data = data
-                )
+    suspend fun handleTorrentInfoClick(data: TorrentInfo) {
+        val stateData = _searchPageState.value
+        _searchPageState.value = stateData.copy(
+            dialogState = stateData.dialogState.copy(
+                type = SearchPageDialogType.OPTION, data = data
             )
-        }
+        )
 
     }
 
