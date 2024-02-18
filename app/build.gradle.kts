@@ -1,3 +1,8 @@
+import com.android.build.api.dsl.ApkSigningConfig
+import com.android.build.api.dsl.SigningConfig
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -23,14 +28,27 @@ android {
         }
     }
 
+    signingConfigs {
+        create("config") {
+            keyAlias = properties["signKeyAlias"] as String
+            keyPassword = properties["signKeyPassword"] as String
+            storeFile = file("$rootDir/hyper_torrent.jks")
+            storePassword = properties["signStorePassword"] as String
+        }
+    }
+
     buildTypes {
         named("release") {
             isMinifyEnabled = true
+            signingConfig = signingConfigs["config"]
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
                 )
             )
+        }
+        named("debug") {
+            signingConfig = signingConfigs["config"]
         }
     }
     compileOptions {

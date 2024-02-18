@@ -14,9 +14,8 @@ kotlinCompilerExtensionVersion = "1.5.6"
 coreKtxVersion = "1.12.0"
 
 lifecycleVersion = "2.7.0"
-composeBomVersion = "2024.01.00"
+composeBomVersion = "2024.02.00"
 composeConstraintVersion = "1.1.0-alpha13"
-composeFoundationVersion = "1.6.0"
 activityComposeVersion = "1.8.2"
 activityVersion = "1.6.1"
 activityKtxVersion = "1.8.2"
@@ -43,7 +42,7 @@ junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 constraintlayout = "2.1.4"
-navVersion = "2.7.6"
+navVersion = "2.7.7"
 
 
 [libraries]
@@ -70,7 +69,7 @@ fragmentKtx = {module = "androidx.fragment:fragment-ktx", version.ref = "fragemn
 composeBom = {module = "androidx.compose:compose-bom", version.ref = "composeBomVersion"}
 activityCompose = {module = "androidx.activity:activity-compose", version.ref ="activityComposeVersion"}
 
-composeFoundation = {module = "androidx.compose.foundation:foundation", version.ref = "composeFoundationVersion"}
+composeFoundation = {module = "androidx.compose.foundation:foundation"}
 composeUi = {module = "androidx.compose.ui:ui"}
 composeUiGraphics = {module = "androidx.compose.ui:ui-graphics"}
 composeUiTooling = {module = "androidx.compose.ui:ui-tooling"}
