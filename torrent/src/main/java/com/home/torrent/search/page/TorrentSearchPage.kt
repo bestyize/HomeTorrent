@@ -20,7 +20,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -156,7 +155,7 @@ fun TorrentSearchPage() {
 
             HorizontalPager(state = pagerState) { pagerIndex ->
                 val pageState = searchPageState.tabs[pagerIndex]
-                TorrentSearchTab(pageState = pageState, collectSet = collectSetState, onLoad = {
+                TorrentSearchTab(tabState = pageState, collectSet = collectSetState, onLoad = {
                     vm.loadMore(src = pageState.src)
                 }, onCollect = { data, collect ->
                     if (collect) collectVm.collect(data) else collectVm.unCollect(data)

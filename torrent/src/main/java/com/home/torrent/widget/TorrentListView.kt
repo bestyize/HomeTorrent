@@ -21,6 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.torrent.model.TorrentInfo
 import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.ui.list.lazy.PageLoadAllCard
+import com.thewind.widget.ui.list.lazy.PageLoadErrorCard
+import com.thewind.widget.ui.list.lazy.PageLoadState
+import com.thewind.widget.ui.list.lazy.PageLoadingCard
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 
@@ -32,18 +36,19 @@ import kotlinx.collections.immutable.ImmutableSet
 
 @Composable
 internal fun TorrentListView(
-    modifier: Modifier = Modifier,
     list: ImmutableList<TorrentInfo>,
     collectSet: ImmutableSet<TorrentInfo>,
+    pageLoadState: PageLoadState = PageLoadState.INIT,
     onClick: (TorrentInfo) -> Unit,
     onCollect: (TorrentInfo, Boolean) -> Unit,
-    onLoad: () -> Unit = {},
-    onBottomTextClick: () -> Unit = {},
-    bottomText: String? = null,
-    loadFinished: Boolean = true
+    onLoad: () -> Unit = {}
 ) {
-    Box(modifier = modifier) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(LocalColors.current.Bg1)
+    ) {
+        LazyColumn(content = {
             items(count = list.size) { itemIndex ->
                 val data = list[itemIndex]
                 Spacer(
@@ -63,39 +68,25 @@ internal fun TorrentListView(
                     onClick = onClick,
                     onCollect = onCollect)
             }
-            item {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(10.dp)
-                        .align(Alignment.BottomCenter)
-                )
-                bottomText?.let {
-                    Text(
-                        text = bottomText,
-                        fontSize = 16.sp,
-                        color = Color.Red,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(vertical = 40.dp)
-                            .clickable { onBottomTextClick.invoke() },
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .align(Alignment.BottomCenter)
-                )
 
-                if (!loadFinished) {
-                    LaunchedEffect(key1 = list.size) {
-                        onLoad.invoke()
+            item {
+                when (pageLoadState) {
+                    PageLoadState.INIT, PageLoadState.FINISH -> {
+                        PageLoadingCard(loadingText = "加载中...")
+                        LaunchedEffect(key1 = Unit, block = {
+                            onLoad.invoke()
+                        })
+                    }
+
+                    PageLoadState.ALL_LOADED -> {
+                        PageLoadAllCard()
+                    }
+
+                    PageLoadState.ERROR -> {
+                        PageLoadErrorCard()
                     }
                 }
             }
-        }
+        })
     }
 }

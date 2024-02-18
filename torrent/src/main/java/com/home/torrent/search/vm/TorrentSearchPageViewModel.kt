@@ -20,6 +20,7 @@ import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrent
 import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import com.tencent.mmkv.MMKV
+import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,12 +60,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                 tabs = data.tabs.toMutableList().apply {
                     forEachIndexed { index, pageState ->
                         this[index] =
-                            pageState.copy(
-                                page = 1,
-                                dataList = emptyList(),
-                                keyword = data.keyword,
-                                loaded = false
-                            )
+                            TorrentSearchTabState(src = pageState.src, keyword = data.keyword)
                     }
                 }.toImmutableList()
             )
@@ -75,10 +71,11 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         viewModelScope.launch {
             val data = searchPageState.value
             val tabData = data.tabs.getOrNull(tapIndex) ?: return@launch
-            if (tabData.dataList.isNotEmpty() && tabData.keyword != data.keyword) {
+            if (tabData.keyword != data.keyword) {
                 _searchPageState.value = data.copy(
                     tabs = data.tabs.toMutableList().apply {
-                        this[tapIndex] = TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
+                        this[tapIndex] =
+                            TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
                     }.toImmutableList()
                 )
             }
@@ -88,32 +85,58 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 
     fun loadMore(src: Int) {
         viewModelScope.launch {
-            val pages = _searchPageState.value.tabs
-            val pageData = pages.find { it.src == src } ?: return@launch
+            val data = _searchPageState.value
+            val tabStates = _searchPageState.value.tabs
+            val tabState = tabStates.find { it.src == src } ?: return@launch
             val list = suspendSearchTorrent(
-                src = src,
-                key = _searchPageState.value.keyword,
-                page = pageData.page
+                src = src, key = _searchPageState.value.keyword, page = tabState.page
             )
-            val newTabs = pages.toMutableList().apply {
-                forEachIndexed { index, data ->
-                    if (data.src == src) {
-                        val page = if (list.isEmpty()) pageData.page else {
-                            pageData.page + 1
-                        }
-
-                        val dataList = if (list.isEmpty()) pageData.dataList else {
-                            pageData.dataList.toMutableList().apply {
-                                addAll(list)
+            when (tabState.loadState) {
+                PageLoadState.INIT -> {
+                    _searchPageState.value = data.copy(
+                        tabs = data.tabs.toMutableList().apply {
+                            forEachIndexed { index, tabData ->
+                                if (tabData.src == src) {
+                                    this[index] = tabData.copy(
+                                        page = if (list.isEmpty()) 0 else 1,
+                                        keyword = data.keyword,
+                                        dataList = list,
+                                        loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
+                                    )
+                                }
                             }
-                        }
-                        this[index] = pageData.copy(
-                            page = page, dataList = dataList, loaded = list.isEmpty()
-                        )
-                    }
+                        }.toImmutableList()
+                    )
+                }
+
+                PageLoadState.FINISH -> {
+                    _searchPageState.value = data.copy(
+                        tabs = data.tabs.toMutableList().apply {
+                            list
+                            forEachIndexed { index, tabData ->
+                                if (tabData.src == src) {
+                                    this[index] = tabData.copy(
+                                        page = if (list.isEmpty()) tabData.page else tabData.page + 1,
+                                        keyword = data.keyword,
+                                        dataList = tabData.dataList.toMutableList().apply {
+                                            addAll(list)
+                                        },
+                                        loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
+                                    )
+                                }
+                            }
+                        }.toImmutableList()
+                    )
+                }
+
+                PageLoadState.ALL_LOADED -> {
+
+                }
+
+                PageLoadState.ERROR -> {
+
                 }
             }
-            _searchPageState.value = _searchPageState.value.copy(tabs = newTabs.toImmutableList())
 
         }
 
@@ -130,8 +153,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
             val stateData = _searchPageState.value
             _searchPageState.value = stateData.copy(
                 dialogState = stateData.dialogState.copy(
-                    type = SearchPageDialogType.OPTION,
-                    data = data
+                    type = SearchPageDialogType.OPTION, data = data
                 )
             )
         }
@@ -139,8 +161,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
     }
 
     fun updateDialogState(
-        data: TorrentInfo? = _searchPageState.value.dialogState.data,
-        isMagnet: Boolean = true
+        data: TorrentInfo? = _searchPageState.value.dialogState.data, isMagnet: Boolean = true
     ) {
         if (data == null || data.detailUrl.isNullOrBlank()) {
             _searchPageState.value =
