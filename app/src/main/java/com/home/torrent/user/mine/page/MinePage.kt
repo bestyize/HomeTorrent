@@ -30,12 +30,14 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +63,7 @@ import com.thewind.account.bean.User
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonAlertDialog
+import kotlinx.coroutines.launch
 
 /**
  * @author: read
@@ -73,14 +76,16 @@ import com.thewind.widget.ui.CommonAlertDialog
 fun MinePage() {
     val activity = LocalContext.current as Activity
     val userVm = viewModel(modelClass = UserViewModel::class.java)
-    val loginUserState = userVm.loginState.collectAsStateWithLifecycle()
-    val openLoginPage = remember {
-        mutableStateOf(!AccountManager.isLogin())
-    }
+    val minePageState by userVm.minePageState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
-    if (openLoginPage.value && loginUserState.value == null) {
-        AlertDialog(
-            onDismissRequest = { openLoginPage.value = false },
+    if (minePageState.showLogin) {
+        BasicAlertDialog(
+            onDismissRequest = {
+                scope.launch {
+                    userVm.closeLogin()
+                }
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets(0.dp)),
@@ -89,11 +94,12 @@ fun MinePage() {
             )
         ) {
             LoginPage {
-                openLoginPage.value = false
+                scope.launch {
+                    userVm.closeLogin()
+                }
             }
         }
     }
-
 
     Column(
         modifier = Modifier
@@ -101,18 +107,18 @@ fun MinePage() {
             .background(LocalColors.current.Bg2),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val vm = viewModel(modelClass = UserViewModel::class.java)
-        val userState by vm.loginState.collectAsStateWithLifecycle()
         Spacer(modifier = Modifier.statusBarsPadding())
-        HeaderCard(user = userState, onLoginClick = {
-            openLoginPage.value = true
+        HeaderCard(user = minePageState.user, onLoginClick = {
+            scope.launch {
+                userVm.openLogin()
+            }
         })
         Spacer(modifier = Modifier.height(20.dp))
         SettingItemView(title = stringResource(R.string.setting), icon = Icons.Default.Settings) {
             activity.startActivity(Intent(activity, SettingActivity::class.java))
         }
 
-        if (userState != null) {
+        if (minePageState.user != null) {
             val logoutWaringDialogOpenState = remember {
                 mutableStateOf(false)
             }

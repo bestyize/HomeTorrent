@@ -7,6 +7,7 @@ import com.home.baseapp.app.toast.toast
 import com.home.torrent.R
 import com.home.torrent.user.model.LoginPageData
 import com.home.torrent.user.model.LoginPageStage
+import com.home.torrent.user.model.MinePageData
 import com.home.torrent.util.isValidEmail
 import com.home.torrent.util.isValidPassword
 import com.home.torrent.util.isValidUsername
@@ -26,11 +27,15 @@ import kotlinx.coroutines.launch
  */
 class UserViewModel : ViewModel() {
 
-    val loginState: MutableStateFlow<User?> = MutableStateFlow(AccountManager.getUser())
-
     private val _loginPageState: MutableStateFlow<LoginPageData> = MutableStateFlow(LoginPageData())
 
     val loginPageStage = _loginPageState.asStateFlow()
+
+
+    private val _minePageState: MutableStateFlow<MinePageData> =
+        MutableStateFlow(MinePageData(user = AccountManager.getUser()))
+
+    val minePageState = _minePageState.asStateFlow()
 
 
     suspend fun handleLoginClick() {
@@ -54,7 +59,10 @@ class UserViewModel : ViewModel() {
         LoginService.login(userName = data.userName, email = data.email, password = data.password)
             .let {
                 toast(it.message)
-                loginState.value = AccountManager.getUser()
+                _minePageState.value = _minePageState.value.copy(
+                    showLogin = !AccountManager.isLogin(),
+                    user = AccountManager.getUser()
+                )
             }
     }
 
@@ -83,7 +91,10 @@ class UserViewModel : ViewModel() {
             verifyCode = data.verifyCode
         ).let {
             toast(it.message)
-            loginState.value = AccountManager.getUser()
+            _minePageState.value = _minePageState.value.copy(
+                showLogin = !AccountManager.isLogin(),
+                user = AccountManager.getUser()
+            )
         }
     }
 
@@ -106,7 +117,10 @@ class UserViewModel : ViewModel() {
                 verifyCode = data.verifyCode, email = data.email, newPassword = data.password
             ).let {
                 toast(it.message)
-                loginState.value = AccountManager.getUser()
+                _minePageState.value = _minePageState.value.copy(
+                    showLogin = !AccountManager.isLogin(),
+                    user = AccountManager.getUser()
+                )
             }
 
         }
@@ -127,7 +141,10 @@ class UserViewModel : ViewModel() {
     fun logout() {
         viewModelScope.launch {
             AccountManager.loginOut()
-            loginState.value = AccountManager.getUser()
+            _minePageState.value = _minePageState.value.copy(
+                showLogin = !AccountManager.isLogin(),
+                user = AccountManager.getUser()
+            )
         }
     }
 
@@ -150,6 +167,15 @@ class UserViewModel : ViewModel() {
 
     fun updatePageStage(stage: LoginPageStage) {
         _loginPageState.value = _loginPageState.value.copy(pageStage = stage)
+    }
+
+
+    fun openLogin() {
+        _minePageState.value = _minePageState.value.copy(showLogin = true)
+    }
+
+    fun closeLogin() {
+        _minePageState.value = _minePageState.value.copy(showLogin = false)
     }
 
 
