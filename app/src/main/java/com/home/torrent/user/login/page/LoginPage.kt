@@ -24,8 +24,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,11 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.torrent.R
+import com.home.torrent.user.model.LoginPageStage
 import com.home.torrent.user.vm.UserViewModel
-import com.home.torrent.util.toIntOrDefault
 import com.thewind.widget.theme.LocalColors
+import kotlinx.coroutines.launch
 
 /**
  * @author: read
@@ -52,33 +54,17 @@ import com.thewind.widget.theme.LocalColors
 @Preview
 fun LoginPage(onClose: () -> Unit = {}) {
 
-    val loginVm = viewModel(modelClass = UserViewModel::class.java)
+    val vm = viewModel(modelClass = UserViewModel::class.java)
 
-    val pageState = remember {
-        mutableStateOf(LoginPageAction.REGISTER)
-    }
-
-    val userName = remember {
-        mutableStateOf("")
-    }
-
-    val password = remember {
-        mutableStateOf("")
-    }
-
-    val email = remember {
-        mutableStateOf("")
-    }
-
-    val verifyCode = remember {
-        mutableStateOf("")
-    }
+    val loginPageState by vm.loginPageStage.collectAsStateWithLifecycle()
 
     val maxWidthScale = when (LocalConfiguration.current.orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> 0.5f
         Configuration.ORIENTATION_PORTRAIT -> 0.8f
         else -> 0.8f
     }
+
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -125,9 +111,11 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(2.dp))
-            if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
-                OutlinedTextField(value = userName.value, onValueChange = {
-                    userName.value = it
+            if (loginPageState.pageStage == LoginPageStage.LOGIN || loginPageState.pageStage == LoginPageStage.REGISTER) {
+                OutlinedTextField(value = loginPageState.userName, onValueChange = {
+                    scope.launch {
+                        vm.updateUserNameText(it)
+                    }
                 }, label = {
                     Text(
                         text = stringResource(R.string.username),
@@ -146,11 +134,13 @@ fun LoginPage(onClose: () -> Unit = {}) {
             }
 
             Spacer(modifier = Modifier.height(15.dp))
-            OutlinedTextField(value = password.value, onValueChange = {
-                password.value = it
+            OutlinedTextField(value = loginPageState.password, onValueChange = {
+                scope.launch {
+                    vm.updatePasswordText(it)
+                }
             }, label = {
                 Text(
-                    text = if (pageState.value == LoginPageAction.MODIFY_PASSWORD) stringResource(
+                    text = if (loginPageState.pageStage == LoginPageStage.MODIFY_PASSWORD) stringResource(
                         R.string.new_password
                     ) else stringResource(
                         R.string.password
@@ -166,10 +156,12 @@ fun LoginPage(onClose: () -> Unit = {}) {
             ), modifier = Modifier.fillMaxWidth()
             )
 
-            if (pageState.value == LoginPageAction.REGISTER || pageState.value == LoginPageAction.MODIFY_PASSWORD) {
+            if (loginPageState.pageStage == LoginPageStage.REGISTER || loginPageState.pageStage == LoginPageStage.MODIFY_PASSWORD) {
                 Spacer(modifier = Modifier.height(15.dp))
-                OutlinedTextField(value = email.value, onValueChange = {
-                    email.value = it
+                OutlinedTextField(value = loginPageState.email, onValueChange = {
+                    scope.launch {
+                        vm.updateEmailText(it)
+                    }
                 }, label = {
                     Text(
                         text = "邮箱",
@@ -186,8 +178,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 ), modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(15.dp))
-                OutlinedTextField(value = verifyCode.value, onValueChange = {
-                    verifyCode.value = it
+                OutlinedTextField(value = loginPageState.verifyCode, onValueChange = {
+                    scope.launch {
+                        vm.updateVerifyCode(it)
+                    }
                 }, label = {
                     Text(
                         text = stringResource(R.string.verify_code),
@@ -202,7 +196,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                         modifier = Modifier
                             .padding(end = 20.dp)
                             .clickable {
-                                loginVm.sendVerifyCode(email.value)
+                                scope.launch {
+                                    vm.sendVerifyCode()
+                                }
+
                             })
                 }, colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
@@ -218,31 +215,8 @@ fun LoginPage(onClose: () -> Unit = {}) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    when (pageState.value) {
-                        LoginPageAction.LOGIN -> {
-                            loginVm.login(
-                                userName = userName.value,
-                                email = email.value,
-                                password = password.value
-                            )
-                        }
-
-                        LoginPageAction.REGISTER -> {
-                            loginVm.register(
-                                userName = userName.value,
-                                email = email.value,
-                                password = password.value,
-                                verifyCode = verifyCode.value.toIntOrDefault(0)
-                            )
-                        }
-
-                        LoginPageAction.MODIFY_PASSWORD -> {
-                            loginVm.modifyPassword(
-                                email = email.value,
-                                verifyCode = verifyCode.value.toIntOrDefault(0),
-                                newPassword = password.value
-                            )
-                        }
+                    scope.launch {
+                        vm.handleLoginClick()
                     }
                 },
                 contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
@@ -251,10 +225,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .height(48.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = LocalColors.current.Brand_pink)
             ) {
-                val txt = when (pageState.value) {
-                    LoginPageAction.REGISTER -> stringResource(R.string.register)
-                    LoginPageAction.LOGIN -> stringResource(R.string.login)
-                    LoginPageAction.MODIFY_PASSWORD -> stringResource(R.string.modify_or_find_password)
+                val txt = when (loginPageState.pageStage) {
+                    LoginPageStage.REGISTER -> stringResource(R.string.register)
+                    LoginPageStage.LOGIN -> stringResource(R.string.login)
+                    LoginPageStage.MODIFY_PASSWORD -> stringResource(R.string.modify_or_find_password)
                 }
                 Text(
                     text = txt,
@@ -270,22 +244,23 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     .fillMaxWidth()
                     .wrapContentHeight()
             ) {
-                if (pageState.value == LoginPageAction.LOGIN || pageState.value == LoginPageAction.REGISTER) {
-                    Text(text = if (pageState.value == LoginPageAction.REGISTER) stringResource(R.string.switch_login) else stringResource(
-                        R.string.switch_register
-                    ),
-                        color = LocalColors.current.Text1,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .align(Alignment.CenterEnd)
-                            .clickable {
-                                if (pageState.value == LoginPageAction.REGISTER) {
-                                    pageState.value = LoginPageAction.LOGIN
-                                } else {
-                                    pageState.value = LoginPageAction.REGISTER
-                                }
-                            })
-                }
+                Text(text = if (loginPageState.pageStage == LoginPageStage.REGISTER) stringResource(
+                    R.string.switch_login
+                ) else stringResource(
+                    R.string.switch_register
+                ),
+                    color = LocalColors.current.Text1,
+                    modifier = Modifier
+                        .wrapContentWidth()
+                        .align(Alignment.CenterEnd)
+                        .clickable {
+                            if (loginPageState.pageStage == LoginPageStage.REGISTER) {
+                                vm.updatePageStage(LoginPageStage.LOGIN)
+                            } else {
+                                vm.updatePageStage(LoginPageStage.REGISTER)
+                            }
+
+                        })
 
                 Text(text = stringResource(R.string.modify_or_find_password),
                     color = LocalColors.current.Text_white,
@@ -293,9 +268,10 @@ fun LoginPage(onClose: () -> Unit = {}) {
                         .wrapContentWidth()
                         .align(Alignment.CenterStart)
                         .clickable {
-                            pageState.value = LoginPageAction.MODIFY_PASSWORD
+                            scope.launch {
+                                vm.updatePageStage(LoginPageStage.MODIFY_PASSWORD)
+                            }
                         })
-
 
             }
         }
@@ -308,9 +284,4 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 .align(Alignment.BottomCenter)
         )
     }
-}
-
-
-private enum class LoginPageAction(val value: Int) {
-    LOGIN(0), REGISTER(1), MODIFY_PASSWORD(2)
 }

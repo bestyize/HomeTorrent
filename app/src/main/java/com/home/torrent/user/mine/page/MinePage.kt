@@ -33,6 +33,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -101,9 +102,9 @@ fun MinePage() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val vm = viewModel(modelClass = UserViewModel::class.java)
-        val userState = vm.loginState.collectAsStateWithLifecycle()
+        val userState by vm.loginState.collectAsStateWithLifecycle()
         Spacer(modifier = Modifier.statusBarsPadding())
-        HeaderCard(user = userState.value, onLoginClick = {
+        HeaderCard(user = userState, onLoginClick = {
             openLoginPage.value = true
         })
         Spacer(modifier = Modifier.height(20.dp))
@@ -111,7 +112,7 @@ fun MinePage() {
             activity.startActivity(Intent(activity, SettingActivity::class.java))
         }
 
-        if (userState.value != null) {
+        if (userState != null) {
             val logoutWaringDialogOpenState = remember {
                 mutableStateOf(false)
             }

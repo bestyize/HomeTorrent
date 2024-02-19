@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.R
+import com.home.torrent.user.model.LoginPageData
+import com.home.torrent.user.model.LoginPageStage
 import com.home.torrent.util.isValidEmail
 import com.home.torrent.util.isValidPassword
 import com.home.torrent.util.isValidUsername
@@ -14,6 +16,7 @@ import com.thewind.account.AccountManager
 import com.thewind.account.bean.User
 import com.thewind.account.service.LoginService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -25,71 +28,82 @@ class UserViewModel : ViewModel() {
 
     val loginState: MutableStateFlow<User?> = MutableStateFlow(AccountManager.getUser())
 
-    fun login(userName: String? = null, email: String? = null, password: String?) {
-        viewModelScope.launch {
-            if (userName == null && email == null) {
-                toast(HomeApp.context.getString(R.string.must_input_username_or_email))
-                return@launch
-            }
-            if (password == null) {
-                toast(HomeApp.context.getString(R.string.input_password))
-                return@launch
-            }
-            LoginService.login(userName = userName, email = email, password = password).let {
-                toast(it.message)
-                loginState.value = AccountManager.getUser()
-            }
+    private val _loginPageState: MutableStateFlow<LoginPageData> = MutableStateFlow(LoginPageData())
+
+    val loginPageStage = _loginPageState.asStateFlow()
+
+
+    suspend fun handleLoginClick() {
+        when (_loginPageState.value.pageStage) {
+            LoginPageStage.LOGIN -> login()
+            LoginPageStage.REGISTER -> register()
+            LoginPageStage.MODIFY_PASSWORD -> modifyPassword()
         }
     }
 
-    fun register(userName: String?, email: String?, password: String?, verifyCode: Int) {
-        viewModelScope.launch {
-            if (!userName.isValidUsername) {
-                toast(userName.validUsernameWithReason)
-                return@launch
-            }
-            if (!email.isValidEmail) {
-                toast(HomeApp.context.getString(R.string.email_invalid))
-                return@launch
-            }
-            if (!password.isValidPassword) {
-                toast(password.validPasswordWithReason)
-                return@launch
-            }
-            if (verifyCode == 0) {
-                toast(HomeApp.context.getString(R.string.input_verifycode))
-                return@launch
-            }
-            LoginService.register(
-                userName = userName ?: "",
-                email = email ?: "",
-                password = password ?: "",
-                verifyCode = verifyCode
-            ).let {
+    private suspend fun login() {
+        val data = _loginPageState.value
+        if (data.userName.isBlank() && data.email.isBlank()) {
+            toast(HomeApp.context.getString(R.string.must_input_username_or_email))
+            return
+        }
+        if (data.password.isBlank()) {
+            toast(HomeApp.context.getString(R.string.input_password))
+            return
+        }
+        LoginService.login(userName = data.userName, email = data.email, password = data.password)
+            .let {
                 toast(it.message)
                 loginState.value = AccountManager.getUser()
             }
-        }
     }
 
-    fun modifyPassword(email: String?, verifyCode: Int, newPassword: String?) {
-        if (email == null || !email.isValidEmail) {
+    private suspend fun register() {
+        val data = _loginPageState.value
+        if (!data.userName.isValidUsername) {
+            toast(data.userName.validUsernameWithReason)
+            return
+        }
+        if (!data.email.isValidEmail) {
             toast(HomeApp.context.getString(R.string.email_invalid))
             return
         }
-        if (verifyCode == 0) {
+        if (!data.password.isValidPassword) {
+            toast(data.password.validPasswordWithReason)
+            return
+        }
+        if (data.verifyCode.isBlank()) {
             toast(HomeApp.context.getString(R.string.input_verifycode))
             return
         }
-        if (newPassword == null || !newPassword.isValidPassword) {
-            toast(newPassword.validPasswordWithReason)
+        LoginService.register(
+            userName = data.userName,
+            email = data.email,
+            password = data.password,
+            verifyCode = data.verifyCode
+        ).let {
+            toast(it.message)
+            loginState.value = AccountManager.getUser()
+        }
+    }
+
+    private suspend fun modifyPassword() {
+        val data = _loginPageState.value
+        if (data.email.isBlank() || !data.email.isValidEmail) {
+            toast(HomeApp.context.getString(R.string.email_invalid))
+            return
+        }
+        if (data.verifyCode.isBlank()) {
+            toast(HomeApp.context.getString(R.string.input_verifycode))
+            return
+        }
+        if (data.password.isBlank() || !data.password.isValidPassword) {
+            toast(data.password.validPasswordWithReason)
             return
         }
         viewModelScope.launch {
             LoginService.modifyPassword(
-                verifyCode = verifyCode,
-                email = email,
-                newPassword = newPassword
+                verifyCode = data.verifyCode, email = data.email, newPassword = data.password
             ).let {
                 toast(it.message)
                 loginState.value = AccountManager.getUser()
@@ -98,16 +112,15 @@ class UserViewModel : ViewModel() {
         }
     }
 
-    fun sendVerifyCode(email: String?) {
-        viewModelScope.launch {
-            if (email == null || !email.isValidEmail) {
-                toast(HomeApp.context.getString(R.string.email_invalid))
-                return@launch
-            }
-            toast(HomeApp.context.getString(R.string.have_send))
-            LoginService.sendVerifyCode(email).let {
-                toast(it.message)
-            }
+    suspend fun sendVerifyCode() {
+        val email = _loginPageState.value.email
+        if (!email.isValidEmail) {
+            toast(HomeApp.context.getString(R.string.email_invalid))
+            return
+        }
+        toast(HomeApp.context.getString(R.string.have_send))
+        LoginService.sendVerifyCode(email).let {
+            toast(it.message)
         }
     }
 
@@ -117,5 +130,27 @@ class UserViewModel : ViewModel() {
             loginState.value = AccountManager.getUser()
         }
     }
+
+
+    fun updateUserNameText(userName: String) {
+        _loginPageState.value = _loginPageState.value.copy(userName = userName)
+    }
+
+    fun updateEmailText(email: String) {
+        _loginPageState.value = _loginPageState.value.copy(email = email)
+    }
+
+    fun updatePasswordText(password: String) {
+        _loginPageState.value = _loginPageState.value.copy(password = password)
+    }
+
+    fun updateVerifyCode(verifyCode: String) {
+        _loginPageState.value = _loginPageState.value.copy(verifyCode = verifyCode)
+    }
+
+    fun updatePageStage(stage: LoginPageStage) {
+        _loginPageState.value = _loginPageState.value.copy(pageStage = stage)
+    }
+
 
 }

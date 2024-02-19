@@ -31,7 +31,7 @@ object LoginService {
         return@withContext SendEmailResponse(-1, "Network Error")
     }
 
-    suspend fun register(userName: String, email: String, password: String, verifyCode: Int) =
+    suspend fun register(userName: String, email: String, password: String, verifyCode: String) =
         withContext(Dispatchers.IO) {
             runCatching {
                 val resp =
@@ -61,7 +61,7 @@ object LoginService {
             return@withContext LoginResponse(-1, "Network Error")
         }
 
-    suspend fun modifyPassword(verifyCode: Int, email: String, newPassword: String) = withContext(Dispatchers.IO) {
+    suspend fun modifyPassword(verifyCode: String, email: String, newPassword: String) = withContext(Dispatchers.IO) {
         runCatching {
             val resp = get("$appHost/user/api/modify/password?email=$email&verifyCode=$verifyCode&newPassword=$newPassword")
             val response: LoginResponse? = Gson().fromJson(resp, LoginResponse::class.java)
