@@ -24,11 +24,11 @@ fun PageLoadingCard(color: Color = LocalColors.current.Brand_pink, loadingText: 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp), contentAlignment = Alignment.Center
+            .padding(vertical = 40.dp), contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.align(Alignment.Center),
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CircularProgressIndicator(
                 modifier = Modifier

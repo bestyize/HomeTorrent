@@ -112,7 +112,7 @@ fun TorrentSearchPage() {
         Column(modifier = Modifier.fillMaxSize()) {
             TorrentSearchBar(queryWord = searchPageState.keyword, onSubmit = {
                 scope.launch {
-                    vm.reloadKeyword()
+                    vm.forceReloadTabKeyword(pagerState.currentPage)
                 }
 
             }, onChange = {

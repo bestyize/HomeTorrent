@@ -10,14 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.thewind.widget.theme.LocalColors
 
 @Composable
-fun PageLoadErrorCard() {
+fun PageLoadErrorCard(text: String = "已全部加载", color: Color = LocalColors.current.Brand_pink) {
     Box(
         modifier = Modifier
             .height(150.dp)
             .fillMaxWidth(), contentAlignment = Alignment.Center
     ) {
-        Text(text = "已全部加载", color = Color.Black, fontSize = 18.sp)
+        Text(text = text, color = color, fontSize = 18.sp)
     }
 }

@@ -53,28 +53,22 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         }
     }
 
-    fun reloadKeyword() {
+    fun forceReloadTabKeyword(tabIndex: Int) {
         val data = searchPageState.value
+        val tabData = data.tabs.getOrNull(tabIndex) ?: return
         _searchPageState.value = data.copy(
             tabs = data.tabs.toMutableList().apply {
-                forEachIndexed { index, pageState ->
-                    this[index] =
-                        TorrentSearchTabState(src = pageState.src, keyword = data.keyword)
-                }
+                this[tabIndex] =
+                    TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
             }.toImmutableList()
         )
     }
 
-    fun reloadTabKeywordWhenPageSwitch(tapIndex: Int) {
+    fun reloadTabKeywordWhenPageSwitch(tabIndex: Int) {
         val data = searchPageState.value
-        val tabData = data.tabs.getOrNull(tapIndex) ?: return
+        val tabData = data.tabs.getOrNull(tabIndex) ?: return
         if (tabData.keyword != data.keyword) {
-            _searchPageState.value = data.copy(
-                tabs = data.tabs.toMutableList().apply {
-                    this[tapIndex] =
-                        TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
-                }.toImmutableList()
-            )
+            forceReloadTabKeyword(tabIndex)
         }
     }
 
@@ -106,7 +100,6 @@ internal class TorrentSearchPageViewModel : ViewModel() {
             PageLoadState.FINISH -> {
                 _searchPageState.value = data.copy(
                     tabs = data.tabs.toMutableList().apply {
-                        list
                         forEachIndexed { index, tabData ->
                             if (tabData.src == src) {
                                 this[index] = tabData.copy(
