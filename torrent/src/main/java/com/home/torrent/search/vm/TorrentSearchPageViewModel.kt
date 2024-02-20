@@ -58,8 +58,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         val tabData = data.tabs.getOrNull(tabIndex) ?: return
         _searchPageState.value = data.copy(
             tabs = data.tabs.toMutableList().apply {
-                this[tabIndex] =
-                    TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
+                this[tabIndex] = TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
             }.toImmutableList()
         )
     }
@@ -172,26 +171,27 @@ internal class TorrentSearchPageViewModel : ViewModel() {
 
     }
 
-    fun collectToCloud(data: TorrentInfo?) {
+    fun collectToCloud(torrent: TorrentInfo?) {
         viewModelScope.launch {
-            data ?: return@launch
-            val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
-                data.src, data.detailUrl!!
-            ) else data.magnetUrl
+            torrent ?: return@launch
+            val magnetUrl = if (torrent.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
+                torrent.src, torrent.detailUrl!!
+            ) else torrent.magnetUrl
             if (magnetUrl == null) {
                 toast("收藏到云端失败！")
                 return@launch
             }
             val hash =
-                if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
-            val dat = data.copy(
+                if (torrent.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else torrent.hash
+            val dat = torrent.copy(
                 magnetUrl = magnetUrl,
                 hash = if (hash.isNullOrBlank()) magnetUrl else hash,
-                torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
+                torrentUrl = if (torrent.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
                     magnetUrl
-                ) else data.torrentUrl
+                ) else torrent.torrentUrl
             )
             toast(TorrentCollectService.collectToCloud(dat).message)
+            updateDialogState(null)
         }
     }
 
