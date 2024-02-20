@@ -4,8 +4,8 @@ minSdkVersion = "26"
 targetSdkVersion = "34"
 compileSdkVersion = "34"
 
-versionCode = "10001"
-versionName = "1.1"
+versionCode = "12000"
+versionName = "1.2"
 
 jvmTargetVersion = "17"
 
