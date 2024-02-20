@@ -27,15 +27,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -52,13 +49,13 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.home.torrent.R
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
-import com.thewind.account.AccountManager
 import com.thewind.account.bean.User
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
@@ -119,19 +116,16 @@ fun MinePage() {
         }
 
         if (minePageState.user != null) {
-            val logoutWaringDialogOpenState = remember {
-                mutableStateOf(false)
-            }
-            if (logoutWaringDialogOpenState.value) {
+
+            if (minePageState.showLogout) {
                 CommonAlertDialog(title = stringResource(R.string.notice),
                     content = stringResource(R.string.do_you_want_to_logout),
                     okText = stringResource(id = R.string.ok),
                     cancelText = stringResource(id = R.string.cancel),
                     onCancel = {
-                        logoutWaringDialogOpenState.value = false
+                        userVm.closeLogoutWaring()
                     },
                     onOk = {
-                        logoutWaringDialogOpenState.value = false
                         userVm.logout()
                     })
             }
@@ -139,7 +133,7 @@ fun MinePage() {
             SettingItemView(
                 title = stringResource(R.string.logout), icon = Icons.AutoMirrored.Filled.ExitToApp
             ) {
-                logoutWaringDialogOpenState.value = true
+                userVm.showLogoutWaring()
             }
         }
         val noticeList = remember {
@@ -183,7 +177,8 @@ fun HeaderCard(user: User? = null, onLoginClick: () -> Unit = {}) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = user?.icon?.takeIf { it.isNotBlank() },
+            model = ImageRequest.Builder(LocalContext.current).data(user?.icon)
+                .error(R.drawable.logo).build(),
             placeholder = painterResource(id = R.drawable.logo),
             alignment = Alignment.Center,
             modifier = Modifier

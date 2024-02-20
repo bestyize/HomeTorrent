@@ -14,7 +14,6 @@ import com.home.torrent.util.isValidUsername
 import com.home.torrent.util.validPasswordWithReason
 import com.home.torrent.util.validUsernameWithReason
 import com.thewind.account.AccountManager
-import com.thewind.account.bean.User
 import com.thewind.account.service.LoginService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -143,7 +142,8 @@ class UserViewModel : ViewModel() {
             AccountManager.loginOut()
             _minePageState.value = _minePageState.value.copy(
                 showLogin = !AccountManager.isLogin(),
-                user = AccountManager.getUser()
+                user = AccountManager.getUser(),
+                showLogout = false
             )
         }
     }
@@ -176,6 +176,14 @@ class UserViewModel : ViewModel() {
 
     fun closeLogin() {
         _minePageState.value = _minePageState.value.copy(showLogin = false)
+    }
+
+    fun closeLogoutWaring() {
+        _minePageState.value = _minePageState.value.copy(showLogout = false)
+    }
+
+    fun showLogoutWaring() {
+        _minePageState.value= _minePageState.value.copy(showLogout = true)
     }
 
 

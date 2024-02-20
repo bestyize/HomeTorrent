@@ -40,7 +40,7 @@ import kotlinx.collections.immutable.ImmutableSet
 internal fun TorrentListView(
     list: ImmutableList<TorrentInfo>,
     collectSet: ImmutableSet<TorrentInfo>,
-    pageLoadState: PageLoadState = PageLoadState.INIT,
+    pageLoadState: PageLoadState = PageLoadState.ALL_LOADED,
     onClick: (TorrentInfo) -> Unit,
     onCollect: (TorrentInfo, Boolean) -> Unit,
     onLoad: () -> Unit = {}
@@ -85,7 +85,7 @@ internal fun TorrentListView(
                     }
 
                     PageLoadState.ERROR -> {
-                        PageLoadErrorCard()
+                        PageLoadErrorCard(text = stringResource(id = R.string.load_failed))
                     }
                 }
             }

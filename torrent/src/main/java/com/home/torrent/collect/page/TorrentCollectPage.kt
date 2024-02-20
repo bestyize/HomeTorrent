@@ -26,6 +26,7 @@ import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentListView
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
+import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 
