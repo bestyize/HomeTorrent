@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -40,8 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 @Preview
 fun MainPage(
-    resources: Resources = LocalContext.current.resources,
-    tabs: List<String> = remember {
+    resources: Resources = LocalContext.current.resources, tabs: List<String> = remember {
         listOf(
             resources.getString(R.string.main_page),
             resources.getString(R.string.collect),
@@ -66,9 +66,9 @@ fun MainPage(
         HorizontalPager(state = pagerState) {
             Box(
                 modifier = Modifier
+                    .padding(bottom = 60.dp)
                     .fillMaxSize()
-                    .background(LocalColors.current.Bg2),
-                contentAlignment = Alignment.Center
+                    .background(LocalColors.current.Bg2), contentAlignment = Alignment.Center
             ) {
                 when (it) {
                     0 -> TorrentSearchPage()
@@ -80,8 +80,7 @@ fun MainPage(
             }
         }
 
-        TabRow(
-            selectedTabIndex = 0,
+        TabRow(selectedTabIndex = 0,
             indicator = {},
             containerColor = LocalColors.current.Bg3,
             divider = {},

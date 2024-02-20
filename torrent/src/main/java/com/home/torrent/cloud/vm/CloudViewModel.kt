@@ -7,6 +7,7 @@ import com.home.torrent.cloud.model.TorrentCloudPageData
 import com.home.torrent.collect.model.TorrentInfoBean
 import com.home.torrent.collect.service.TorrentCollectService
 import com.home.torrent.widget.TorrentClickOption
+import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,8 +25,6 @@ internal class CloudViewModel : ViewModel() {
 
     val cloudPageState = _cloudPageState.asStateFlow()
 
-    private var loadFinish = false
-
     fun handleItemClick(
         showOptionDialog: Boolean,
         selectedTorrent: TorrentInfoBean? = _cloudPageState.value.selectedTorrent,
@@ -39,46 +38,48 @@ internal class CloudViewModel : ViewModel() {
     }
 
     fun updateCopyDialogState(
-        showCopyDialog: Boolean,
-        clickOption: TorrentClickOption = _cloudPageState.value.clickOption
+        showCopyDialog: Boolean, clickOption: TorrentClickOption = _cloudPageState.value.clickOption
     ) {
         _cloudPageState.value =
             _cloudPageState.value.copy(showCopyDialog = showCopyDialog, clickOption = clickOption)
     }
 
-    fun unCollectFromCloud(index: Int, hash: String?) {
+    suspend fun unCollectFromCloud(index: Int, hash: String?) {
         hash ?: return
-        viewModelScope.launch {
-            toast(TorrentCollectService.unCollectFromCloud(hash).message)
-            _cloudPageState.value =
-                _cloudPageState.value.copy(list = _cloudPageState.value.list.toMutableList().apply {
-                    removeAt(index)
-                })
-        }
+        toast(TorrentCollectService.unCollectFromCloud(hash).message)
+        _cloudPageState.value =
+            _cloudPageState.value.copy(list = _cloudPageState.value.list.toMutableList().apply {
+                removeAt(index)
+            })
     }
 
-    fun loadCloudCollectList(reset: Boolean = false) {
-        if (reset) {
-            loadFinish = false
-        }
-        if (loadFinish) return
-        viewModelScope.launch {
-            var data = _cloudPageState.value
-            if (reset) {
-                data = TorrentCloudPageData()
-            }
-            TorrentCollectService.requestTorrentListFromServer(data.page).let {
-                if (it.data.isNullOrEmpty()) {
-                    if (it.code == -1) toast(it.message)
+    fun reloadAllCollectList() {
+        _cloudPageState.value = TorrentCloudPageData()
+    }
+
+    suspend fun loadCloudCollectList() {
+
+        val data = _cloudPageState.value
+
+        when (data.pageLoadState) {
+            PageLoadState.INIT, PageLoadState.FINISH -> {
+                val resp = TorrentCollectService.requestTorrentListFromServer(data.page)
+                _cloudPageState.value = if (resp.data.isNullOrEmpty()) {
+                    data.copy(pageLoadState = PageLoadState.ALL_LOADED)
                 } else {
-                    _cloudPageState.value = _cloudPageState.value.copy(
-                        page = _cloudPageState.value.page + 1,
+                    data.copy(pageLoadState = PageLoadState.FINISH,
                         list = data.list.toMutableList().apply {
-                            addAll(it.data)
-                        })
+                            addAll(resp.data)
+                        },
+                        page = data.page + 1
+                    )
                 }
+
             }
-            loadFinish = true
+
+            PageLoadState.ALL_LOADED -> {}
+
+            PageLoadState.ERROR -> {}
         }
     }
 

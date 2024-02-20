@@ -42,7 +42,7 @@ internal object TorrentCollectService {
 
     internal suspend fun requestTorrentListFromServer(page: Int) = withContext(Dispatchers.IO) {
         runCatching {
-            HttpUtil.get("$appHost/torrent/api/collect/list/page?page=$page")
+            HttpUtil.get("$appHost/torrent/api/collect/list/lazypage?page=$page")
                 .toObject(TorrentCollectListResponse::class.java)?.let {
                 return@withContext it
             }

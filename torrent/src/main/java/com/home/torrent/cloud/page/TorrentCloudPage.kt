@@ -24,7 +24,9 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -47,6 +49,11 @@ import com.home.torrent.widget.TorrentItemTag
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
+import com.thewind.widget.ui.list.lazy.PageLoadAllCard
+import com.thewind.widget.ui.list.lazy.PageLoadErrorCard
+import com.thewind.widget.ui.list.lazy.PageLoadState
+import com.thewind.widget.ui.list.lazy.PageLoadingCard
+import kotlinx.coroutines.launch
 
 /**
  * @author: read
@@ -65,16 +72,29 @@ fun TorrentCloudPage() {
     val vm = viewModel(modelClass = CloudViewModel::class.java)
     val cloudPageState by vm.cloudPageState.collectAsStateWithLifecycle()
 
+    val scope = rememberCoroutineScope()
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleHeader(title = stringResource(R.string.cloud_collect))
-            CloudTorrentListView(dataList = cloudPageState.list, onLoad = {
-                vm.loadCloudCollectList()
-            }, onUnCollect = { index, hash ->
-                vm.unCollectFromCloud(index, hash)
-            }, onItemClick = {
-                vm.handleItemClick(true, it)
-            })
+            CloudTorrentListView(
+                dataList = cloudPageState.list,
+                pageLoadState = cloudPageState.pageLoadState,
+                onLoad = {
+                    scope.launch {
+                        vm.loadCloudCollectList()
+                    }
+                },
+                onUnCollect = { index, hash ->
+                    scope.launch {
+                        vm.unCollectFromCloud(index, hash)
+                    }
+                },
+                onItemClick = {
+                    scope.launch {
+                        vm.handleItemClick(true, it)
+                    }
+                })
         }
         Box(modifier = Modifier
             .padding(bottom = 80.dp, end = 15.dp)
@@ -85,7 +105,9 @@ fun TorrentCloudPage() {
             )
             .padding(10.dp)
             .clickable {
-                vm.loadCloudCollectList(true)
+                scope.launch {
+                    vm.reloadAllCollectList()
+                }
             }) {
             Icon(
                 Icons.Filled.Refresh,
@@ -129,6 +151,7 @@ fun TorrentCloudPage() {
 @Composable
 private fun CloudTorrentListView(
     dataList: List<TorrentInfoBean> = emptyList(),
+    pageLoadState: PageLoadState = PageLoadState.ALL_LOADED,
     onLoad: () -> Unit = {},
     onUnCollect: (Int, String?) -> Unit = { _, _ -> },
     onItemClick: (TorrentInfoBean) -> Unit = {}
@@ -140,9 +163,7 @@ private fun CloudTorrentListView(
             .background(LocalColors.current.Bg2)
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(count = dataList.size, key = {
-                "$it-${dataList[it].hash}"
-            }) { index ->
+            items(count = dataList.size) { index ->
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -159,8 +180,24 @@ private fun CloudTorrentListView(
                     Spacer(modifier = Modifier.height(100.dp))
                 }
             }
+
             item {
-                onLoad.invoke()
+                when (pageLoadState) {
+                    PageLoadState.INIT, PageLoadState.FINISH -> {
+                        PageLoadingCard(loadingText = stringResource(id = R.string.loading))
+                        LaunchedEffect(key1 = Unit, block = {
+                            onLoad.invoke()
+                        })
+                    }
+
+                    PageLoadState.ALL_LOADED -> {
+                        PageLoadAllCard(text = stringResource(id = R.string.loaded_all))
+                    }
+
+                    PageLoadState.ERROR -> {
+                        PageLoadErrorCard(text = stringResource(id = R.string.load_failed))
+                    }
+                }
             }
         }
     }
