@@ -1,7 +1,6 @@
 package com.home.torrent.cloud.vm
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
 import com.home.torrent.cloud.model.TorrentCloudPageData
 import com.home.torrent.collect.model.TorrentInfoBean
@@ -10,7 +9,6 @@ import com.home.torrent.widget.TorrentClickOption
 import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
 /**
  * @author: read
@@ -67,7 +65,8 @@ internal class CloudViewModel : ViewModel() {
                 _cloudPageState.value = if (resp.data.isNullOrEmpty()) {
                     data.copy(pageLoadState = PageLoadState.ALL_LOADED)
                 } else {
-                    data.copy(pageLoadState = PageLoadState.FINISH,
+                    data.copy(
+                        pageLoadState = PageLoadState.FINISH,
                         list = data.list.toMutableList().apply {
                             addAll(resp.data)
                         },
@@ -81,6 +80,41 @@ internal class CloudViewModel : ViewModel() {
 
             PageLoadState.ERROR -> {}
         }
+    }
+
+    fun openModifyDialog() {
+        val data = _cloudPageState.value
+        _cloudPageState.value = data.copy(
+            showCopyDialog = false,
+            showOptionDialog = false,
+            editDialogUiState = data.editDialogUiState.copy(show = true)
+        )
+
+    }
+
+    suspend fun modifyTorrentTitle(newTitle: String) {
+        val data = _cloudPageState.value
+        val hash = data.selectedTorrent?.hash ?: return
+        if (newTitle == data.selectedTorrent.title) return
+        val resp = TorrentCollectService.modifyTorrentName(hash, newTitle)
+        toast(resp.message)
+        _cloudPageState.value = data.copy(list = data.list.toMutableList().apply {
+            if (resp.data) {
+                forEachIndexed { index, itemData ->
+                    if (itemData.hash == hash) {
+                        this[index] = itemData.copy(title = newTitle)
+                    }
+                }
+            }
+
+        }, editDialogUiState = data.editDialogUiState.copy(show = false))
+    }
+
+
+    fun closeModifyDialog() {
+        val data = _cloudPageState.value
+        _cloudPageState.value =
+            data.copy(editDialogUiState = data.editDialogUiState.copy(show = false))
     }
 
 }

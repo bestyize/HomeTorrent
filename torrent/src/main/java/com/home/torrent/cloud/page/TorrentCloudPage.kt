@@ -48,6 +48,7 @@ import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentItemTag
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
+import com.thewind.widget.ui.CommonInputDialog
 import com.thewind.widget.ui.TitleHeader
 import com.thewind.widget.ui.list.lazy.PageLoadAllCard
 import com.thewind.widget.ui.list.lazy.PageLoadErrorCard
@@ -62,7 +63,10 @@ import kotlinx.coroutines.launch
  */
 
 private val clickOptions = arrayOf(
-    TorrentClickOption.GET_MAGNET_URL, TorrentClickOption.GET_TORRENT_URL, TorrentClickOption.CANCEL
+    TorrentClickOption.GET_MAGNET_URL,
+    TorrentClickOption.GET_TORRENT_URL,
+    TorrentClickOption.EDIT_TORRENT_TITLE,
+    TorrentClickOption.CANCEL
 )
 
 @Composable
@@ -77,8 +81,7 @@ fun TorrentCloudPage() {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TitleHeader(title = stringResource(R.string.cloud_collect))
-            CloudTorrentListView(
-                dataList = cloudPageState.list,
+            CloudTorrentListView(dataList = cloudPageState.list,
                 pageLoadState = cloudPageState.pageLoadState,
                 onLoad = {
                     scope.launch {
@@ -120,31 +123,50 @@ fun TorrentCloudPage() {
 
     if (cloudPageState.showOptionDialog) {
         TorrentClickOptionDialog(options = clickOptions, onClicked = {
-            when (it) {
-                TorrentClickOption.GET_MAGNET_URL -> {
-                    vm.updateCopyDialogState(true, it)
-                }
+            scope.launch {
+                when (it) {
+                    TorrentClickOption.GET_MAGNET_URL -> vm.updateCopyDialogState(true, it)
 
-                TorrentClickOption.GET_TORRENT_URL -> {
-                    vm.updateCopyDialogState(true, it)
-                }
+                    TorrentClickOption.GET_TORRENT_URL -> vm.updateCopyDialogState(true, it)
 
-                else -> {}
+                    TorrentClickOption.EDIT_TORRENT_TITLE -> vm.openModifyDialog()
+
+                    else -> {}
+                }
+                vm.handleItemClick(showOptionDialog = false, clickOption = it)
             }
-            vm.handleItemClick(showOptionDialog = false, clickOption = it)
+
         })
     }
 
-    val address =
-        if (cloudPageState.clickOption == TorrentClickOption.GET_MAGNET_URL) {
-            cloudPageState.selectedTorrent?.magnetUrl
-        } else {
-            cloudPageState.selectedTorrent?.torrentUrl
-        }
+    val address = if (cloudPageState.clickOption == TorrentClickOption.GET_MAGNET_URL) {
+        cloudPageState.selectedTorrent?.magnetUrl
+    } else {
+        cloudPageState.selectedTorrent?.torrentUrl
+    }
     if (cloudPageState.showCopyDialog) {
         CopyAddressDialog(address = address ?: "", onCopy = {
             vm.updateCopyDialogState(false)
         })
+    }
+
+    if (cloudPageState.editDialogUiState.show) {
+        CommonInputDialog(
+            title = stringResource(id = R.string.modify_title),
+            content = cloudPageState.selectedTorrent?.title ?: "",
+            okText = stringResource(
+                id = R.string.ok
+            ),
+            cancelText = stringResource(id = R.string.cancel),
+            onCancel = {
+                vm.closeModifyDialog()
+            },
+            onSubmit = { newTitle ->
+                scope.launch {
+                    vm.modifyTorrentTitle(newTitle)
+                }
+            }
+        )
     }
 }
 
@@ -172,7 +194,7 @@ private fun CloudTorrentListView(
                         .align(Alignment.BottomCenter)
                 )
                 CloudTorrentItemView(data = dataList[index], index = index, onClick = {
-                    onItemClick.invoke(it)
+                    onItemClick.invoke(dataList[index])
                 }, onDelete = {
                     onUnCollect.invoke(index, it)
                 })
@@ -209,7 +231,7 @@ private fun CloudTorrentListView(
 private fun CloudTorrentItemView(
     data: TorrentInfoBean = TorrentInfoBean(),
     index: Int = 0,
-    onClick: (TorrentInfoBean) -> Unit = {},
+    onClick: () -> Unit = {},
     onDelete: (String?) -> Unit = {}
 ) {
     Box(modifier = Modifier
@@ -217,7 +239,7 @@ private fun CloudTorrentItemView(
         .wrapContentHeight()
         .background(LocalColors.current.Bg1)
         .clickable {
-            onClick.invoke(data)
+            onClick.invoke()
         }) {
         Row(
             modifier = Modifier

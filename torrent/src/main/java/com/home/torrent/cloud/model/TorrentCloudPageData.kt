@@ -11,5 +11,6 @@ internal data class TorrentCloudPageData(
     val showOptionDialog: Boolean = false,
     val showCopyDialog: Boolean = false,
     val selectedTorrent: TorrentInfoBean? = null,
-    val clickOption: TorrentClickOption = TorrentClickOption.GET_MAGNET_URL
+    val clickOption: TorrentClickOption = TorrentClickOption.GET_MAGNET_URL,
+    val editDialogUiState: TorrentCloudEditDialogUiState = TorrentCloudEditDialogUiState()
 )

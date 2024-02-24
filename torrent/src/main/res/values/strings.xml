@@ -58,4 +58,5 @@
     <string name="dark_mode">深色模式</string>
     <string name="recommend">社区</string>
     <string name="load_failed">加载失败</string>
+    <string name="modify_title">修改标题</string>
 </resources>

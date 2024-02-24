@@ -77,21 +77,10 @@ private fun TorrentCollectPageDialog(vm: TorrentCollectViewModel = viewModel(mod
         when (dialogState.type) {
             CollectPageDialogType.OPTION -> TorrentClickOptionDialog(onClicked = {
                 when (it) {
-                    TorrentClickOption.GET_MAGNET_URL -> {
-                        vm.updateDialogState(dialogState.data)
-                    }
-
-                    TorrentClickOption.GET_TORRENT_URL -> {
-                        vm.updateDialogState(dialogState.data, false)
-                    }
-
-                    TorrentClickOption.COLLECT_CLOUD -> {
-                        vm.collectToCloud(dialogState.data)
-                    }
-
-                    else -> {
-                        vm.updateDialogState(null)
-                    }
+                    TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState(dialogState.data)
+                    TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(dialogState.data, false)
+                    TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(dialogState.data)
+                    else -> vm.updateDialogState(null)
                 }
             })
 

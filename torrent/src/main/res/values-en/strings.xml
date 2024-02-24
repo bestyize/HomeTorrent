@@ -58,4 +58,5 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="recommend">Recommend</string>
     <string name="load_failed">Load Failed</string>
+    <string name="modify_title">Modify Title</string>
 </resources>
