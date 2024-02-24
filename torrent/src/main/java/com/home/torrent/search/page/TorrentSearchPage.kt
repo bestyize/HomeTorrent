@@ -68,21 +68,10 @@ fun TorrentSearchPage() {
         when (searchPageState.dialogState.type) {
             SearchPageDialogType.OPTION -> TorrentClickOptionDialog(onClicked = {
                 when (it) {
-                    TorrentClickOption.GET_MAGNET_URL -> {
-                        vm.updateDialogState()
-                    }
-
-                    TorrentClickOption.GET_TORRENT_URL -> {
-                        vm.updateDialogState(isMagnet = false)
-                    }
-
-                    TorrentClickOption.COLLECT_CLOUD -> {
-                        vm.collectToCloud(searchPageState.dialogState.data)
-                    }
-
-                    else -> {
-                        vm.updateDialogState(null)
-                    }
+                    TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState()
+                    TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(isMagnet = false)
+                    TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(searchPageState.dialogState.data)
+                    else -> vm.updateDialogState(null)
                 }
             })
 
@@ -100,13 +89,12 @@ fun TorrentSearchPage() {
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
-        snapshotFlow { pagerState.currentPage }.collectLatest {  tabIndex ->
+        snapshotFlow { pagerState.currentPage }.collectLatest { tabIndex ->
             scope.launch {
                 vm.reloadTabKeywordWhenPageSwitch(tabIndex)
             }
         }
     }
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -114,12 +102,10 @@ fun TorrentSearchPage() {
                 scope.launch {
                     vm.forceReloadTabKeyword(pagerState.currentPage)
                 }
-
             }, onChange = {
                 scope.launch {
                     vm.updateKeyword(it)
                 }
-
             })
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
@@ -167,19 +153,16 @@ fun TorrentSearchPage() {
                 val pageState = searchPageState.tabs[pagerIndex]
                 TorrentSearchTab(tabState = pageState, collectSet = collectSetState, onLoad = {
                     pagerScope.launch {
-                        vm.loadMore(src = pageState.src)
+                        vm.loadMore(src = pageState.src, pagerIndex)
                     }
-
                 }, onCollect = { data, collect ->
                     pagerScope.launch {
                         if (collect) collectVm.collect(data) else collectVm.unCollect(data)
                     }
-
                 }, onClick = { data ->
                     pagerScope.launch {
                         vm.handleTorrentInfoClick(data)
                     }
-
                 })
             }
         }

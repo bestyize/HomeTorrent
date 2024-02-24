@@ -1,5 +1,6 @@
 package com.home.torrent.search.vm
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -34,6 +35,9 @@ import kotlinx.coroutines.launch
  */
 internal class TorrentSearchPageViewModel : ViewModel() {
 
+
+    private val loadingSet = mutableSetOf<Int>()
+
     private val _searchPageState: MutableStateFlow<TorrentSearchPageState> = MutableStateFlow(
         TorrentSearchPageState(source = loadTorrentSourcesLocal())
     )
@@ -56,6 +60,10 @@ internal class TorrentSearchPageViewModel : ViewModel() {
     fun forceReloadTabKeyword(tabIndex: Int) {
         val data = searchPageState.value
         val tabData = data.tabs.getOrNull(tabIndex) ?: return
+        if (loadingSet.contains(tabIndex)) {
+            Log.i(TAG, "forceReloadTabKeyword, tab = $tabIndex is loading")
+            return
+        }
         _searchPageState.value = data.copy(
             tabs = data.tabs.toMutableList().apply {
                 this[tabIndex] = TorrentSearchTabState(src = tabData.src, keyword = data.keyword)
@@ -71,21 +79,24 @@ internal class TorrentSearchPageViewModel : ViewModel() {
         }
     }
 
-    suspend fun loadMore(src: Int) {
+    suspend fun loadMore(src: Int, pageIndex: Int) {
         val data = _searchPageState.value
         val tabStates = _searchPageState.value.tabs
         val tabState = tabStates.find { it.src == src } ?: return
-        val list = suspendSearchTorrent(
-            src = src, key = _searchPageState.value.keyword, page = tabState.page
-        )
+        if (loadingSet.contains(pageIndex)) return
+        Log.i(TAG, "loadMore, pageIndex = $pageIndex, keyword = ${data.keyword}")
         when (tabState.loadState) {
             PageLoadState.INIT -> {
+                loadingSet.add(pageIndex)
+                val list = suspendSearchTorrent(
+                    src = src, key = _searchPageState.value.keyword, page = tabState.page
+                )
                 _searchPageState.value = data.copy(
                     tabs = data.tabs.toMutableList().apply {
                         forEachIndexed { index, tabData ->
                             if (tabData.src == src) {
                                 this[index] = tabData.copy(
-                                    page = if (list.isEmpty()) 0 else 1,
+                                    page = if (list.isEmpty()) 1 else 2,
                                     keyword = data.keyword,
                                     dataList = list,
                                     loadState = if (list.isEmpty()) PageLoadState.ALL_LOADED else PageLoadState.FINISH
@@ -94,9 +105,14 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                         }
                     }.toImmutableList()
                 )
+                loadingSet.remove(pageIndex)
             }
 
             PageLoadState.FINISH -> {
+                loadingSet.add(pageIndex)
+                val list = suspendSearchTorrent(
+                    src = src, key = _searchPageState.value.keyword, page = tabState.page
+                )
                 _searchPageState.value = data.copy(
                     tabs = data.tabs.toMutableList().apply {
                         forEachIndexed { index, tabData ->
@@ -113,6 +129,7 @@ internal class TorrentSearchPageViewModel : ViewModel() {
                         }
                     }.toImmutableList()
                 )
+                loadingSet.remove(pageIndex)
             }
 
             PageLoadState.ALL_LOADED -> {

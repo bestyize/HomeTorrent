@@ -11,4 +11,6 @@ internal data class TorrentSearchTabState(
     val dataList: List<TorrentInfo> = emptyList(),
     val keyword: String = "",
     val loadState: PageLoadState = PageLoadState.INIT
-)
+) {
+    var isLoading: Boolean = false
+}
