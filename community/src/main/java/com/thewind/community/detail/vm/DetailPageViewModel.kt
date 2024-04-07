@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.toast.toast
 import com.thewind.community.detail.service.DetailPageService
+import com.thewind.community.model.DetailPageState
 import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.recommend.model.RecommendPoster
+import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -16,20 +19,25 @@ import kotlinx.coroutines.launch
  */
 class DetailPageViewModel : ViewModel() {
 
-    private val posterState: MutableStateFlow<RecommendPoster?> = MutableStateFlow(null)
+    private val _detailPageState: MutableStateFlow<DetailPageState> = MutableStateFlow(
+        DetailPageState()
+    )
 
-    val commentState: MutableStateFlow<List<RecommendComment>> = MutableStateFlow(emptyList())
+    val detailPageState = _detailPageState.asStateFlow()
 
     fun loadPoster(id: Long) {
         viewModelScope.launch {
-            posterState.value = DetailPageService.requestPosterDetail(id)
+            val poster = DetailPageService.requestPosterDetail(id)
+            _detailPageState.value = _detailPageState.value.copy(
+                postId = id,
+                poster = poster,
+                loadState = if (poster == null) PageLoadState.ERROR else PageLoadState.FINISH
+            )
         }
     }
 
     fun setPoster(poster: RecommendPoster) {
-        viewModelScope.launch {
-            posterState.value = poster
-        }
+        _detailPageState.value = _detailPageState.value.copy(postId = poster.id, poster = poster, loadState = PageLoadState.FINISH)
     }
 
     fun loadComments(posterId: Long?) {
@@ -37,7 +45,8 @@ class DetailPageViewModel : ViewModel() {
             return
         }
         viewModelScope.launch {
-            commentState.value = DetailPageService.requestComments(posterId)
+            _detailPageState.value =
+                _detailPageState.value.copy(comments = DetailPageService.requestComments(posterId))
         }
     }
 
@@ -53,26 +62,28 @@ class DetailPageViewModel : ViewModel() {
                 toast("Error")
                 return@launch
             }
-            if (comment.parentId != -1L) {
-                commentState.value = commentState.value.toMutableList().apply {
-                    forEachIndexed { index, recommendComment ->
-                        if (recommendComment.id == comment.parentId) {
-                            recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
-                                ?.apply {
-                                    add(0, comment)
-                                }).let {
-                                this[index] = it
+            val comments = _detailPageState.value.comments
+            _detailPageState.value =
+                _detailPageState.value.copy(comments = if (comment.parentId != -1L) {
+                    comments.toMutableList().apply {
+                        forEachIndexed { index, recommendComment ->
+                            if (recommendComment.id == comment.parentId) {
+                                recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
+                                    ?.apply {
+                                        add(0, comment)
+                                    }).let {
+                                    this[index] = it
+                                }
                             }
+
                         }
 
                     }
-
-                }
-            } else {
-                commentState.value = commentState.value.toMutableList().apply {
-                    add(0, comment)
-                }
-            }
+                } else {
+                    comments.toMutableList().apply {
+                        add(0, comment)
+                    }
+                })
         }
     }
 
@@ -80,22 +91,24 @@ class DetailPageViewModel : ViewModel() {
         viewModelScope.launch {
             val success = DetailPageService.deleteComment(commentId = id)
             if (success) {
-                commentState.value = commentState.value.toMutableList().apply {
-                    if (parentId == -1L) {
-                        removeIf { it.id == id }
-                    } else {
-                        forEachIndexed { index, recommendComment ->
-                            if (recommendComment.id == parentId) {
-                                recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
-                                    ?.apply {
-                                        removeIf { it.id == id }
-                                    }).let {
-                                    this[index] = it
+                val comments = _detailPageState.value.comments
+                _detailPageState.value =
+                    _detailPageState.value.copy(comments = comments.toMutableList().apply {
+                        if (parentId == -1L) {
+                            removeIf { it.id == id }
+                        } else {
+                            forEachIndexed { index, recommendComment ->
+                                if (recommendComment.id == parentId) {
+                                    recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
+                                        ?.apply {
+                                            removeIf { it.id == id }
+                                        }).let {
+                                        this[index] = it
+                                    }
                                 }
                             }
                         }
-                    }
-                }
+                    })
             }
 
         }

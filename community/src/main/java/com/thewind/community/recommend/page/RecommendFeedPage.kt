@@ -92,9 +92,9 @@ fun RecommendFeedPage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ ->
                     content = data.content ?: "",
                     type = data.type,
                     onCardClick = {
-                        router.invoke("ht://recommend/detail", Bundle().apply {
+                        router.invoke("ht://recommend/detail?postId=${data.id}", Bundle().apply {
                             putParcelable("poster_content", data)
-                            putLong("poster_id", data.id)
+                            putLong("postId", data.id)
                         })
                     },
                     onMenuClick = {

@@ -1,10 +1,12 @@
 package com.thewind.community.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,11 @@ import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
+import com.thewind.widget.ui.list.lazy.PageLoadAllCard
+import com.thewind.widget.ui.list.lazy.PageLoadErrorCard
+import com.thewind.widget.ui.list.lazy.PageLoadState
+import com.thewind.widget.ui.list.lazy.PageLoadingCard
+import org.w3c.dom.Text
 
 /**
  * @author: read
@@ -42,14 +49,6 @@ fun PosterDetailPage(
 ) {
 
     val vm = viewModel(modelClass = DetailPageViewModel::class.java)
-    LaunchedEffect(key1 = Unit) {
-        if (poster != null) {
-            vm.setPoster(poster)
-        } else {
-            vm.loadPoster(posterId)
-        }
-        vm.loadComments(posterId)
-    }
     var openCommentState by remember {
         mutableStateOf(false)
     }
@@ -57,7 +56,7 @@ fun PosterDetailPage(
     var parentId by remember {
         mutableLongStateOf(-1L)
     }
-    val commentsState = vm.commentState.collectAsStateWithLifecycle()
+    val detailPageState by vm.detailPageState.collectAsStateWithLifecycle()
     Column(modifier = Modifier
         .background(LocalColors.current.Bg1)
         .statusBarsPadding()) {
@@ -74,17 +73,24 @@ fun PosterDetailPage(
                 .fillMaxWidth()
                 .background(color = LocalColors.current.Bg2)
         )
-        PosterCard(poster = poster, comments = commentsState.value, onMenuClick = {
-            //openCommentState.value = true
-        }, onShare = {}, onComment = {
-            parentId = -1L
-            openCommentState = true
-        }, onLike = {}, onHeaderClick = {
 
-        }, onCommentClick = { data ->
-            openCommentState = true
-            parentId = data.id
-        })
+        when(detailPageState.loadState) {
+            PageLoadState.INIT -> PageLoadingCard(loadingText = stringResource(id = R.string.loading))
+            PageLoadState.ERROR -> PageLoadErrorCard(text = stringResource(id = R.string.load_failed))
+            PageLoadState.ALL_LOADED, PageLoadState.FINISH ->  PosterCard(poster = detailPageState.poster, comments = detailPageState.comments, onMenuClick = {
+                //openCommentState.value = true
+            }, onShare = {}, onComment = {
+                parentId = -1L
+                openCommentState = true
+            }, onLike = {}, onHeaderClick = {
+
+            }, onCommentClick = { data ->
+                openCommentState = true
+                parentId = data.id
+            })
+            else -> Box(modifier = Modifier.size(0.dp))
+        }
+
     }
 
     if (openCommentState) {
@@ -102,6 +108,15 @@ fun PosterDetailPage(
             )
             openCommentState = false
         })
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        if (poster != null) {
+            vm.setPoster(poster)
+        } else {
+            vm.loadPoster(posterId)
+        }
+        vm.loadComments(posterId)
     }
 
 }

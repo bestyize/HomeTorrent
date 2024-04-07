@@ -5,5 +5,5 @@ object Router {
     const val PAGE_SPLASH = "ht://splash"
     const val PAGE_MAIN ="ht://main"
     const val PAGE_RECOMMEND = "ht://recommend"
-    const val PAGE_RECOMMEND_DETAIL = "ht://recommend/detail"
+    const val PAGE_RECOMMEND_DETAIL = "ht://recommend/detail?postId={postId}"
 }

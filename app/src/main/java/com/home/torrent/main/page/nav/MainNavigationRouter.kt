@@ -1,20 +1,10 @@
 package com.home.torrent.main.page.nav
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.core.net.toUri
-import androidx.navigation.ActivityNavigator
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.NavDestination.Companion.createRoute
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import com.home.torrent.main.page.MainPage
 import com.home.torrent.main.page.splash.page.SplashPage
@@ -51,9 +41,15 @@ fun MainNavigationRouter() {
             MainSettingPage()
         }
 
-        composable(route = Router.PAGE_RECOMMEND_DETAIL, enterTransition = slideInFromRight, exitTransition = slideOutToRight) {
-            val poster: RecommendPoster? = it.arguments?.getParcelable("poster_content", RecommendPoster::class.java)
-            val posterId = it.arguments?.getLong("poster_id") ?: 0L
+        composable(
+            route = Router.PAGE_RECOMMEND_DETAIL,
+            arguments = listOf(navArgument("postId") { defaultValue = 0L }),
+            enterTransition = slideInFromRight,
+            exitTransition = slideOutToRight
+        ) {
+            val poster: RecommendPoster? =
+                it.arguments?.getParcelable("poster_content", RecommendPoster::class.java)
+            val posterId = it.arguments?.getLong("postId") ?: 0L
             PosterDetailPage(posterId = posterId, poster = poster)
         }
 
