@@ -3,21 +3,28 @@ package com.thewind.community.detail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
-import com.thewind.resources.R
 import com.thewind.community.card.PosterCard
-import com.thewind.community.recommend.model.RecommendComment
+import com.thewind.community.detail.vm.DetailPageViewModel
 import com.thewind.community.recommend.model.RecommendPoster
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 
@@ -28,52 +35,72 @@ import com.thewind.widget.ui.TitleHeader
  */
 
 @Composable
+@Preview
 fun PosterDetailPage(
-    modifier: Modifier = Modifier,
-    poster: RecommendPoster,
-    comments: List<RecommendComment>,
-    onPublish: (String, Long) -> Unit
+    posterId: Long = 0L,
+    poster: RecommendPoster? = null
 ) {
-    val openCommentState = remember {
+
+    val vm = viewModel(modelClass = DetailPageViewModel::class.java)
+    LaunchedEffect(key1 = Unit) {
+        if (poster != null) {
+            vm.setPoster(poster)
+        } else {
+            vm.loadPoster(posterId)
+        }
+        vm.loadComments(posterId)
+    }
+    var openCommentState by remember {
         mutableStateOf(false)
     }
 
-    val parentId = remember {
+    var parentId by remember {
         mutableLongStateOf(-1L)
     }
-    Column(modifier = modifier.background(LocalColors.current.Bg2)) {
-        Spacer(modifier = Modifier.statusBarsPadding())
+    val commentsState = vm.commentState.collectAsStateWithLifecycle()
+    Column(modifier = Modifier
+        .background(LocalColors.current.Bg1)
+        .statusBarsPadding()) {
         TitleHeader(
             color = LocalColors.current.Text1,
             backgroundColor = LocalColors.current.Bg1,
             title = stringResource(
-                com.thewind.resources.R.string.detail
+                R.string.detail
             )
         )
-        Spacer(modifier = Modifier.height(5.dp))
-        PosterCard(poster = poster, comments = comments, onMenuClick = {
+        Spacer(
+            modifier = Modifier
+                .height(2.dp)
+                .fillMaxWidth()
+                .background(color = LocalColors.current.Bg2)
+        )
+        PosterCard(poster = poster, comments = commentsState.value, onMenuClick = {
             //openCommentState.value = true
         }, onShare = {}, onComment = {
-            parentId.longValue = -1L
-            openCommentState.value = true
+            parentId = -1L
+            openCommentState = true
         }, onLike = {}, onHeaderClick = {
 
         }, onCommentClick = { data ->
-            openCommentState.value = true
-            parentId.longValue = data.id
+            openCommentState = true
+            parentId = data.id
         })
     }
 
-    if (openCommentState.value) {
+    if (openCommentState) {
         CommentPublishPage(onClose = {
-            openCommentState.value = false
+            openCommentState = false
         }, onPublish = { data ->
             if (data.length < 10) {
                 toast(HomeApp.context.resources.getString(R.string.word_less_than_10))
                 return@CommentPublishPage
             }
-            onPublish.invoke(data, parentId.longValue)
-            openCommentState.value = false
+            vm.publishComment(
+                posterId = posterId,
+                content = data,
+                parentId = parentId
+            )
+            openCommentState = false
         })
     }
 

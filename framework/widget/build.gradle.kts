@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.composeMaterial)
     implementation(libs.composeFoundation)
 
+    implementation(libs.composeNavigation)
+
     implementation(project(mapOf("path" to ":framework:baseapp")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

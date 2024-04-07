@@ -1,7 +1,7 @@
 package com.thewind.community.recommend.page
 
 import android.app.Activity
-import android.content.Intent
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,7 +33,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thewind.community.card.PosterOption
 import com.thewind.community.card.PosterOptionDialog
 import com.thewind.community.card.TitlePosterCard
-import com.thewind.community.detail.DetailActivity
 import com.thewind.community.recommend.model.PosterType
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.utils.toDate
@@ -48,10 +47,9 @@ import com.thewind.widget.ui.TitleHeader
 
 @Composable
 @Preview
-fun RecommendFeedPage() {
+fun RecommendFeedPage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ -> }) {
     val vm: RecommendPageViewModel = viewModel(modelClass = RecommendPageViewModel::class.java)
     val recommendPageState by vm.recommendPageData.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
 
     Box(
         modifier = Modifier
@@ -94,9 +92,9 @@ fun RecommendFeedPage() {
                     content = data.content ?: "",
                     type = data.type,
                     onCardClick = {
-                        activity.startActivity(Intent(activity, DetailActivity::class.java).apply {
-                            putExtra("poster_id", data.id)
-                            putExtra("poster_content", data)
+                        router.invoke("ht://recommend/detail", Bundle().apply {
+                            putParcelable("poster_content", data)
+                            putLong("poster_id", data.id)
                         })
                     },
                     onMenuClick = {

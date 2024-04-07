@@ -3,6 +3,7 @@ package com.home.torrent.user.mine.page
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,7 +52,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.home.torrent.main.service.HomeAppConfigService
-import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
@@ -71,7 +70,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun MinePage() {
+fun MinePage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ -> }) {
     val activity = LocalContext.current as Activity
     val userVm = viewModel(modelClass = UserViewModel::class.java)
     val minePageState by userVm.minePageState.collectAsStateWithLifecycle()
@@ -113,7 +112,7 @@ fun MinePage() {
         })
         Spacer(modifier = Modifier.height(20.dp))
         SettingItemView(title = stringResource(R.string.setting), icon = Icons.Default.Settings) {
-            activity.startActivity(Intent(activity, SettingActivity::class.java))
+            router.invoke("ht://setting", null)
         }
 
         if (minePageState.user != null) {

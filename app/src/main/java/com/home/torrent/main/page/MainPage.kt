@@ -1,6 +1,7 @@
 package com.home.torrent.main.page
 
 import android.content.res.Resources
+import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,12 +28,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thewind.resources.R
 import com.home.torrent.cloud.page.TorrentCloudPage
 import com.home.torrent.collect.page.TorrentCollectPage
 import com.home.torrent.search.page.TorrentSearchPage
 import com.home.torrent.user.mine.page.MinePage
 import com.thewind.community.recommend.page.RecommendFeedPage
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import kotlinx.coroutines.launch
 
@@ -49,7 +50,8 @@ fun MainPage(
             resources.getString(R.string.recommend),
             resources.getString(R.string.my)
         )
-    }
+    },
+    router: (url: String, bundle: Bundle?) -> Unit = { _, _ ->}
 ) {
 
     val pagerState = rememberPagerState(initialPage = 0) {
@@ -74,13 +76,14 @@ fun MainPage(
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
                     2 -> TorrentCloudPage()
-                    3 -> RecommendFeedPage()
-                    else -> MinePage()
+                    3 -> RecommendFeedPage(router = router)
+                    else -> MinePage(router = router)
                 }
             }
         }
 
-        TabRow(selectedTabIndex = 0,
+        TabRow(
+            selectedTabIndex = 0,
             indicator = {},
             containerColor = LocalColors.current.Bg3,
             divider = {},
