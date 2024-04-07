@@ -9,7 +9,7 @@ versionName = "1.4"
 
 jvmTargetVersion = "17"
 
-kotlinCompilerExtensionVersion = "1.5.6"
+kotlinCompilerExtensionVersion = "1.5.11"
 
 coreKtxVersion = "1.12.0"
 
@@ -36,8 +36,8 @@ kotlinImmutableVersion = "0.3.7"
 
 roomVersion = "2.6.1"
 agp = "8.3.1"
-kspVersion = "1.9.21-1.0.15"
-kotlinVersion = "1.9.21"
+kspVersion = "1.9.23-1.0.20"
+kotlinVersion = "1.9.23"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
@@ -47,6 +47,10 @@ navVersion = "2.7.7"
 
 [libraries]
 
+androidx-compose-ui-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-compose-ui-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 coreKtx = {module = "androidx.core:core-ktx", version.ref = "coreKtxVersion"}
 kotlinxCoroutinesCore = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion"}
 lifecycleRuntimeKtx = {module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleVersion"}
@@ -90,6 +94,8 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 kotlinImmutable = {module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinImmutableVersion"}
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
 
 [plugins]

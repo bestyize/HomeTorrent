@@ -62,7 +62,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     androidTestImplementation(platform(libs.composeBom))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation(libs.androidx.compose.ui.ui.test.junit4)
     debugImplementation(libs.composeUiTooling)
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    debugImplementation(libs.androidx.compose.ui.ui.test.manifest)
 }
