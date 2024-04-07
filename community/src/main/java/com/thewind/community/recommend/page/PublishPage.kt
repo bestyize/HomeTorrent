@@ -33,7 +33,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.toast.toast
-import com.thewind.community.R
+import com.thewind.resources.R
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.widget.theme.LocalColors
 

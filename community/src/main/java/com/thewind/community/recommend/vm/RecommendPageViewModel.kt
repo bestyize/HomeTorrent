@@ -59,7 +59,7 @@ class RecommendPageViewModel : ViewModel() {
         viewModelScope.launch {
             val poster = RecommendPageService.publishPoster(title, content)
             if (poster == null) {
-                toast(HomeApp.context.getString(R.string.failed))
+                toast(HomeApp.context.getString(com.thewind.resources.R.string.failed))
                 return@launch
             }
             _recommendPageState.value =
@@ -79,7 +79,7 @@ class RecommendPageViewModel : ViewModel() {
                         removeIf { it.id == posterId }
                     })
             } else {
-                toast(HomeApp.context.getString(R.string.failed))
+                toast(HomeApp.context.getString(com.thewind.resources.R.string.failed))
             }
         }
     }
@@ -89,7 +89,7 @@ class RecommendPageViewModel : ViewModel() {
         if (user.level > 0) {
             _recommendPageState.value = _recommendPageState.value.copy(publishState = open)
         } else {
-            toast(HomeApp.context.getString(R.string.no_publish_permission))
+            toast(HomeApp.context.getString(com.thewind.resources.R.string.no_publish_permission))
         }
 
     }

@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.baseapp.app.toast.toast
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 
 

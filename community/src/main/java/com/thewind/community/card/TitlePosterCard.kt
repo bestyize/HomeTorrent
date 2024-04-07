@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.thewind.community.R
 import com.thewind.community.recommend.model.PosterType
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.ImageTag
 

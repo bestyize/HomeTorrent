@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,13 +51,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.home.torrent.R
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.page.SettingActivity
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
 import com.home.torrent.user.vm.UserViewModel
 import com.thewind.account.bean.User
+import com.thewind.resources.R
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonAlertDialog

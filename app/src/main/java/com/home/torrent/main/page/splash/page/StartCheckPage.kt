@@ -9,7 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.home.baseapp.app.HomeApp
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.main.model.HomeAppConfig
 import com.home.torrent.main.service.HomeAppConfigService
 import com.thewind.widget.ui.CommonAlertDialog

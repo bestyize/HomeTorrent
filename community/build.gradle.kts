@@ -66,6 +66,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:network")))
     implementation(project(mapOf("path" to ":framework:widget")))
     implementation(project(mapOf("path" to ":framework:utils")))
+    implementation(project(mapOf("path" to ":framework:resources")))
     implementation(libs.constraintlayout)
 
 

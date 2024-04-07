@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.home.baseapp.app.HomeApp
-import com.thewind.community.R
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 
 /**

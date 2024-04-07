@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.user.model.LoginPageData
 import com.home.torrent.user.model.LoginPageStage
 import com.home.torrent.user.model.MinePageData

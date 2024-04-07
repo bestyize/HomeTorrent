@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.user.model.LoginPageStage
 import com.home.torrent.user.vm.UserViewModel
 import com.thewind.widget.theme.LocalColors
@@ -104,7 +104,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Image(
-                painter = painterResource(id = R.drawable.logo),
+                painter = painterResource(id = com.thewind.resources.R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth(maxWidthScale / 2)

@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.collect.model.CollectPageDialogType
 import com.home.torrent.collect.vm.TorrentCollectViewModel
 import com.home.torrent.widget.CopyAddressDialog
@@ -26,7 +26,6 @@ import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentListView
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
-import com.thewind.widget.ui.list.lazy.PageLoadState
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 

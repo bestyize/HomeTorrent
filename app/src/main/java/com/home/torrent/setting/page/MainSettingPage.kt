@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.setting.widget.SwitchSettingView
 import com.tencent.mmkv.MMKV
 import com.thewind.widget.theme.LocalColors

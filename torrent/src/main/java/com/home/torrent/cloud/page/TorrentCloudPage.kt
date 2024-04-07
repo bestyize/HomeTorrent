@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.cloud.vm.CloudViewModel
 import com.home.torrent.collect.model.TorrentInfoBean
 import com.home.torrent.widget.CopyAddressDialog

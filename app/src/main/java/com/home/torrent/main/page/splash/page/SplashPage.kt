@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.ui.theme.BrandPink
 import com.home.torrent.ui.theme.TransportGray
 import com.thewind.widget.ui.TitleHeader
@@ -70,7 +70,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
             while (timeLeft.intValue > 0) {
                 delay(1000)
                 if (countDownState.value) {
-                    timeLeft.intValue = timeLeft.intValue - 1
+                    timeLeft.intValue -= 1
                 }
 
             }

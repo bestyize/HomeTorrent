@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.home.torrent.R
+import com.thewind.resources.R
 import com.home.torrent.cloud.page.TorrentCloudPage
 import com.home.torrent.collect.page.TorrentCollectPage
 import com.home.torrent.search.page.TorrentSearchPage

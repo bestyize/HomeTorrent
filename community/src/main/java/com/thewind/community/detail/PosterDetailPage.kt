@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.home.baseapp.app.HomeApp
 import com.home.baseapp.app.toast.toast
-import com.thewind.community.R
+import com.thewind.resources.R
 import com.thewind.community.card.PosterCard
 import com.thewind.community.recommend.model.RecommendComment
 import com.thewind.community.recommend.model.RecommendPoster
@@ -47,7 +47,7 @@ fun PosterDetailPage(
             color = LocalColors.current.Text1,
             backgroundColor = LocalColors.current.Bg1,
             title = stringResource(
-                R.string.detail
+                com.thewind.resources.R.string.detail
             )
         )
         Spacer(modifier = Modifier.height(5.dp))

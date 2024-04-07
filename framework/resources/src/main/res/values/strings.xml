@@ -1,9 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="content_less_than_10_word">内容不得少于10个字符</string>
+    <string name="publish">发表</string>
+    <string name="publish_poster">发表文章</string>
+    <string name="title_optional">标题(可选)</string>
+    <string name="content_require">内容(必选)</string>
+    <string name="share">分享</string>
+    <string name="comment">评论</string>
+    <string name="like">点赞</string>
+    <string name="delete">删除</string>
+    <string name="collect">收藏</string>
+    <string name="cancel">取消</string>
+    <string name="failed">失败</string>
+    <string name="word_less_than_10">最少评论10个字符！</string>
+    <string name="detail">详情</string>
+    <string name="edit">编辑</string>
+    <string name="no_publish_permission">无发表权限</string>
+
     <string name="app_name">磁力管家</string>
     <string name="search">搜索</string>
     <string name="search_more_torrent">搜索一下</string>
     <string name="main_page">首页</string>
-    <string name="collect">收藏</string>
     <string name="cloud">云端</string>
     <string name="my">我的</string>
     <string name="local_collect">本地收藏</string>
@@ -14,7 +31,7 @@
     <string name="do_you_want_to_logout">您真的要退出登录吗？</string>
     <string name="logout">退出登录</string>
     <string name="loaded_all">已全部加载</string>
-    <string name="loading">正在为您加载中…</string>
+    <string name="loading">加载中…</string>
     <string name="clear">清除</string>
     <string name="not_login">未登录</string>
     <string name="register_date">注册日:%1$s</string>
@@ -32,7 +49,6 @@
     <string name="login_to_unlock_more_function">登录后可解锁更多功能</string>
     <string name="notice">提示</string>
     <string name="ok">确定</string>
-    <string name="cancel">取消</string>
     <string name="title">标题</string>
     <string name="skip">跳过</string>
     <string name="warning">温馨提示</string>
@@ -57,4 +73,7 @@
     <string name="theme_color_follow_system_setting">主题颜色跟随系统</string>
     <string name="dark_mode">深色模式</string>
     <string name="recommend">社区</string>
+    <string name="load_failed">加载失败</string>
+    <string name="modify_title">修改标题</string>
+
 </resources>

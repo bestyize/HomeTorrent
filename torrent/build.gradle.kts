@@ -68,6 +68,7 @@ dependencies {
     implementation(project(mapOf("path" to ":framework:baseapp")))
     implementation(project(mapOf("path" to ":framework:widget")))
     implementation(project(mapOf("path" to ":framework:utils")))
+    implementation(project(mapOf("path" to ":framework:resources")))
 
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompiler)
