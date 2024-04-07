@@ -35,7 +35,7 @@ import com.thewind.widget.theme.LocalColors
 @Composable
 internal fun TorrentClickOptionDialog(
     onClicked: (TorrentClickOption) -> Unit,
-    options: Array<TorrentClickOption> = TorrentClickOption.values()
+    options: Array<TorrentClickOption> = TorrentClickOption.entries.toTypedArray()
 ) {
     ModalBottomSheet(
         onDismissRequest = {

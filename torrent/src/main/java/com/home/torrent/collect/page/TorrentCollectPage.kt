@@ -33,7 +33,8 @@ import kotlinx.collections.immutable.toImmutableSet
 @Composable
 fun TorrentCollectPage() {
     val vm = viewModel(modelClass = TorrentCollectViewModel::class.java)
-    val collectList by vm.torrentListState.collectAsStateWithLifecycle(emptyList())
+
+    val state by vm.localCollectPageState.collectAsStateWithLifecycle()
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -56,8 +57,8 @@ fun TorrentCollectPage() {
         }
 
         TorrentListView(
-            list = collectList.toImmutableList(),
-            collectSet = collectList.toImmutableSet(),
+            list = state.torrentList.toImmutableList(),
+            collectSet = state.torrentList.toImmutableSet(),
             onClick = { data ->
                 vm.handleTorrentInfoClick(data)
             },
@@ -80,6 +81,7 @@ private fun TorrentCollectPageDialog(vm: TorrentCollectViewModel = viewModel(mod
                     TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState(dialogState.data)
                     TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(dialogState.data, false)
                     TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(dialogState.data)
+                    TorrentClickOption.EDIT_TORRENT_TITLE -> {}
                     else -> vm.updateDialogState(null)
                 }
             })

@@ -26,4 +26,7 @@ interface CollectTorrentDao {
 
     @Query("DELETE FROM $TB_TORRENT_COLLECT WHERE magnet_url=:magnetUrl")
     suspend fun deleteByMagnetUrl(magnetUrl: String): Int
+
+    @Query("UPDATE $TB_TORRENT_COLLECT SET title =:newTitle WHERE hash =:hash")
+    suspend fun modifyTorrentTitle(newTitle: String, hash: String): Int
 }

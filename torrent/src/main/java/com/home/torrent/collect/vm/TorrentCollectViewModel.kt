@@ -9,6 +9,7 @@ import com.home.torrent.collect.database.bean.toTorrentInfo
 import com.home.torrent.collect.database.torrentDb
 import com.home.torrent.collect.model.CollectPageDialogState
 import com.home.torrent.collect.model.CollectPageDialogType
+import com.home.torrent.collect.model.TorrentLocalCollectPageUiState
 import com.home.torrent.collect.service.TorrentCollectService
 import com.home.torrent.model.TorrentInfo
 import com.home.torrent.service.suspendRequestMagnetUrl
@@ -17,23 +18,24 @@ import com.home.torrent.service.transferMagnetUrlToTorrentUrl
 import com.home.torrentcenter.services.suspendSearchMagnetUrl
 import com.home.torrentcenter.services.suspendSearchTorrentUrl
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 internal class TorrentCollectViewModel : ViewModel() {
 
-    private val collectedTorrent: MutableStateFlow<List<CollectTorrentInfo>> =
-        MutableStateFlow(emptyList())
+    private val _localCollectPageState: MutableStateFlow<TorrentLocalCollectPageUiState> = MutableStateFlow(
+        TorrentLocalCollectPageUiState()
+    )
 
-    val torrentListState: Flow<List<TorrentInfo>> =
-        collectedTorrent.map { it.map { it.toTorrentInfo() } }
+    val localCollectPageState = _localCollectPageState.asStateFlow()
 
-    val torrentSetState: Flow<ImmutableSet<TorrentInfo>> =
-        torrentListState.map { it.toImmutableSet() }
+    val torrentSetState: Flow<ImmutableSet<TorrentInfo>> = _localCollectPageState.map { it.torrentList.toImmutableSet() }
 
     val dialogState: MutableStateFlow<CollectPageDialogState> = MutableStateFlow(
         CollectPageDialogState()
@@ -73,7 +75,9 @@ internal class TorrentCollectViewModel : ViewModel() {
 
     private fun loadAll() {
         viewModelScope.launch {
-            collectedTorrent.value = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
+            val data = _localCollectPageState.value
+            val list = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
+            _localCollectPageState.value = data.copy(torrentList = list.map { it.toTorrentInfo() }.toImmutableList())
         }
     }
 
@@ -126,6 +130,21 @@ internal class TorrentCollectViewModel : ViewModel() {
 
     fun handleTorrentInfoClick(data: TorrentInfo) {
         dialogState.value = dialogState.value.copy(type = CollectPageDialogType.OPTION, data = data)
+    }
+
+
+    fun openEditDialog() {
+
+    }
+
+
+    fun modifyTitle(newTitle:String, hash: String) {
+
+
+    }
+
+    fun closeEditDialog() {
+
     }
 
 }
