@@ -25,66 +25,60 @@ class DetailPageViewModel : ViewModel() {
 
     val detailPageState = _detailPageState.asStateFlow()
 
-    fun loadPoster(id: Long) {
-        viewModelScope.launch {
-            val poster = DetailPageService.requestPosterDetail(id)
-            _detailPageState.value = _detailPageState.value.copy(
-                postId = id,
-                poster = poster,
-                loadState = if (poster == null) PageLoadState.ERROR else PageLoadState.FINISH
-            )
-        }
+    suspend fun loadPoster(id: Long) {
+        val poster = DetailPageService.requestPosterDetail(id)
+        _detailPageState.value = _detailPageState.value.copy(
+            postId = id,
+            poster = poster ?: _detailPageState.value.poster,
+            loadState = if (poster == null) PageLoadState.ERROR else PageLoadState.FINISH
+        )
     }
 
     fun setPoster(poster: RecommendPoster) {
         _detailPageState.value = _detailPageState.value.copy(postId = poster.id, poster = poster, loadState = PageLoadState.FINISH)
     }
 
-    fun loadComments(posterId: Long?) {
+    suspend fun loadComments(posterId: Long?) {
         if (posterId == null || posterId == -1L) {
             return
         }
-        viewModelScope.launch {
-            _detailPageState.value =
-                _detailPageState.value.copy(comments = DetailPageService.requestComments(posterId))
-        }
+        _detailPageState.value =
+            _detailPageState.value.copy(comments = DetailPageService.requestComments(posterId))
     }
 
-    fun publishComment(posterId: Long, content: String, parentId: Long = -1) {
+    suspend fun publishComment(posterId: Long, content: String, parentId: Long = -1) {
         if (posterId == -1L) {
             return
         }
-        viewModelScope.launch {
-            val comment = DetailPageService.publishComment(
-                posterId = posterId, content = content, parentId = parentId
-            )
-            if (comment == null) {
-                toast("Error")
-                return@launch
-            }
-            val comments = _detailPageState.value.comments
-            _detailPageState.value =
-                _detailPageState.value.copy(comments = if (comment.parentId != -1L) {
-                    comments.toMutableList().apply {
-                        forEachIndexed { index, recommendComment ->
-                            if (recommendComment.id == comment.parentId) {
-                                recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
-                                    ?.apply {
-                                        add(0, comment)
-                                    }).let {
-                                    this[index] = it
-                                }
+        val comment = DetailPageService.publishComment(
+            posterId = posterId, content = content, parentId = parentId
+        )
+        if (comment == null) {
+            toast("Error")
+            return
+        }
+        val comments = _detailPageState.value.comments
+        _detailPageState.value =
+            _detailPageState.value.copy(comments = if (comment.parentId != -1L) {
+                comments.toMutableList().apply {
+                    forEachIndexed { index, recommendComment ->
+                        if (recommendComment.id == comment.parentId) {
+                            recommendComment.copy(subCommentList = recommendComment.subCommentList?.toMutableList()
+                                ?.apply {
+                                    add(0, comment)
+                                }).let {
+                                this[index] = it
                             }
-
                         }
 
                     }
-                } else {
-                    comments.toMutableList().apply {
-                        add(0, comment)
-                    }
-                })
-        }
+
+                }
+            } else {
+                comments.toMutableList().apply {
+                    add(0, comment)
+                }
+            })
     }
 
     fun deleteComment(id: Long, parentId: Long = -1) {

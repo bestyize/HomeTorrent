@@ -51,6 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.home.torrent.main.page.nav.MainNavigationRouter
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
@@ -58,6 +59,7 @@ import com.home.torrent.user.vm.UserViewModel
 import com.thewind.account.bean.User
 import com.thewind.resources.R
 import com.thewind.utils.toDate
+import com.thewind.widget.nav.MainNavigation
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonAlertDialog
 import kotlinx.coroutines.launch
@@ -70,11 +72,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun MinePage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ -> }) {
+fun MinePage() {
     val activity = LocalContext.current as Activity
     val userVm = viewModel(modelClass = UserViewModel::class.java)
     val minePageState by userVm.minePageState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
+
+    val router = MainNavigation.current
 
     if (minePageState.showLogin) {
         BasicAlertDialog(
@@ -112,7 +116,7 @@ fun MinePage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ -> }) {
         })
         Spacer(modifier = Modifier.height(20.dp))
         SettingItemView(title = stringResource(R.string.setting), icon = Icons.Default.Settings) {
-            router.invoke("ht://setting", null)
+            router.navigate("ht://setting")
         }
 
         if (minePageState.user != null) {

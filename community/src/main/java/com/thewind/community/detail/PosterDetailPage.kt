@@ -1,5 +1,6 @@
 package com.thewind.community.detail
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,11 +32,9 @@ import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
-import com.thewind.widget.ui.list.lazy.PageLoadAllCard
-import com.thewind.widget.ui.list.lazy.PageLoadErrorCard
 import com.thewind.widget.ui.list.lazy.PageLoadState
 import com.thewind.widget.ui.list.lazy.PageLoadingCard
-import org.w3c.dom.Text
+import kotlinx.coroutines.launch
 
 /**
  * @author: read
@@ -44,11 +45,13 @@ import org.w3c.dom.Text
 @Composable
 @Preview
 fun PosterDetailPage(
-    posterId: Long = 0L,
-    poster: RecommendPoster? = null
+    posterId: Long = 0L
 ) {
 
-    val vm = viewModel(modelClass = DetailPageViewModel::class.java)
+    val vm = viewModel(
+        modelClass = DetailPageViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     var openCommentState by remember {
         mutableStateOf(false)
     }
@@ -57,9 +60,14 @@ fun PosterDetailPage(
         mutableLongStateOf(-1L)
     }
     val detailPageState by vm.detailPageState.collectAsStateWithLifecycle()
-    Column(modifier = Modifier
-        .background(LocalColors.current.Bg1)
-        .statusBarsPadding()) {
+
+    val scope = rememberCoroutineScope()
+
+    Column(
+        modifier = Modifier
+            .background(LocalColors.current.Bg1)
+            .statusBarsPadding()
+    ) {
         TitleHeader(
             color = LocalColors.current.Text1,
             backgroundColor = LocalColors.current.Bg1,
@@ -74,20 +82,29 @@ fun PosterDetailPage(
                 .background(color = LocalColors.current.Bg2)
         )
 
-        when(detailPageState.loadState) {
+        when (detailPageState.loadState) {
             PageLoadState.INIT -> PageLoadingCard(loadingText = stringResource(id = R.string.loading))
-            PageLoadState.ERROR -> PageLoadErrorCard(text = stringResource(id = R.string.load_failed))
-            PageLoadState.ALL_LOADED, PageLoadState.FINISH ->  PosterCard(poster = detailPageState.poster, comments = detailPageState.comments, onMenuClick = {
-                //openCommentState.value = true
-            }, onShare = {}, onComment = {
-                parentId = -1L
-                openCommentState = true
-            }, onLike = {}, onHeaderClick = {
+            PageLoadState.ERROR,
+            PageLoadState.ALL_LOADED, PageLoadState.FINISH -> PosterCard(
+                poster = detailPageState.poster,
+                comments = detailPageState.comments,
+                onMenuClick = {
+                    //openCommentState.value = true
+                },
+                onShare = {},
+                onComment = {
+                    parentId = -1L
+                    openCommentState = true
+                },
+                onLike = {},
+                onHeaderClick = {
 
-            }, onCommentClick = { data ->
-                openCommentState = true
-                parentId = data.id
-            })
+                },
+                onCommentClick = { data ->
+                    openCommentState = true
+                    parentId = data.id
+                })
+
             else -> Box(modifier = Modifier.size(0.dp))
         }
 
@@ -101,21 +118,20 @@ fun PosterDetailPage(
                 toast(HomeApp.context.resources.getString(R.string.word_less_than_10))
                 return@CommentPublishPage
             }
-            vm.publishComment(
-                posterId = posterId,
-                content = data,
-                parentId = parentId
-            )
-            openCommentState = false
+            scope.launch {
+                vm.publishComment(
+                    posterId = posterId,
+                    content = data,
+                    parentId = parentId
+                )
+                openCommentState = false
+            }
+
         })
     }
 
     LaunchedEffect(key1 = Unit) {
-        if (poster != null) {
-            vm.setPoster(poster)
-        } else {
-            vm.loadPoster(posterId)
-        }
+        vm.loadPoster(posterId)
         vm.loadComments(posterId)
     }
 

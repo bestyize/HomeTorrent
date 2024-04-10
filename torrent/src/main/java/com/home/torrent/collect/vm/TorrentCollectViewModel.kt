@@ -42,66 +42,60 @@ internal class TorrentCollectViewModel : ViewModel() {
     )
 
     init {
+        viewModelScope.launch {
+            loadAll()
+        }
+    }
+
+    suspend fun collect(data: TorrentInfo) {
+        val dat = if (data.magnetUrl.isNullOrBlank()) {
+            data.copy(magnetUrl = suspendRequestMagnetUrl(data.src, data.detailUrl!!))
+        } else data
+        if (dat.magnetUrl.isNullOrBlank()) {
+            toast("收藏失败")
+            return
+        }
+        torrentDb.collectDao().insert(dat.toCollectTorrentInfo())
+        toast("收藏成功!")
         loadAll()
     }
 
-    fun collect(data: TorrentInfo) {
-        viewModelScope.launch {
-            val dat = if (data.magnetUrl.isNullOrBlank()) {
-                data.copy(magnetUrl = suspendRequestMagnetUrl(data.src, data.detailUrl!!))
-            } else data
-            if (dat.magnetUrl.isNullOrBlank()) {
-                toast("收藏失败")
-                return@launch
-            }
-            torrentDb.collectDao().insert(dat.toCollectTorrentInfo())
-            toast("收藏成功!")
-            loadAll()
+    suspend fun unCollect(data: TorrentInfo) {
+        if (data.magnetUrl.isNullOrBlank()) {
+            toast("取消收藏失败")
+            return
         }
+        torrentDb.collectDao().deleteByMagnetUrl(data.magnetUrl!!)
+        toast("取消收藏成功")
+        delay(500)
+        loadAll()
     }
 
-    fun unCollect(data: TorrentInfo) {
-        viewModelScope.launch {
-            if (data.magnetUrl.isNullOrBlank()) {
-                toast("取消收藏失败")
-                return@launch
-            }
-            torrentDb.collectDao().deleteByMagnetUrl(data.magnetUrl!!)
-            toast("取消收藏成功")
-            delay(500)
-            loadAll()
-        }
+    private suspend fun loadAll() {
+        val data = _localCollectPageState.value
+        val list = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
+        _localCollectPageState.value = data.copy(torrentList = list.map { it.toTorrentInfo() }.toImmutableList())
     }
 
-    private fun loadAll() {
-        viewModelScope.launch {
-            val data = _localCollectPageState.value
-            val list = torrentDb.collectDao().loadCollectedTorrent() ?: emptyList()
-            _localCollectPageState.value = data.copy(torrentList = list.map { it.toTorrentInfo() }.toImmutableList())
-        }
-    }
-
-    fun collectToCloud(data: TorrentInfo?) {
+    suspend fun collectToCloud(data: TorrentInfo?) {
         data ?: return
-        viewModelScope.launch {
-            val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
-                data.src, data.detailUrl!!
-            ) else data.magnetUrl
-            if (magnetUrl == null) {
-                toast("收藏到云端失败！")
-                return@launch
-            }
-            val hash =
-                if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
-            val dat = data.copy(
-                magnetUrl = magnetUrl,
-                hash = if (hash.isNullOrBlank()) magnetUrl else hash,
-                torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
-                    magnetUrl
-                ) else data.torrentUrl
-            )
-            toast(TorrentCollectService.collectToCloud(dat).message)
+        val magnetUrl = if (data.magnetUrl.isNullOrBlank()) suspendRequestMagnetUrl(
+            data.src, data.detailUrl!!
+        ) else data.magnetUrl
+        if (magnetUrl == null) {
+            toast("收藏到云端失败！")
+            return
         }
+        val hash =
+            if (data.hash.isNullOrBlank()) transferMagnetUrlToHash(magnetUrl) else data.hash
+        val dat = data.copy(
+            magnetUrl = magnetUrl,
+            hash = if (hash.isNullOrBlank()) magnetUrl else hash,
+            torrentUrl = if (data.torrentUrl.isNullOrBlank()) transferMagnetUrlToTorrentUrl(
+                magnetUrl
+            ) else data.torrentUrl
+        )
+        toast(TorrentCollectService.collectToCloud(dat).message)
     }
 
     fun updateDialogState(data: TorrentInfo?, isMagnet: Boolean = true) {

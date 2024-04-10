@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.composeUiToolingPreview)
     implementation(libs.composeMaterial)
     implementation(libs.composeFoundation)
+    implementation(libs.composeNavigation)
     implementation(libs.gson)
 
     implementation(libs.coli)

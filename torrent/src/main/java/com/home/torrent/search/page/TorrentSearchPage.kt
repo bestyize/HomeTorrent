@@ -1,5 +1,6 @@
 package com.home.torrent.search.page
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,7 +56,7 @@ import kotlinx.coroutines.launch
 fun TorrentSearchPage() {
     val vm = viewModel(modelClass = TorrentSearchPageViewModel::class.java)
 
-    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java)
+    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java, viewModelStoreOwner = LocalContext.current as ComponentActivity)
 
     val collectSetState by collectVm.torrentSetState.collectAsStateWithLifecycle(persistentSetOf())
 
@@ -63,30 +65,33 @@ fun TorrentSearchPage() {
     val pagerState = rememberPagerState(initialPage = 0,
         initialPageOffsetFraction = 0f,
         pageCount = { searchPageState.tabs.size })
-
+    val scope = rememberCoroutineScope()
     if (searchPageState.dialogState.type != SearchPageDialogType.NONE) {
         when (searchPageState.dialogState.type) {
             SearchPageDialogType.OPTION -> TorrentClickOptionDialog(onClicked = {
-                when (it) {
-                    TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState()
-                    TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(isMagnet = false)
-                    TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(searchPageState.dialogState.data)
-                    else -> vm.updateDialogState(null)
+                scope.launch {
+                    when (it) {
+                        TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState()
+                        TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(isMagnet = false)
+                        TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(searchPageState.dialogState.data)
+                        else -> vm.updateDialogState(null)
+                    }
                 }
+
             })
 
             SearchPageDialogType.ADDRESS -> CopyAddressDialog(
                 address = (if (searchPageState.dialogState.isMagnet) searchPageState.dialogState.data?.magnetUrl else searchPageState.dialogState.data?.torrentUrl)
                     ?: ""
             ) {
-                vm.updateDialogState(null)
+                scope.launch {
+                    vm.updateDialogState(null)
+                }
             }
 
             else -> {}
         }
     }
-
-    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = Unit) {
         snapshotFlow { pagerState.currentPage }.collectLatest { tabIndex ->

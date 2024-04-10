@@ -1,7 +1,6 @@
 package com.thewind.community.recommend.page
 
-import android.app.Activity
-import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,9 +32,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.thewind.community.card.PosterOption
 import com.thewind.community.card.PosterOptionDialog
 import com.thewind.community.card.TitlePosterCard
+import com.thewind.community.detail.vm.DetailPageViewModel
 import com.thewind.community.recommend.model.PosterType
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.utils.toDate
+import com.thewind.widget.nav.MainNavigation
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 
@@ -47,9 +48,16 @@ import com.thewind.widget.ui.TitleHeader
 
 @Composable
 @Preview
-fun RecommendFeedPage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ -> }) {
+fun RecommendFeedPage() {
     val vm: RecommendPageViewModel = viewModel(modelClass = RecommendPageViewModel::class.java)
+    // https://stackoverflow.com/questions/69002018/why-a-new-viewmodel-is-created-in-each-compose-navigation-route
+    val detailPageVm = viewModel(
+        modelClass = DetailPageViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     val recommendPageState by vm.recommendPageData.collectAsStateWithLifecycle()
+
+    val router = MainNavigation.current
 
     Box(
         modifier = Modifier
@@ -92,10 +100,8 @@ fun RecommendFeedPage(router: (url: String, bundle: Bundle?) -> Unit = { _, _ ->
                     content = data.content ?: "",
                     type = data.type,
                     onCardClick = {
-                        router.invoke("ht://recommend/detail?postId=${data.id}", Bundle().apply {
-                            putParcelable("poster_content", data)
-                            putLong("postId", data.id)
-                        })
+                        detailPageVm.setPoster(data)
+                        router.navigate("ht://recommend/detail?postId=${data.id}")
                     },
                     onMenuClick = {
                         menuClickState = true

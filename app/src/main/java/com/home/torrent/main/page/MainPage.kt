@@ -1,7 +1,6 @@
 package com.home.torrent.main.page
 
 import android.content.res.Resources
-import android.os.Bundle
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,8 +49,7 @@ fun MainPage(
             resources.getString(R.string.recommend),
             resources.getString(R.string.my)
         )
-    },
-    router: (url: String, bundle: Bundle?) -> Unit = { _, _ ->}
+    }
 ) {
 
     val pagerState = rememberPagerState(initialPage = 0) {
@@ -76,8 +74,8 @@ fun MainPage(
                     0 -> TorrentSearchPage()
                     1 -> TorrentCollectPage()
                     2 -> TorrentCloudPage()
-                    3 -> RecommendFeedPage(router = router)
-                    else -> MinePage(router = router)
+                    3 -> RecommendFeedPage()
+                    else -> MinePage()
                 }
             }
         }
