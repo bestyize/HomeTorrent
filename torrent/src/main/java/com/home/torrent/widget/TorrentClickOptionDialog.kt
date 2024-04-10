@@ -90,7 +90,7 @@ internal enum class TorrentClickOption(val value: String) {
             R.string.get_torrent_url
         )
     ),
-    COLLECT_CLOUD(HomeApp.context.getString(R.string.collect_to_cloud)), EDIT_TORRENT_TITLE("编辑名称"), CANCEL(
+    COLLECT_CLOUD(HomeApp.context.getString(R.string.collect_to_cloud)), EDIT_TORRENT_TITLE(HomeApp.context.getString(R.string.modify_title)), CANCEL(
         HomeApp.context.getString(R.string.cancel)
     )
 }

@@ -104,7 +104,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Image(
-                painter = painterResource(id = com.thewind.resources.R.drawable.logo),
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth(maxWidthScale / 2)
@@ -164,7 +164,7 @@ fun LoginPage(onClose: () -> Unit = {}) {
                     }
                 }, label = {
                     Text(
-                        text = "邮箱",
+                        text = stringResource(id = R.string.email),
                         color = LocalColors.current.Brand_pink,
                         fontWeight = FontWeight.Bold
                     )

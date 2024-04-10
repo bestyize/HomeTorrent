@@ -60,26 +60,26 @@ fun SplashPage(onClose: () -> Unit = {}) {
             .background(Color.White)
             .statusBarsPadding()
     ) {
-        val timeLeft = remember {
-            mutableIntStateOf(3)
+        var timeLeft by remember {
+            mutableIntStateOf(2)
         }
         SkipButton(
             modifier = Modifier.align(Alignment.TopEnd),
-            skipText = stringResource(R.string.skip) + " ${timeLeft.intValue}",
+            skipText = stringResource(R.string.skip) + " $timeLeft",
             onClose = {
                 if (countDownState.value) {
                     onClose.invoke()
                 }
             }
         )
-        if (timeLeft.intValue == 0) {
+        if (timeLeft == 0) {
             onClose.invoke()
         }
         LaunchedEffect(key1 = Unit) {
-            while (timeLeft.intValue > 0) {
+            while (timeLeft > 0) {
                 delay(1000)
                 if (countDownState.value) {
-                    timeLeft.intValue -= 1
+                    timeLeft -= 1
                 }
 
             }
