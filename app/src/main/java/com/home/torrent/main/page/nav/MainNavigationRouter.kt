@@ -11,15 +11,14 @@ import com.home.torrent.main.page.MainPage
 import com.home.torrent.main.page.splash.page.SplashPage
 import com.home.torrent.setting.page.MainSettingPage
 import com.thewind.community.detail.PosterDetailPage
-import com.thewind.community.recommend.model.RecommendPoster
 import com.thewind.widget.animation.slideInFromRight
 import com.thewind.widget.animation.slideOutToRight
-import com.thewind.widget.nav.MainNavigation
+import com.thewind.widget.nav.LocalMainNavigation
 
 @Composable
 fun MainNavigationRouter() {
     val navController = rememberNavController()
-    CompositionLocalProvider(MainNavigation provides navController) {
+    CompositionLocalProvider(LocalMainNavigation provides navController) {
         NavHost(navController = navController, startDestination = Router.PAGE_SPLASH) {
             composable(route = Router.PAGE_SPLASH) {
                 SplashPage {

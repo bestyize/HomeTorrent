@@ -3,7 +3,7 @@ package com.home.torrent.user.mine.page
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -51,7 +51,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.home.torrent.main.page.nav.MainNavigationRouter
 import com.home.torrent.main.service.HomeAppConfigService
 import com.home.torrent.setting.widget.SettingItemView
 import com.home.torrent.user.login.page.LoginPage
@@ -59,7 +58,7 @@ import com.home.torrent.user.vm.UserViewModel
 import com.thewind.account.bean.User
 import com.thewind.resources.R
 import com.thewind.utils.toDate
-import com.thewind.widget.nav.MainNavigation
+import com.thewind.widget.nav.LocalMainNavigation
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonAlertDialog
 import kotlinx.coroutines.launch
@@ -74,11 +73,14 @@ import kotlinx.coroutines.launch
 @Preview
 fun MinePage() {
     val activity = LocalContext.current as Activity
-    val userVm = viewModel(modelClass = UserViewModel::class.java)
+    val userVm = viewModel(
+        modelClass = UserViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     val minePageState by userVm.minePageState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
 
-    val router = MainNavigation.current
+    val router = LocalMainNavigation.current
 
     if (minePageState.showLogin) {
         BasicAlertDialog(

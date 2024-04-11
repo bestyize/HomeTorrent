@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -51,7 +50,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
 
     val state = splashLogoAnimationStateHolder()
 
-    val countDownState = remember {
+    var countDownState by remember {
         mutableStateOf(true)
     }
     Box(
@@ -67,7 +66,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
             modifier = Modifier.align(Alignment.TopEnd),
             skipText = stringResource(R.string.skip) + " $timeLeft",
             onClose = {
-                if (countDownState.value) {
+                if (countDownState) {
                     onClose.invoke()
                 }
             }
@@ -78,7 +77,7 @@ fun SplashPage(onClose: () -> Unit = {}) {
         LaunchedEffect(key1 = Unit) {
             while (timeLeft > 0) {
                 delay(1000)
-                if (countDownState.value) {
+                if (countDownState) {
                     timeLeft -= 1
                 }
 
@@ -113,9 +112,9 @@ fun SplashPage(onClose: () -> Unit = {}) {
     }
 
     StartCheckPage(onClose = {
-        countDownState.value = true
+        countDownState = true
     }, onShow = {
-        countDownState.value = false
+        countDownState = false
     })
 }
 

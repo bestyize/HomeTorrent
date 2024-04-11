@@ -1,5 +1,6 @@
 package com.home.torrent.cloud.page
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,13 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.thewind.resources.R
 import com.home.torrent.cloud.vm.CloudViewModel
 import com.home.torrent.collect.model.TorrentInfoBean
 import com.home.torrent.widget.CopyAddressDialog
 import com.home.torrent.widget.TorrentClickOption
 import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentItemTag
+import com.thewind.resources.R
 import com.thewind.utils.toDate
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.CommonInputDialog
@@ -73,7 +75,10 @@ private val clickOptions = arrayOf(
 @Preview
 fun TorrentCloudPage() {
 
-    val vm = viewModel(modelClass = CloudViewModel::class.java)
+    val vm = viewModel(
+        modelClass = CloudViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     val cloudPageState by vm.cloudPageState.collectAsStateWithLifecycle()
 
     val scope = rememberCoroutineScope()

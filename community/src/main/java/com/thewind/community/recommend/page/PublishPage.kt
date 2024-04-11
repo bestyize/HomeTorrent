@@ -1,5 +1,6 @@
 package com.thewind.community.recommend.page
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -24,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,8 +35,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.home.baseapp.app.toast.toast
-import com.thewind.resources.R
 import com.thewind.community.recommend.vm.RecommendPageViewModel
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 
 /**
@@ -51,7 +53,10 @@ fun PublishPage(onClose: () -> Unit = {}) {
             usePlatformDefaultWidth = false
         )
     ) {
-        val vm = viewModel(modelClass = RecommendPageViewModel::class.java)
+        val vm = viewModel(
+            modelClass = RecommendPageViewModel::class.java,
+            viewModelStoreOwner = LocalContext.current as ComponentActivity
+        )
         val content = remember {
             mutableStateOf("")
         }
@@ -162,7 +167,7 @@ fun PublishTitle(
     Box(
         modifier = modifier
     ) {
-        Icon(imageVector = Icons.Default.ArrowBack,
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
             tint = LocalColors.current.Text1,
             contentDescription = "",
             modifier = Modifier

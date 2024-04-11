@@ -20,13 +20,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.thewind.resources.R
 import com.home.torrent.collect.model.CollectPageDialogType
 import com.home.torrent.collect.vm.TorrentCollectViewModel
 import com.home.torrent.widget.CopyAddressDialog
 import com.home.torrent.widget.TorrentClickOption
 import com.home.torrent.widget.TorrentClickOptionDialog
 import com.home.torrent.widget.TorrentListView
+import com.thewind.resources.R
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 import kotlinx.collections.immutable.toImmutableList
@@ -35,7 +35,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TorrentCollectPage() {
-    val vm = viewModel(modelClass = TorrentCollectViewModel::class.java, viewModelStoreOwner = LocalContext.current as ComponentActivity)
+    val vm = viewModel(
+        modelClass = TorrentCollectViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
 
     val state by vm.localCollectPageState.collectAsStateWithLifecycle()
 
@@ -82,7 +85,11 @@ fun TorrentCollectPage() {
 }
 
 @Composable
-private fun TorrentCollectPageDialog(vm: TorrentCollectViewModel = viewModel(modelClass = TorrentCollectViewModel::class.java)) {
+private fun TorrentCollectPageDialog() {
+    val vm: TorrentCollectViewModel = viewModel(
+        modelClass = TorrentCollectViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     val scope = rememberCoroutineScope()
     val dialogState by vm.dialogState.collectAsStateWithLifecycle()
     if (dialogState.type != CollectPageDialogType.NONE) {
@@ -91,7 +98,11 @@ private fun TorrentCollectPageDialog(vm: TorrentCollectViewModel = viewModel(mod
                 scope.launch {
                     when (it) {
                         TorrentClickOption.GET_MAGNET_URL -> vm.updateDialogState(dialogState.data)
-                        TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(dialogState.data, false)
+                        TorrentClickOption.GET_TORRENT_URL -> vm.updateDialogState(
+                            dialogState.data,
+                            false
+                        )
+
                         TorrentClickOption.COLLECT_CLOUD -> vm.collectToCloud(dialogState.data)
                         TorrentClickOption.EDIT_TORRENT_TITLE -> {}
                         else -> vm.updateDialogState(null)

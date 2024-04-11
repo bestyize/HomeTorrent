@@ -35,7 +35,7 @@ kotlinxCoroutinesCoreVersion = "1.7.3"
 kotlinImmutableVersion = "0.3.7"
 
 roomVersion = "2.6.1"
-agp = "8.3.1"
+agp = "8.3.2"
 kspVersion = "1.9.23-1.0.20"
 kotlinVersion = "1.9.23"
 junit = "4.13.2"

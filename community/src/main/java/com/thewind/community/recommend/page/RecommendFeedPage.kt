@@ -36,7 +36,7 @@ import com.thewind.community.detail.vm.DetailPageViewModel
 import com.thewind.community.recommend.model.PosterType
 import com.thewind.community.recommend.vm.RecommendPageViewModel
 import com.thewind.utils.toDate
-import com.thewind.widget.nav.MainNavigation
+import com.thewind.widget.nav.LocalMainNavigation
 import com.thewind.widget.theme.LocalColors
 import com.thewind.widget.ui.TitleHeader
 
@@ -49,7 +49,10 @@ import com.thewind.widget.ui.TitleHeader
 @Composable
 @Preview
 fun RecommendFeedPage() {
-    val vm: RecommendPageViewModel = viewModel(modelClass = RecommendPageViewModel::class.java)
+    val vm: RecommendPageViewModel = viewModel(
+        modelClass = RecommendPageViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
     // https://stackoverflow.com/questions/69002018/why-a-new-viewmodel-is-created-in-each-compose-navigation-route
     val detailPageVm = viewModel(
         modelClass = DetailPageViewModel::class.java,
@@ -57,7 +60,7 @@ fun RecommendFeedPage() {
     )
     val recommendPageState by vm.recommendPageData.collectAsStateWithLifecycle()
 
-    val router = MainNavigation.current
+    val router = LocalMainNavigation.current
 
     Box(
         modifier = Modifier

@@ -56,7 +56,10 @@ import kotlinx.coroutines.launch
 fun TorrentSearchPage() {
     val vm = viewModel(modelClass = TorrentSearchPageViewModel::class.java)
 
-    val collectVm = viewModel(modelClass = TorrentCollectViewModel::class.java, viewModelStoreOwner = LocalContext.current as ComponentActivity)
+    val collectVm = viewModel(
+        modelClass = TorrentCollectViewModel::class.java,
+        viewModelStoreOwner = LocalContext.current as ComponentActivity
+    )
 
     val collectSetState by collectVm.torrentSetState.collectAsStateWithLifecycle(persistentSetOf())
 
