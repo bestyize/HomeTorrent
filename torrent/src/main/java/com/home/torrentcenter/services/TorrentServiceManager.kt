@@ -33,7 +33,7 @@ fun requestTorrentSource(): List<TorrentSource> {
 
 }
 
-fun searchTorrent(src: Int, key: String, page: Int = 1): List<TorrentInfo> {
+suspend fun searchTorrent(src: Int, key: String, page: Int = 1): List<TorrentInfo> {
     runCatching {
         if (useLocal) {
             return searchTorrentList(src, key, page)
@@ -55,7 +55,7 @@ suspend fun suspendSearchTorrent(src: Int, key: String, page: Int = 1) =
         searchTorrent(src, key, page)
     }
 
-fun searchMagnetUrl(src: Int, detailUrl: String): String {
+suspend fun searchMagnetUrl(src: Int, detailUrl: String): String {
     runCatching {
         if (useLocal) {
             return requestMagnetUrl(src, detailUrl)
@@ -69,7 +69,7 @@ suspend fun suspendSearchMagnetUrl(src: Int, detailUrl: String) = withContext(Di
     searchMagnetUrl(src, detailUrl)
 }
 
-fun searchTorrentUrl(src: Int, detailUrl: String): String {
+suspend fun searchTorrentUrl(src: Int, detailUrl: String): String {
     runCatching {
         if (useLocal) {
             return requestMagnetUrl(src, detailUrl)
